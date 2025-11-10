@@ -137,22 +137,45 @@ There are bugs in the codebase. Find and fix them.
 
 ## Submission
 
-### What to Submit
+### How to Submit
 
-1. **GitHub Repository** or ZIP file with your code
-2. **Screen Recording** (3-4 minutes) showing:
-   - Registration flow working smoothly
-   - Profile editing working
-   - Fast Clinics screen
-   - Your hook in action
-   - Bug fixes working
-3. **README_SUBMISSION.md** explaining:
-   - Your approach and decisions
-   - What was challenging and why
-   - How you solved performance issues
-   - How your hook works and why you designed it that way
-   - What you'd do differently with more time
-   - Any assumptions you made
+1. **Fork this repository** to your GitHub account
+2. **Create a new branch** for your work (e.g., `feature/your-name-solution`)
+3. **Make your changes** and commit them
+4. **Create a Pull Request** back to this repository
+5. **In the PR description**, include:
+   - Link to your **screen recording** (YouTube, Loom, or similar)
+   - Brief summary of what you implemented
+   - Any notes about your approach
+
+### What to Include
+
+**1. Pull Request with your code:**
+- All your implementation changes
+- Clean, well-structured commits
+- Code that follows existing patterns
+
+**2. Screen Recording (3-4 minutes) showing:**
+- Registration flow working smoothly
+- Profile editing working
+- Fast Clinics screen (demonstrate performance)
+- Your hook in action
+- Bug fixes working
+
+**3. PR Description should explain:**
+- Your approach and key decisions
+- What was challenging and why
+- How you solved performance issues
+- How your hook works and why you designed it that way
+- What you'd do differently with more time
+- Any assumptions you made
+
+### PR Guidelines
+
+- **Title:** `[Your Name] - Hiring Test Submission`
+- **Description:** Include video link and explanation
+- **Commits:** Make meaningful commits (not just one giant commit)
+- **Code Quality:** Follow existing code style and patterns
 
 ### What We're Looking For
 

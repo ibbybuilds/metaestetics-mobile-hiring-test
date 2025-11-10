@@ -79,4 +79,16 @@ src/
 
 See `CHALLENGE.md` for what you need to build.
 
+## Submission Process
+
+1. **Fork this repository**
+2. **Create a branch** for your work
+3. **Make your changes** and commit them
+4. **Create a Pull Request** with:
+   - Your code changes
+   - Link to screen recording in PR description
+   - Explanation of your approach
+
+See `CHALLENGE.md` for detailed submission requirements.
+
 Good luck! 🚀
