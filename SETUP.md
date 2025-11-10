@@ -9,13 +9,21 @@ Before starting, verify you have:
 ```bash
 # Check Node version (should be 20.19.4+)
 node --version
+```
 
+**For macOS users:**
+```bash
 # Check if Xcode is installed
 xcodebuild -version
 
 # Check iOS Simulator
 xcrun simctl list devices
 ```
+
+**For Windows/Linux users:**
+- Ensure Android Studio is installed
+- Set up an Android Virtual Device (AVD) or connect a physical Android device
+- Enable USB debugging if using a physical device
 
 ### 2. Install Dependencies
 
@@ -28,12 +36,26 @@ This will install all required packages (~5 minutes).
 
 ### 3. Run the App
 
+**On macOS:**
 ```bash
 # Start Expo dev server and open iOS Simulator
 npm run ios
 ```
 
-The iOS Simulator should open automatically and you should see the Welcome screen.
+**On Windows/Linux:**
+```bash
+# Start Expo dev server and open Android Emulator
+npm run android
+```
+
+**Or use Expo Go on your physical device:**
+```bash
+# Start Expo dev server
+npm start
+# Then scan the QR code with Expo Go app (iOS/Android)
+```
+
+The simulator/emulator should open automatically and you should see the Welcome screen.
 
 ### 4. Verify Everything Works
 
@@ -51,7 +73,7 @@ rm -rf node_modules
 npm install
 ```
 
-**Problem: iOS Simulator doesn't open**
+**Problem: iOS Simulator doesn't open (macOS only)**
 ```bash
 # Open Simulator manually
 open -a Simulator
@@ -59,17 +81,29 @@ open -a Simulator
 npm run ios
 ```
 
+**Problem: Android Emulator doesn't open (Windows/Linux)**
+- Open Android Studio
+- Start an AVD from the AVD Manager
+- Then run `npm run android`
+
 **Problem: Metro bundler errors**
 ```bash
 # Clear Metro cache
 npm start -- --reset-cache
 ```
 
-**Problem: Build errors**
+**Problem: Build errors (iOS - macOS only)**
 ```bash
 # Clean and rebuild
 cd ios && rm -rf Pods Podfile.lock && pod install && cd ..
 npm run ios
+```
+
+**Problem: Build errors (Android)**
+```bash
+# Clean and rebuild
+cd android && ./gradlew clean && cd ..
+npm run android
 ```
 
 ## Development Workflow
@@ -103,9 +137,10 @@ npm run lint
 
 ## Tips
 
-- Use iOS Simulator for development (faster than physical device)
+- Use simulator/emulator for development (faster than physical device)
 - Keep Metro bundler terminal open while developing
-- Check both Expo terminal and Xcode console for errors
+- Check Expo terminal and device console for errors
 - Use React DevTools for debugging
 - Enable Debug JS Remotely for better debugging experience
+- On Windows/Linux, Android development works perfectly fine - you can test all features
 

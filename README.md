@@ -11,13 +11,11 @@ This is a React Native (Expo) application. Some features are implemented, some a
 ## Prerequisites
 
 **REQUIRED:**
-- Mac computer (macOS 12+)
-- Xcode 16.1+ installed
 - Node.js 20.19.4+
-- iOS Simulator working
 - React Native/Expo experience
-
-**If you don't have these, please don't proceed.**
+- A way to run and test the app:
+  - **macOS:** Xcode 16.1+ and iOS Simulator
+  - **Windows/Linux:** Android Studio and Android Emulator (or physical Android device)
 
 ## Setup Instructions
 
@@ -26,10 +24,20 @@ This is a React Native (Expo) application. Some features are implemented, some a
    ```bash
    npm install
    ```
-3. Run on iOS Simulator:
-   ```bash
-   npm run ios
-   ```
+3. Run the app:
+   - **On macOS with iOS Simulator:**
+     ```bash
+     npm run ios
+     ```
+   - **On Windows/Linux with Android Emulator:**
+     ```bash
+     npm run android
+     ```
+   - **Or use Expo Go app on your physical device:**
+     ```bash
+     npm start
+     ```
+     Then scan the QR code with Expo Go app
 4. Verify the app loads and you can see the Welcome screen
 
 ## Test Login Credentials
