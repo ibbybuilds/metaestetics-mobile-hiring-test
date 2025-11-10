@@ -92,3 +92,5 @@ See `CHALLENGE.md` for what you need to build.
 See `CHALLENGE.md` for detailed submission requirements.
 
 Good luck! 🚀
+
+contact: andrea@blackcode.ch for any queries
