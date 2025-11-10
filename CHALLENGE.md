@@ -182,4 +182,6 @@ We care about **how you think**:
 - If something is ambiguous, make a reasonable decision and document it
 - Performance matters - don't just make it work, make it work well
 
+**Important:** This test uses mock APIs instead of Firebase/Firestore. In production, we use Firebase Authentication and Firestore. The mock service simulates async operations, delays, and errors - treat it like a real backend. The patterns you use (error handling, loading states, async/await) should match what you'd use with real Firebase/Firestore.
+
 Good luck. Show us what you can build.

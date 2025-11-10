@@ -6,6 +6,8 @@ Welcome to the MetaEstetics mobile developer hiring challenge!
 
 This is a React Native (Expo) application. Some features are implemented, some aren't. Your job is to make it work.
 
+**Note:** This test uses mock APIs instead of Firebase/Firestore for security and simplicity. In production, we use Firebase Authentication and Firestore for data storage. The patterns and structure should match production code (async operations, error handling, state management), but you'll work with mock services instead of real Firebase.
+
 ## Prerequisites
 
 **REQUIRED:**
@@ -50,14 +52,25 @@ src/
 └── theme/         # Colors, spacing, typography
 ```
 
+## Technologies Used
+
+- **Expo SDK 54**
+- **React Native 0.81.4**
+- **TypeScript**
+- **Redux Toolkit** (state management)
+- **React Navigation** (navigation)
+- **Formik + Yup** (forms and validation)
+- **AsyncStorage** (local persistence)
+- **Mock API Service** (simulates backend - in production we use Firebase/Firestore)
+
 ## What's Already Implemented
 
 ✅ Project setup and configuration
 ✅ Reusable components (Button, Input, etc.)
 ✅ Redux store structure
 ✅ Navigation structure
-✅ Mock API service
-✅ Storage service
+✅ Mock API service (simulates backend calls)
+✅ Storage service (AsyncStorage)
 ✅ Login screen (fully functional)
 ✅ Profile display screen
 ✅ Type definitions
