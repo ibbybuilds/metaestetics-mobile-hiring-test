@@ -79,12 +79,4 @@ src/
 
 See `CHALLENGE.md` for what you need to build.
 
-## Evaluation
-
-See `EVALUATION.md` for how we'll evaluate your submission.
-
-## Questions?
-
-If you have questions about the setup or requirements, please email [your-email@example.com]
-
 Good luck! 🚀
