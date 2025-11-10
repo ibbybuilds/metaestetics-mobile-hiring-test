@@ -1,0 +1,74 @@
+import { StyleSheet } from 'react-native';
+import { colors, spacing } from '@theme';
+
+export const styles = StyleSheet.create({
+  container: {
+    marginBottom: spacing.md,
+  },
+  containerError: {
+    marginBottom: spacing.xs,
+  },
+  label: {
+    marginBottom: spacing.xs,
+    color: colors.textPrimary,
+    fontWeight: '500',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  input: {
+    flex: 1,
+    height: 44,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    paddingHorizontal: spacing.md,
+    fontSize: 16,
+    color: colors.textPrimary,
+    backgroundColor: colors.white,
+  },
+  inputWithLeftIcon: {
+    paddingLeft: 40,
+  },
+  inputWithRightIcon: {
+    paddingRight: 40,
+  },
+  inputFocused: {
+    borderColor: colors.borderFocus,
+  },
+  inputError: {
+    borderColor: colors.error,
+  },
+  inputDisabled: {
+    backgroundColor: colors.gray[100],
+    color: colors.textSecondary,
+  },
+  inputMultiline: {
+    height: 'auto',
+    minHeight: 100,
+    paddingTop: spacing.sm,
+    textAlignVertical: 'top',
+  },
+  leftIcon: {
+    position: 'absolute',
+    left: spacing.sm,
+    zIndex: 1,
+  },
+  rightIcon: {
+    position: 'absolute',
+    right: spacing.sm,
+    zIndex: 1,
+  },
+  passwordToggle: {
+    color: colors.primary,
+    fontSize: 12,
+  },
+  errorText: {
+    color: colors.error,
+    marginTop: spacing.xs,
+    fontSize: 12,
+  },
+});
+
