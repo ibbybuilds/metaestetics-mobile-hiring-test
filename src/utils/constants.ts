@@ -1,6 +1,7 @@
 export const STORAGE_KEYS = {
   AUTH_TOKEN: '@metaestetics/auth_token',
   USER_DATA: '@metaestetics/user_data',
+  REGISTERED_USERS: '@metaestetics/registered_users', // Store registered users
 };
 
 export const GENDER_OPTIONS = [

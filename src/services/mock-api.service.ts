@@ -1,5 +1,6 @@
 import { User, LoginCredentials, RegisterData } from '@types';
 import { MOCK_USERS } from '@utils/constants';
+import { storageService } from './storage.service';
 
 // Simulate network delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -17,42 +18,66 @@ export const mockApiService = {
   async login(credentials: LoginCredentials) {
     await delay(1000);
 
+    // First check hardcoded mock users
     const mockUser = MOCK_USERS.find(
       u => u.email === credentials.email && u.password === credentials.password
     );
 
-    if (!mockUser) {
-      throw new Error('Invalid email or password');
+    if (mockUser) {
+      // Return user from mock data
+      const user: User = {
+        id: generateId(),
+        email: mockUser.email,
+        firstName: mockUser.firstName,
+        lastName: mockUser.lastName,
+        phoneNumber: '1234567890',
+        countryCode: '+1',
+        dateOfBirth: '1990-01-01',
+        gender: 'male',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      return {
+        success: true,
+        user,
+        token: 'mock-token-' + generateId(),
+      };
     }
 
-    const user: User = {
-      id: generateId(),
-      email: mockUser.email,
-      firstName: mockUser.firstName,
-      lastName: mockUser.lastName,
-      phoneNumber: '1234567890',
-      countryCode: '+1',
-      dateOfBirth: '1990-01-01',
-      gender: 'male',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    // Then check registered users from storage
+    const registeredUser = await storageService.findRegisteredUser(
+      credentials.email,
+      credentials.password
+    );
 
-    return {
-      success: true,
-      user,
-      token: 'mock-token-' + generateId(),
-    };
+    if (registeredUser) {
+      return {
+        success: true,
+        user: registeredUser,
+        token: 'mock-token-' + generateId(),
+      };
+    }
+
+    // No user found
+    throw new Error('Invalid email or password');
   },
 
   async register(data: RegisterData) {
     await delay(1500);
 
-    // Check if email already exists
+    // Check if email exists in hardcoded mock users
     if (MOCK_USERS.some(u => u.email === data.email)) {
       throw new Error('Email already exists');
     }
 
+    // Check if email exists in registered users
+    const emailExists = await storageService.checkEmailExists(data.email);
+    if (emailExists) {
+      throw new Error('Email already exists');
+    }
+
+    // Create new user
     const user: User = {
       id: generateId(),
       email: data.email,
@@ -67,6 +92,9 @@ export const mockApiService = {
       updatedAt: new Date().toISOString(),
     };
 
+    // Store user credentials and data for future logins
+    await storageService.saveRegisteredUser(data.email, data.password, user);
+
     return {
       success: true,
       user,
@@ -77,13 +105,38 @@ export const mockApiService = {
   async updateProfile(userId: string, updates: Partial<User>) {
     await delay(800);
 
+    // Get current user from storage
+    const currentUser = await storageService.getUser();
+    if (!currentUser || currentUser.id !== userId) {
+      throw new Error('User not found');
+    }
+
+    // Merge updates with current user data
+    const updatedUser: User = {
+      ...currentUser,
+      ...updates,
+      id: userId,
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Update stored user data
+    await storageService.saveUser(updatedUser);
+
+    // Also update in registered users if exists
+    const registeredUsers = await storageService.getRegisteredUsers();
+    const userIndex = registeredUsers.findIndex(u => u.user.id === userId);
+    if (userIndex >= 0) {
+      registeredUsers[userIndex].user = updatedUser;
+      await storageService.saveRegisteredUser(
+        registeredUsers[userIndex].email,
+        registeredUsers[userIndex].password,
+        updatedUser
+      );
+    }
+
     return {
       success: true,
-      user: {
-        ...updates,
-        id: userId,
-        updatedAt: new Date().toISOString(),
-      } as User,
+      user: updatedUser,
     };
   },
 
