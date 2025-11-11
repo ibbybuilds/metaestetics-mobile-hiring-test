@@ -83,6 +83,7 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
 
             <PhoneInput
               label="Phone Number"
+              value={values.phoneNumber}
               onChangeText={(text) => setFieldValue('phoneNumber', text)}
               onChangeCountryCode={setCountryCode}
               error={touched.phoneNumber && errors.phoneNumber ? errors.phoneNumber : undefined}

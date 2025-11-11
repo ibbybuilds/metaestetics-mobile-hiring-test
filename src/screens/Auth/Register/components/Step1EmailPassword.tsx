@@ -21,6 +21,7 @@ export const Step1EmailPassword: React.FC<Step1EmailPasswordProps> = ({
     onDataChange({
       email: values.email,
       password: values.password,
+      confirmPassword: values.confirmPassword,
     });
     onNext();
   };
@@ -38,7 +39,7 @@ export const Step1EmailPassword: React.FC<Step1EmailPasswordProps> = ({
         initialValues={{
           email: formData.email || '',
           password: formData.password || '',
-          confirmPassword: '',
+          confirmPassword: formData.confirmPassword || '',
         }}
         validationSchema={registerStep1ValidationSchema}
         onSubmit={handleSubmit}

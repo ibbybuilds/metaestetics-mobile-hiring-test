@@ -10,6 +10,7 @@ interface CountryCode {
 
 export interface PhoneInputProps {
   label?: string;
+  value?: string;
   onChangeText: (phone: string) => void;
   onChangeCountryCode: (code: string) => void;
   error?: string;
@@ -17,6 +18,7 @@ export interface PhoneInputProps {
 
 export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
   label,
+  value,
   onChangeText,
   onChangeCountryCode,
   error,
@@ -34,6 +36,7 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
         ref={phoneInput}
         defaultCode="US"
         layout="second"
+        value={value}
         onChangeText={(text: string) => {
           const digitsOnly = text.replace(/\D/g, '');
           onChangeText(digitsOnly);
