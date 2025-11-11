@@ -3,11 +3,13 @@ import { View, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity } fr
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Formik } from 'formik';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Input, Button, Typography } from '@components/common';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { loginThunk, clearError } from '@store/auth/authSlice';
+import { clearError } from '@store/auth/authSlice';
+import { loginThunk } from '@store/auth/authThunks';
 import { loginValidationSchema } from '@utils/validation';
-import { AuthStackParamList } from '@types';
+import { AuthStackParamList } from '../../../types';
 import { styles } from './Login.styles';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
@@ -16,6 +18,7 @@ export const Login: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector(state => state.auth);
+  const insets = useSafeAreaInsets();
 
   React.useEffect(() => {
     return () => {
@@ -31,6 +34,7 @@ export const Login: React.FC = () => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top + 48 : 0}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}

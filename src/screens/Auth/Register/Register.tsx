@@ -1,51 +1,121 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Typography, Button } from '@components/common';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Typography, LoadingSpinner } from '@components/common';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { registerThunk } from '@store/auth/authThunks';
-import { RegisterData } from '@types';
-import { AuthStackParamList } from '@types';
+import { clearError } from '@store/auth/authSlice';
+import { RegisterData } from '../../../types';
+import { storageService } from '../../../services';
 import { styles } from './Register.styles';
 import { Step1EmailPassword } from './components/Step1EmailPassword';
 import { Step2PersonalInfo } from './components/Step2PersonalInfo';
 import { Step3ProfilePhoto } from './components/Step3ProfilePhoto';
 import { Step4Review } from './components/Step4Review';
 
-type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
-
 const TOTAL_STEPS = 4;
 
 export const Register: React.FC = () => {
-  const navigation = useNavigation<RegisterScreenNavigationProp>();
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector(state => state.auth);
-  
+  const { isLoading, error } = useAppSelector(state => state.auth);
+  const insets = useSafeAreaInsets();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<RegisterData>>({});
+  const [isRestoringDraft, setIsRestoringDraft] = useState(true);
+  const formDataRef = useRef<Partial<RegisterData>>({});
 
-  const handleDataChange = (data: Partial<RegisterData>) => {
-    setFormData(prev => ({ ...prev, ...data }));
-  };
+  const persistDraft = useCallback(
+    async (data: Partial<RegisterData>, step: number) => {
+      try {
+        await storageService.saveRegistrationDraft({
+          currentStep: step,
+          data,
+        });
+      } catch (storageError) {
+        console.warn('Failed to save registration draft', storageError);
+      }
+    },
+    []
+  );
 
-  const handleNext = () => {
-    if (currentStep < TOTAL_STEPS) {
-      setCurrentStep(currentStep + 1);
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadDraft = async () => {
+      try {
+        const draft = await storageService.getRegistrationDraft();
+        if (draft && isMounted) {
+          const step =
+            draft.currentStep >= 1 && draft.currentStep <= TOTAL_STEPS
+              ? draft.currentStep
+              : 1;
+          formDataRef.current = draft.data ?? {};
+          setFormData(draft.data ?? {});
+          setCurrentStep(step);
+        }
+      } catch (storageError) {
+        console.warn('Failed to load registration draft', storageError);
+      } finally {
+        if (isMounted) {
+          setIsRestoringDraft(false);
+        }
+      }
+    };
+
+    loadDraft();
+
+    return () => {
+      isMounted = false;
+      dispatch(clearError());
+    };
+  }, [dispatch]);
+
+  const handleDataChange = useCallback(
+    (data: Partial<RegisterData>) => {
+      setFormData(prev => {
+        const updated = { ...prev, ...data };
+        formDataRef.current = updated;
+        void persistDraft(updated, currentStep);
+        return updated;
+      });
+    },
+    [currentStep, persistDraft]
+  );
+
+  const handleNext = useCallback(() => {
+    setCurrentStep(prev => {
+      if (prev >= TOTAL_STEPS) {
+        return prev;
+      }
+      const nextStep = prev + 1;
+      void persistDraft(formDataRef.current, nextStep);
+      return nextStep;
+    });
+  }, [persistDraft]);
+
+  const handlePrevious = useCallback(() => {
+    setCurrentStep(prev => {
+      if (prev <= 1) {
+        return prev;
+      }
+      const nextStep = prev - 1;
+      void persistDraft(formDataRef.current, nextStep);
+      return nextStep;
+    });
+  }, [persistDraft]);
+
+  const handleSubmit = useCallback(async () => {
+    if (currentStep !== TOTAL_STEPS) {
+      return;
     }
-  };
 
-  const handlePrevious = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+    try {
+      await dispatch(registerThunk(formDataRef.current as RegisterData)).unwrap();
+      await storageService.clearRegistrationDraft();
+    } catch (submitError) {
+      console.warn('Registration failed', submitError);
     }
-  };
-
-  const handleSubmit = async () => {
-    if (currentStep === TOTAL_STEPS) {
-      await dispatch(registerThunk(formData as RegisterData));
-    }
-  };
+  }, [currentStep, dispatch]);
 
   const renderStep = () => {
     switch (currentStep) {
@@ -82,6 +152,7 @@ export const Register: React.FC = () => {
             onPrevious={handlePrevious}
             onSubmit={handleSubmit}
             isLoading={isLoading}
+            error={error}
           />
         );
       default:
@@ -89,10 +160,15 @@ export const Register: React.FC = () => {
     }
   };
 
+  if (isRestoringDraft) {
+    return <LoadingSpinner fullScreen />;
+  }
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top + 48 : 0}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}

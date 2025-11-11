@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@utils/constants';
-import { User } from '@types';
+import { RegistrationDraft, User } from '../types';
 
 interface StoredUserCredentials {
   email: string;
@@ -68,12 +68,27 @@ export const storageService = {
     return users.some(u => u.email === email);
   },
 
+  // Registration draft
+  async saveRegistrationDraft(draft: RegistrationDraft): Promise<void> {
+    await AsyncStorage.setItem(STORAGE_KEYS.REGISTRATION_DRAFT, JSON.stringify(draft));
+  },
+
+  async getRegistrationDraft(): Promise<RegistrationDraft | null> {
+    const data = await AsyncStorage.getItem(STORAGE_KEYS.REGISTRATION_DRAFT);
+    return data ? JSON.parse(data) : null;
+  },
+
+  async clearRegistrationDraft(): Promise<void> {
+    await AsyncStorage.removeItem(STORAGE_KEYS.REGISTRATION_DRAFT);
+  },
+
   // Clear all
   async clearAll(): Promise<void> {
     await AsyncStorage.multiRemove([
       STORAGE_KEYS.AUTH_TOKEN,
       STORAGE_KEYS.USER_DATA,
       STORAGE_KEYS.REGISTERED_USERS,
+      STORAGE_KEYS.REGISTRATION_DRAFT,
     ]);
   },
 };

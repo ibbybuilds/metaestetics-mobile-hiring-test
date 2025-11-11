@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, ViewStyle, KeyboardTypeOptions } from 'react-native';
+import { View, TextInput, TouchableOpacity, KeyboardTypeOptions, StyleProp, TextStyle, TextInputProps } from 'react-native';
 import { Typography } from '../Typography';
 import { styles } from './Input.styles';
 
@@ -8,7 +8,7 @@ export interface InputProps {
   placeholder?: string;
   value: string;
   onChangeText: (text: string) => void;
-  onBlur?: () => void;
+  onBlur?: TextInputProps['onBlur'];
   error?: string;
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions;
@@ -18,7 +18,7 @@ export interface InputProps {
   numberOfLines?: number;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<TextStyle>;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -43,14 +43,14 @@ export const Input: React.FC<InputProps> = ({
 
   const inputStyle = [
     styles.input,
-    leftIcon && styles.inputWithLeftIcon,
-    rightIcon && styles.inputWithRightIcon,
-    isFocused && styles.inputFocused,
-    error && styles.inputError,
-    !editable && styles.inputDisabled,
-    multiline && styles.inputMultiline,
+    leftIcon ? styles.inputWithLeftIcon : undefined,
+    rightIcon ? styles.inputWithRightIcon : undefined,
+    isFocused ? styles.inputFocused : undefined,
+    error ? styles.inputError : undefined,
+    !editable ? styles.inputDisabled : undefined,
+    multiline ? styles.inputMultiline : undefined,
     style,
-  ];
+  ].filter(Boolean) as StyleProp<TextStyle>;
 
   const containerStyle = [
     styles.container,
@@ -72,9 +72,9 @@ export const Input: React.FC<InputProps> = ({
           placeholderTextColor="#9CA3AF"
           value={value}
           onChangeText={onChangeText}
-          onBlur={() => {
+          onBlur={(event) => {
             setIsFocused(false);
-            onBlur?.();
+            onBlur?.(event);
           }}
           onFocus={() => setIsFocused(true)}
           secureTextEntry={secureTextEntry && !isPasswordVisible}
