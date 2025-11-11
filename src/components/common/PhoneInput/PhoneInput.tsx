@@ -1,26 +1,28 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 import { Typography } from '../Typography';
 import { styles } from './PhoneInput.styles';
 
+interface CountryCode {
+  callingCode?: string[];
+}
+
 export interface PhoneInputProps {
   label?: string;
-  value: string;
   onChangeText: (phone: string) => void;
   onChangeCountryCode: (code: string) => void;
-  countryCode: string;
   error?: string;
 }
 
 export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
   label,
-  value,
   onChangeText,
   onChangeCountryCode,
-  countryCode,
   error,
 }) => {
+  const phoneInput = useRef<PhoneInput>(null);
+
   return (
     <View style={styles.container}>
       {label && (
@@ -29,16 +31,24 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
         </Typography>
       )}
       <PhoneInput
+        ref={phoneInput}
         defaultCode="US"
-        value={value}
-        onChangeText={onChangeText}
-        onChangeFormattedText={(text, code) => {
-          onChangeCountryCode(`+${code.callingCode[0]}`);
+        layout="second"
+        onChangeText={(text: string) => {
+          const digitsOnly = text.replace(/\D/g, '');
+          onChangeText(digitsOnly);
         }}
+        onChangeFormattedText={(_text: string, code?: CountryCode) => {
+          if (code?.callingCode?.[0]) {
+            onChangeCountryCode(`+${code.callingCode[0]}`);
+          }
+        }}
+        withDarkTheme={false}
+        withShadow={false}
+        placeholder="Phone number"
         containerStyle={styles.phoneContainer}
         textContainerStyle={styles.textContainer}
         textInputStyle={styles.textInput}
-        codeTextStyle={styles.codeText}
       />
       {error && (
         <Typography variant="caption" style={styles.errorText}>

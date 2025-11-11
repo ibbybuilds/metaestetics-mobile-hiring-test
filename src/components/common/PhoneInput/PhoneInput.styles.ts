@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
   },
   phoneContainer: {
     width: '100%',
-    height: 44,
+    height: 50,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 8,
@@ -20,13 +20,10 @@ export const styles = StyleSheet.create({
   },
   textContainer: {
     backgroundColor: colors.white,
-    borderRadius: 8,
+    borderRadius: 0,
+    paddingVertical: 0,
   },
   textInput: {
-    fontSize: 16,
-    color: colors.textPrimary,
-  },
-  codeText: {
     fontSize: 16,
     color: colors.textPrimary,
   },
