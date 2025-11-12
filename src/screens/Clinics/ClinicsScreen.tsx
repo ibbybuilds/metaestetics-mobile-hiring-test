@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
+import { View, FlatList, ListRenderItemInfo } from 'react-native';
 import { Card, Typography, Input, LoadingSpinner } from '@components/common';
-import { colors, spacing } from '@theme';
 import { useData } from '@hooks';
+import { styles } from './ClinicsScreen.styles';
 
 interface Clinic {
   id: string;
@@ -104,17 +104,3 @@ export const ClinicsScreen: React.FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-    padding: spacing.md,
-  },
-  searchInput: {
-    marginBottom: spacing.md,
-  },
-  clinicCard: {
-    marginBottom: spacing.sm,
-  },
-});
