@@ -3,6 +3,7 @@ import { View, StyleSheet, Image, ScrollView } from 'react-native';
 import { Button, Typography } from '@components/common';
 import { RegisterData } from '@types';
 import { colors, spacing } from '@theme';
+import { formatPhoneNumber, formatDate } from '@utils/formatters';
 
 export interface Step4ReviewProps {
   formData: RegisterData;
@@ -17,19 +18,6 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
   onSubmit,
   isLoading,
 }) => {
-  const formatPhoneNumber = (phone: string, countryCode: string) => {
-    return `${countryCode} ${phone}`;
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
   const capitalizeGender = (gender: string) => {
     return gender.charAt(0).toUpperCase() + gender.slice(1);
   };
