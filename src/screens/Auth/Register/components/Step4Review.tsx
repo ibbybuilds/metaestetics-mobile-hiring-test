@@ -12,6 +12,7 @@ export interface Step4ReviewProps {
   onPrevious: () => void;
   onSubmit: () => void;
   isLoading: boolean;
+  error?: string;
 }
 
 export const Step4Review: React.FC<Step4ReviewProps> = ({
@@ -19,6 +20,7 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
   onPrevious,
   onSubmit,
   isLoading,
+  error,
 }) => {
   const formatGender = (gender: string) => {
     return gender.charAt(0).toUpperCase() + gender.slice(1);
@@ -110,9 +112,13 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
         </Card>
       </ScrollView>
 
-      {isLoading && <LoadingSpinner />}
-
       <View>
+        {error && (
+          <Typography variant="body2" style={styles.errorText}>
+            {error}
+          </Typography>
+        )}
+        
         <Button
           title="Back"
           onPress={onPrevious}

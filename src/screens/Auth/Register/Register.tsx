@@ -32,12 +32,7 @@ export const Register: React.FC = () => {
     loadPersistedData();
   }, []);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      storageService.removeItem('registrationFormData');
-      storageService.removeItem('registrationStep');
-    }
-  }, [isAuthenticated]);
+
 
   useEffect(() => {
     return () => {
@@ -47,8 +42,8 @@ export const Register: React.FC = () => {
 
   const loadPersistedData = async () => {
     try {
-      const persistedData = await storageService.getItem('registrationFormData');
-      const persistedStep = await storageService.getItem('registrationStep');
+      const persistedData = await storageService.getRegistrationInProgress('registrationFormData');
+      const persistedStep = await storageService.getRegistrationInProgress('registrationStep');
       
       if (persistedData) {
         setFormData(JSON.parse(persistedData));
@@ -57,16 +52,16 @@ export const Register: React.FC = () => {
         setCurrentStep(parseInt(persistedStep, 10));
       }
     } catch (error) {
-      console.log('Failed to load persisted registration data');
+      console.error('Failed to load registration in progress:', error);
     }
   };
 
   const persistFormData = async (data: Partial<RegisterData>, step: number) => {
     try {
-      await storageService.saveItem('registrationFormData', JSON.stringify(data));
-      await storageService.saveItem('registrationStep', step.toString());
+      await storageService.saveRegistrationInProgress('registrationFormData', JSON.stringify(data));
+      await storageService.saveRegistrationInProgress('registrationStep', step.toString());
     } catch (error) {
-      console.log('Failed to persist registration data');
+      console.error('Failed to save registration progress:', error);
     }
   };
 
@@ -115,8 +110,11 @@ export const Register: React.FC = () => {
 
       try {
         await dispatch(registerThunk(formData as RegisterData)).unwrap();
+        // Clear registration progress after successful registration
+        await storageService.clearRegistrationInProgress('registrationFormData');
+        await storageService.clearRegistrationInProgress('registrationStep');
       } catch (error) {
-        // Error will be shown inline in Step1
+        // Error will be shown inline in Step4Review
       }
     }
   };
@@ -157,6 +155,7 @@ export const Register: React.FC = () => {
             onPrevious={handlePrevious}
             onSubmit={handleSubmit}
             isLoading={isLoading}
+            error={error || undefined}
           />
         );
       default:
