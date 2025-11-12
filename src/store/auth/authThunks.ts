@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { LoginCredentials, RegisterData } from '@types';
+import { LoginCredentials, RegisterData, User } from '@types';
 import { mockApiService, storageService } from '@services';
 
 export const loginThunk = createAsyncThunk(
@@ -47,6 +47,25 @@ export const checkAuthThunk = createAsyncThunk(
       return user;
     }
     return null;
+  }
+);
+
+export const updateProfileThunk = createAsyncThunk(
+  'auth/updateProfile',
+  async (updates: Partial<User>, { getState, rejectWithValue }) => {
+    try {
+      const state = getState() as { auth: { user: User | null } };
+      const currentUser = state.auth.user;
+      
+      if (!currentUser) {
+        throw new Error('No user logged in');
+      }
+
+      const response = await mockApiService.updateProfile(currentUser.id, updates);
+      return response.user;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
   }
 );
 
