@@ -5,7 +5,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Formik } from 'formik';
 import { Input, Button, Typography } from '@components/common';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { loginThunk, clearError } from '@store/auth/authSlice';
+import { clearError } from '@store/auth/authSlice';
+import { loginThunk } from '@store/auth/authThunks';
 import { loginValidationSchema } from '@utils/validation';
 import { AuthStackParamList } from '@types';
 import { styles } from './Login.styles';
@@ -49,14 +50,14 @@ export const Login: React.FC = () => {
             validationSchema={loginValidationSchema}
             onSubmit={handleLogin}
           >
-            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            {({ handleChange, handleSubmit, values, errors, touched, setFieldTouched }) => (
               <View style={styles.form}>
                 <Input
                   label="Email"
                   placeholder="Enter your email"
                   value={values.email}
                   onChangeText={handleChange('email')}
-                  onBlur={handleBlur('email')}
+                  onBlur={() => setFieldTouched('email')}
                   error={touched.email && errors.email ? errors.email : undefined}
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -67,7 +68,7 @@ export const Login: React.FC = () => {
                   placeholder="Enter your password"
                   value={values.password}
                   onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
+                  onBlur={() => setFieldTouched('password')}
                   error={touched.password && errors.password ? errors.password : undefined}
                   secureTextEntry
                 />

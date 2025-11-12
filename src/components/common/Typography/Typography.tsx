@@ -18,19 +18,46 @@ export const Typography: React.FC<TypographyProps> = ({
   style,
 }) => {
   const variantStyles = {
-    h1: { fontSize: typography.fontSizes.xxxl, fontWeight: typography.fontWeights.bold },
-    h2: { fontSize: typography.fontSizes.xxl, fontWeight: typography.fontWeights.bold },
-    h3: { fontSize: typography.fontSizes.xl, fontWeight: typography.fontWeights.semibold },
-    h4: { fontSize: typography.fontSizes.lg, fontWeight: typography.fontWeights.semibold },
-    body1: { fontSize: typography.fontSizes.md, fontWeight: typography.fontWeights.regular },
-    body2: { fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.regular },
-    caption: { fontSize: typography.fontSizes.xs, fontWeight: typography.fontWeights.regular },
+    h1: {
+      fontSize: typography.fontSizes.xxxl,
+      fontWeight: typography.fontWeights.bold,
+      lineHeight: typography.fontSizes.xxxl * typography.lineHeights.normal,
+    },
+    h2: {
+      fontSize: typography.fontSizes.xxl,
+      fontWeight: typography.fontWeights.bold,
+      lineHeight: typography.fontSizes.xxl * typography.lineHeights.normal,
+    },
+    h3: {
+      fontSize: typography.fontSizes.xl,
+      fontWeight: typography.fontWeights.semibold,
+      lineHeight: typography.fontSizes.xl * typography.lineHeights.normal,
+    },
+    h4: {
+      fontSize: typography.fontSizes.lg,
+      fontWeight: typography.fontWeights.semibold,
+      lineHeight: typography.fontSizes.lg * typography.lineHeights.normal,
+    },
+    body1: {
+      fontSize: typography.fontSizes.md,
+      fontWeight: typography.fontWeights.regular,
+      lineHeight: typography.fontSizes.md * typography.lineHeights.normal,
+    },
+    body2: {
+      fontSize: typography.fontSizes.sm,
+      fontWeight: typography.fontWeights.regular,
+      lineHeight: typography.fontSizes.sm * typography.lineHeights.normal,
+    },
+    caption: {
+      fontSize: typography.fontSizes.xs,
+      fontWeight: typography.fontWeights.regular,
+      lineHeight: typography.fontSizes.xs * typography.lineHeights.normal,
+    },
   };
 
   return (
     <Text
       style={[
-        styles.base,
         variantStyles[variant],
         { color, textAlign: align },
         style,
@@ -43,7 +70,7 @@ export const Typography: React.FC<TypographyProps> = ({
 
 const styles = StyleSheet.create({
   base: {
-    lineHeight: typography.lineHeights.normal,
+    // Base styles if needed in future
   },
 });
 

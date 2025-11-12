@@ -3,21 +3,52 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@components/*": ["./src/components/*"],
-      "@screens/*": ["./src/screens/*"],
-      "@navigation/*": ["./src/navigation/*"],
-      "@store/*": ["./src/store/*"],
-      "@services/*": ["./src/services/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@types/*": ["./src/types/*"],
-      "@theme/*": ["./src/theme/*"]
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@screens/*": [
+        "./src/screens/*"
+      ],
+      "@navigation/*": [
+        "./src/navigation/*"
+      ],
+      "@store/*": [
+        "./src/store/*"
+      ],
+      "@services/*": [
+        "./src/services/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@types": [
+        "./src/types"
+      ],
+      "@types/*": [
+        "./src/types/*"
+      ],
+      "@theme/*": [
+        "./src/theme/*"
+      ],
+      "@theme": [
+        "./src/theme"
+      ],
+      "@services": [
+        "./src/services"
+      ],
+      "@components": [
+        "./src/components"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@hooks": [
+        "./src/hooks"
+      ]
     }
   },
   "include": [
     "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "**/*.tsx"
   ]
 }
-

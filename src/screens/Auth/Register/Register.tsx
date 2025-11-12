@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Typography, Button } from '@components/common';
@@ -7,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { registerThunk } from '@store/auth/authThunks';
 import { RegisterData } from '@types';
 import { AuthStackParamList } from '@types';
+import { STORAGE_KEYS } from '@utils/constants';
 import { styles } from './Register.styles';
 import { Step1EmailPassword } from './components/Step1EmailPassword';
 import { Step2PersonalInfo } from './components/Step2PersonalInfo';
@@ -20,10 +22,56 @@ const TOTAL_STEPS = 4;
 export const Register: React.FC = () => {
   const navigation = useNavigation<RegisterScreenNavigationProp>();
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector(state => state.auth);
-  
+  const { isLoading, isAuthenticated } = useAppSelector(state => state.auth);
+
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<RegisterData>>({});
+
+  useEffect(() => {
+    const loadSavedData = async () => {
+      try {
+        const saved = await AsyncStorage.getItem(STORAGE_KEYS.REGISTRATION_FORM);
+        if (saved) {
+          const { formData: savedFormData, currentStep: savedStep } = JSON.parse(saved);
+          setFormData(savedFormData);
+          setCurrentStep(savedStep);
+        }
+      } catch (error) {
+        console.error('Failed to load registration data:', error);
+      }
+    };
+
+    loadSavedData();
+  }, []);
+
+  useEffect(() => {
+    const saveData = async () => {
+      try {
+        await AsyncStorage.setItem(
+          STORAGE_KEYS.REGISTRATION_FORM,
+          JSON.stringify({ formData, currentStep })
+        );
+      } catch (error) {
+        console.error('Failed to save registration data:', error);
+      }
+    };
+
+    saveData();
+  }, [formData, currentStep]);
+
+  useEffect(() => {
+    const clearSavedData = async () => {
+      if (isAuthenticated) {
+        try {
+          await AsyncStorage.removeItem(STORAGE_KEYS.REGISTRATION_FORM);
+        } catch (error) {
+          console.error('Failed to clear registration data:', error);
+        }
+      }
+    };
+
+    clearSavedData();
+  }, [isAuthenticated]);
 
   const handleDataChange = (data: Partial<RegisterData>) => {
     setFormData(prev => ({ ...prev, ...data }));
