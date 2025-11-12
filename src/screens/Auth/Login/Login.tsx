@@ -5,7 +5,9 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Formik } from 'formik';
 import { Input, Button, Typography } from '@components/common';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { loginThunk, clearError } from '@store/auth/authSlice';
+import { clearError } from '@store/auth/authSlice';
+// loginThunk is defined in authThunks and not authSlice
+import { loginThunk } from '@store/auth/authThunks';
 import { loginValidationSchema } from '@utils/validation';
 import { AuthStackParamList } from '@types';
 import { styles } from './Login.styles';
