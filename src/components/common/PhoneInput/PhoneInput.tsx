@@ -1,29 +1,53 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
+import { getAllCountries, CountryCode, FlagType } from 'react-native-country-picker-modal';
 import { Typography } from '../Typography';
 import { styles } from './PhoneInput.styles';
-
-interface CountryCode {
-  callingCode?: string[];
-}
 
 export interface PhoneInputProps {
   label?: string;
   value?: string;
+  defaultCountryCode?: string;
   onChangeText: (phone: string) => void;
   onChangeCountryCode: (code: string) => void;
   error?: string;
 }
 
+let callingCodeCache: { [key: string]: CountryCode } | null = null;
+
+const getISOFromCallingCode = async (callingCode: string): Promise<CountryCode> => {
+  if (!callingCodeCache) {
+    const countries = await getAllCountries(FlagType.EMOJI);
+    callingCodeCache = {};
+
+    countries.forEach(country => {
+      if (country.callingCode) {
+        const code = `+${country.callingCode[0]}`;
+        if (!callingCodeCache![code]) {
+          callingCodeCache![code] = country.cca2;
+        }
+      }
+    });
+  }
+
+  return callingCodeCache[callingCode] || 'US';
+};
+
 export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
   label,
   value,
+  defaultCountryCode = '+1',
   onChangeText,
   onChangeCountryCode,
   error,
 }) => {
   const phoneInput = useRef<PhoneInput>(null);
+  const [isoCode, setIsoCode] = useState<CountryCode>('US');
+
+  useEffect(() => {
+    getISOFromCallingCode(defaultCountryCode).then(setIsoCode);
+  }, [defaultCountryCode]);
 
   return (
     <View style={styles.container}>
@@ -34,16 +58,18 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
       )}
       <PhoneInput
         ref={phoneInput}
-        defaultCode="US"
+        key={isoCode}
+        defaultCode={isoCode}
         layout="second"
         value={value}
         onChangeText={(text: string) => {
           const digitsOnly = text.replace(/\D/g, '');
           onChangeText(digitsOnly);
         }}
-        onChangeFormattedText={(_text: string, code?: CountryCode) => {
-          if (code?.callingCode?.[0]) {
-            onChangeCountryCode(`+${code.callingCode[0]}`);
+        onChangeCountry={(country: any) => {
+          if (country?.callingCode?.[0]) {
+            const newCode = `+${country.callingCode[0]}`;
+            onChangeCountryCode(newCode);
           }
         }}
         withDarkTheme={false}
