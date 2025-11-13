@@ -9,15 +9,14 @@ export const typography = {
     xxxl: 32,
   },
   fontWeights: {
-    regular: '400',
-    medium: '500',
-    semibold: '600',
-    bold: '700',
-  },
+    regular: "400",
+    medium: "500",
+    semibold: "600",
+    bold: "700",
+  } as const,
   lineHeights: {
     tight: 1.2,
     normal: 1.5,
     relaxed: 1.75,
   },
-};
-
+} as const;

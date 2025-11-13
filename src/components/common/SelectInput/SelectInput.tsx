@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Modal, FlatList } from 'react-native';
-import { Typography } from '../Typography';
-import { styles } from './SelectInput.styles';
+import React, { useState } from "react";
+import { View, TouchableOpacity, Modal, FlatList } from "react-native";
+import { Typography } from "../Typography";
+import { styles } from "./SelectInput.styles";
 
 export interface SelectInputProps {
   label?: string;
@@ -18,11 +18,11 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   options,
   onChange,
   error,
-  placeholder = 'Select an option',
+  placeholder = "Select an option",
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const selectedOption = options.find(opt => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
   const displayValue = selectedOption ? selectedOption.label : placeholder;
 
   const handleSelect = (selectedValue: string) => {
@@ -98,4 +98,3 @@ export const SelectInput: React.FC<SelectInputProps> = ({
     </View>
   );
 };
-
