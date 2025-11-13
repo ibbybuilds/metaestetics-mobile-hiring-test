@@ -1,61 +1,19 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
-import { Input, LoadingSpinner } from '@components/common';
-import { mockApiService } from '@services';
+import React, { useState, useCallback, useMemo } from 'react';
+import { View, FlatList, StyleSheet, ListRenderItem, TouchableOpacity } from 'react-native';
+import { Input, LoadingSpinner, Typography } from '@components/common';
 import { colors, spacing } from '@theme';
 import { Clinic } from '@types';
-import { useDebounce } from '../../hooks/useDebounce';
+import { useClinicData } from '../../hooks/useClinicData';
 import { ClinicItem } from './components';
 
 export const ClinicsScreen: React.FC = () => {
-  const [allClinics, setAllClinics] = useState<Clinic[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const [error, setError] = useState<string | null>(null);
+  // Fetch and search clinics with automatic debouncing and caching
+  const { data: clinics, loading, error, refetch } = useClinicData(searchQuery);
 
-  // Debounce search query for optimal filtering performance
-  const debouncedSearchQuery = useDebounce(searchQuery, 150);
-
-  // Load initial clinics data
-  useEffect(() => {
-    loadClinics();
-  }, []);
-
-  const loadClinics = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await mockApiService.getClinics();
-      
-      if (response.success) {
-        setAllClinics(response.clinics);
-      } else {
-        setError('Failed to load clinics');
-      }
-    } catch (err) {
-      setError('Failed to load clinics');
-      console.error('Error loading clinics:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Memoized filtered clinics - instant local filtering
-  const filteredClinics = useMemo(() => {
-    if (debouncedSearchQuery.trim() === '') {
-      return allClinics;
-    }
-    
-    const query = debouncedSearchQuery.toLowerCase();
-    return allClinics.filter(clinic =>
-      clinic.name.toLowerCase().includes(query) ||
-      clinic.address.toLowerCase().includes(query) ||
-      clinic.specialties.some(specialty => 
-        specialty.toLowerCase().includes(query)
-      )
-    );
-  }, [allClinics, debouncedSearchQuery]);
+  // Safe data fallback
+  const filteredClinics = clinics || [];
 
   // Memoized render item callback
   const renderClinic: ListRenderItem<Clinic> = useCallback(({ item }) => {
@@ -72,8 +30,24 @@ export const ClinicsScreen: React.FC = () => {
     index,
   }), []);
 
-  if (loading) {
+  if (loading && !clinics) {
     return <LoadingSpinner fullScreen />;
+  }
+
+  if (error && !clinics) {
+    return (
+      <View style={styles.errorContainer}>
+        <Typography variant="h3">Error Loading Clinics</Typography>
+        <Typography variant="body2" style={styles.errorText}>
+          {error}
+        </Typography>
+        <TouchableOpacity onPress={refetch}>
+          <Typography variant="body2" style={styles.retryText}>
+            Tap to retry
+          </Typography>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   return (
@@ -90,6 +64,9 @@ export const ClinicsScreen: React.FC = () => {
         renderItem={renderClinic}
         keyExtractor={keyExtractor}
         getItemLayout={getItemLayout}
+        // Pull to refresh
+        refreshing={loading}
+        onRefresh={refetch}
         // Performance optimizations
         removeClippedSubviews={true}
         maxToRenderPerBatch={15}
@@ -117,6 +94,24 @@ const styles = StyleSheet.create({
   },
   clinicCard: {
     marginBottom: spacing.sm,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing.lg,
+    backgroundColor: colors.background,
+  },
+  errorText: {
+    textAlign: 'center',
+    marginTop: spacing.sm,
+    color: colors.error || '#FF6B6B',
+  },
+  retryText: {
+    textAlign: 'center',
+    marginTop: spacing.md,
+    color: colors.primary || '#007AFF',
+    textDecorationLine: 'underline',
   },
 });
 
