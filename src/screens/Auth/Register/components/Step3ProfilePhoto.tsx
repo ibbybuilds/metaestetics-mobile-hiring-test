@@ -88,7 +88,7 @@ export const Step3ProfilePhoto: React.FC<Step3ProfilePhotoProps> = ({
                     <View style={styles.placeholderContainer}>
                         <TouchableOpacity onPress={pickImage} style={styles.placeholder}>
                             <Typography variant="h1">
-                                📷
+                                🖼️
                             </Typography>
                             <Typography variant="caption" color={colors.gray[400]}>
                                 Select a photo
