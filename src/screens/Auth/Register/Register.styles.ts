@@ -95,6 +95,13 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         flex: 1
     },
+    imageReview: {
+        width: 150,
+        height: 150,
+        borderRadius: 75,
+        backgroundColor: colors.primaryDark,
+        marginLeft: 'auto'
+    },
     placeholderContainer: {
         alignItems: 'center',
     },
@@ -107,5 +114,26 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-
+    accountSection: {
+        padding: spacing.lg,
+        borderColor: colors.border,
+        flex: 1,
+        gap: 16,
+        alignItems: 'center',
+    },
+    section: {
+        padding: spacing.md,
+        marginBottom: spacing.md,
+    },
+    infoRow: {
+        marginBottom: spacing.sm,
+    },
+    label: {
+        color: colors.textSecondary,
+        marginBottom: spacing.xs / 2,
+    },
+    value: {
+        color: colors.textPrimary,
+        fontWeight: '600',
+    },
 });
