@@ -21,5 +21,22 @@ export const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontWeight: '500',
   },
+  title: {
+    paddingBottom: spacing.md,
+    color: colors.primaryDark,
+    fontWeight: "900",
+    fontSize: 64,
+    lineHeight: 56,
+  },
+  subtitle: {
+    marginBottom: spacing.xl,
+    color: colors.textSecondary,
+  },
+  form: {
+    gap: spacing.xs,
+  },
+  button: {
+    marginBottom: 'auto',
+    alignSelf: 'flex-end',
+  }
 });
-
