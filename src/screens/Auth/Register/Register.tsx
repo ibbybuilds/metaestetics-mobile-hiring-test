@@ -26,6 +26,7 @@ export const Register: React.FC = () => {
   const [formData, setFormData] = useState<Partial<RegisterData>>({});
 
   const handleDataChange = (data: Partial<RegisterData>) => {
+    console.log(data)
     setFormData(prev => ({ ...prev, ...data }));
   };
 
