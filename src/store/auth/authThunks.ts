@@ -37,6 +37,8 @@ export const logoutThunk = createAsyncThunk(
     // fix: Remove only auth-related data so registered users persist
     await storageService.removeToken();
     await storageService.removeUser();
+    // also clear persisted registration form on logout
+    await storageService.clearRegistrationForm();
   }
 );
 
@@ -52,3 +54,27 @@ export const checkAuthThunk = createAsyncThunk(
   }
 );
 
+export const saveRegistrationForm = createAsyncThunk(
+  'auth/saveRegistrationForm',
+  async (
+    payload: { formData: Partial<RegisterData>; currentStep: number },
+  ) => {
+    const { formData, currentStep } = payload;
+    await storageService.saveRegistrationForm(formData, currentStep);
+    return { formData, currentStep };
+  }
+);
+
+export const loadRegistrationForm = createAsyncThunk(
+  'auth/loadRegistrationForm',
+  async () => {
+    return await storageService.loadRegistrationForm();
+  }
+);
+
+export const clearRegistrationForm = createAsyncThunk(
+  'auth/clearRegistrationForm',
+  async () => {
+    await storageService.clearRegistrationForm();
+  }
+);
