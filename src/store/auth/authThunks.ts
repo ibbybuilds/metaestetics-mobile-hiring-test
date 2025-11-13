@@ -34,7 +34,9 @@ export const logoutThunk = createAsyncThunk(
   'auth/logout',
   async () => {
     await mockApiService.logout();
-    await storageService.clearAll();
+    // fix: Remove only auth-related data so registered users persist
+    await storageService.removeToken();
+    await storageService.removeUser();
   }
 );
 
