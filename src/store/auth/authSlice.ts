@@ -6,6 +6,7 @@ import {
   registerThunk,
   signupDraftThunk,
   checkSignupDraftThunk,
+  updateProfileThunk,
   logoutThunk,
   checkAuthThunk,
 } from './authThunks';
@@ -72,6 +73,11 @@ const authSlice = createSlice({
 
     builder.addCase(checkSignupDraftThunk.fulfilled, (state, action) => {
       state.signupDraft = action.payload;
+    });
+
+    // Update profile
+    builder.addCase(updateProfileThunk.fulfilled, (state, action) => {
+      state.user = action.payload;
     });
 
     // Logout
