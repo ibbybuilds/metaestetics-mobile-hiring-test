@@ -83,11 +83,11 @@ export const Step1EmailPassword: React.FC<Step1EmailPasswordProps> = ({
             </View>
 
             <Button
-              title="Next →"
+              title="Next >"
               onPress={() => handleSubmit()}
               variant="primary"
               size="medium"
-              style={styles.button}
+              style={styles.nextButton}
             />
           </View>
         )}
