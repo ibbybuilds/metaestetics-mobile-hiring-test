@@ -40,6 +40,7 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
         textContainerStyle={styles.textContainer}
         textInputStyle={styles.textInput}
         codeTextStyle={styles.codeText}
+        countryPickerProps={{ renderFlagButton: false }}
         placeholder='e.g. +1 234 567 890'
       />
       {error && (
