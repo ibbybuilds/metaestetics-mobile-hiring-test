@@ -35,8 +35,18 @@ export const styles = StyleSheet.create({
   form: {
     gap: spacing.xs,
   },
-  button: {
+  nextButton: {
     marginBottom: 'auto',
     alignSelf: 'flex-end',
-  }
+    marginLeft: 'auto',
+  },
+  backButton: {
+    marginBottom: 'auto',
+    alignSelf: 'flex-start',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginTop: spacing.md,
+  },
 });
