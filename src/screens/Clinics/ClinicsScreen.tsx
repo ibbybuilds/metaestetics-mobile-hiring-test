@@ -1,52 +1,86 @@
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import React, { useState, useMemo, useCallback } from 'react';
+import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import { Card, Typography, Input, LoadingSpinner } from '@components/common';
-import { mockApiService } from '@services';
+import { Clinic } from '@types';
+import { useDebounce } from '@hooks/useDebounce';
+import { useClinicData } from '@hooks/useClinicData';
 import { colors, spacing } from '@theme';
 
-// This is intentionally slow and inefficient - candidates need to optimize it
+// Memoized clinic item component to prevent unnecessary re-renders
+const ClinicItem = React.memo<{ clinic: Clinic }>(({ clinic }) => {
+  return (
+    <Card style={styles.clinicCard}>
+      <Typography variant="h4">{clinic.name}</Typography>
+      <Typography variant="body2">{clinic.address}</Typography>
+      <Typography variant="body2">
+        Rating: {clinic.rating.toFixed(1)}
+      </Typography>
+      {clinic.specialties && clinic.specialties.length > 0 && (
+        <Typography variant="caption" style={styles.specialties}>
+          {clinic.specialties.join(', ')}
+        </Typography>
+      )}
+    </Card>
+  );
+});
+
+ClinicItem.displayName = 'ClinicItem';
+
+// Empty component for when no results are found
+const EmptyComponent = () => (
+  <View style={styles.emptyContainer}>
+    <Typography variant="body1" style={styles.emptyText}>
+      No clinics found
+    </Typography>
+  </View>
+);
+
 export const ClinicsScreen: React.FC = () => {
-  const [clinics, setClinics] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    loadClinics();
-  }, []);
+  // Use the reusable data fetching hook
+  const { data: clinics, loading, error } = useClinicData();
 
-  // Intentionally inefficient - fetches all clinics every time
-  const loadClinics = async () => {
-    setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const mockClinics = Array.from({ length: 100 }, (_, i) => ({
-      id: `clinic-${i}`,
-      name: `Clinic ${i + 1}`,
-      address: `${i + 1} Main Street`,
-      rating: Math.random() * 5,
-    }));
-    setClinics(mockClinics);
-    setLoading(false);
-  };
+  // Debounce search query to prevent filtering on every keystroke
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  // Intentionally inefficient - filters on every keystroke without debouncing
-  const filteredClinics = clinics.filter(clinic =>
-    clinic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    clinic.address.toLowerCase().includes(searchQuery.toLowerCase())
+  // Memoize filtered clinics - only recalculate when clinics or debounced query changes
+  const filteredClinics = useMemo(() => {
+    if (!clinics) {
+      return [];
+    }
+
+    if (!debouncedSearchQuery.trim()) {
+      return clinics;
+    }
+
+    const queryLower = debouncedSearchQuery.toLowerCase();
+    return clinics.filter(
+      (clinic) =>
+        clinic.name.toLowerCase().includes(queryLower) ||
+        clinic.address.toLowerCase().includes(queryLower) ||
+        (clinic.specialties &&
+          clinic.specialties.some((specialty) =>
+            specialty.toLowerCase().includes(queryLower)
+          ))
+    );
+  }, [clinics, debouncedSearchQuery]);
+
+  // Memoize renderItem callback
+  const renderItem: ListRenderItem<Clinic> = useCallback(
+    ({ item }) => <ClinicItem clinic={item} />,
+    []
   );
 
-  const renderClinic = ({ item }: { item: any }) => {
-    // Intentionally inefficient - creates new component on every render
-    return (
-      <Card style={styles.clinicCard}>
-        <Typography variant="h4">{item.name}</Typography>
-        <Typography variant="body2">{item.address}</Typography>
-        <Typography variant="body2">Rating: {item.rating.toFixed(1)}</Typography>
-      </Card>
-    );
-  };
+  // Memoize keyExtractor callback
+  const keyExtractor = useCallback((item: Clinic) => item.id, []);
 
-  if (loading) {
+  // Memoize search change handler
+  const handleSearchChange = useCallback((text: string) => {
+    setSearchQuery(text);
+  }, []);
+
+  if (loading && !clinics) {
     return <LoadingSpinner fullScreen />;
   }
 
@@ -55,14 +89,25 @@ export const ClinicsScreen: React.FC = () => {
       <Input
         placeholder="Search clinics..."
         value={searchQuery}
-        onChangeText={setSearchQuery}
+        onChangeText={handleSearchChange}
         style={styles.searchInput}
       />
+      {error && (
+        <Typography variant="caption" style={styles.errorText}>
+          {error}
+        </Typography>
+      )}
       <FlatList
         data={filteredClinics}
-        renderItem={renderClinic}
-        keyExtractor={(item) => item.id}
-        // Intentionally missing performance optimizations
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        ListEmptyComponent={EmptyComponent}
+        // Performance optimizations
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={10}
+        removeClippedSubviews={true}
+        updateCellsBatchingPeriod={50}
       />
     </View>
   );
@@ -80,5 +125,21 @@ const styles = StyleSheet.create({
   clinicCard: {
     marginBottom: spacing.sm,
   },
+  specialties: {
+    marginTop: spacing.xs,
+    color: colors.textSecondary,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: spacing.xl,
+  },
+  emptyText: {
+    color: colors.textSecondary,
+  },
+  errorText: {
+    color: colors.error,
+    marginBottom: spacing.sm,
+  },
 });
-

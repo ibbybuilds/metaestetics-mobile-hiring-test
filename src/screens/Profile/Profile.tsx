@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -11,16 +11,31 @@ import { MainStackParamList } from '@types';
 import { colors, spacing } from '@theme';
 import { styles } from './Profile.styles';
 
-type ProfileScreenNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Profile'>;
+type ProfileScreenNavigationProp = NativeStackNavigationProp<
+  MainStackParamList,
+  'Profile'
+>;
 
 export const Profile: React.FC = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector(state => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     await dispatch(logoutThunk());
-  };
+  }, [dispatch]);
+
+  const handleEditProfile = useCallback(() => {
+    navigation.navigate('EditProfile');
+  }, [navigation]);
+
+  const handleViewClinics = useCallback(() => {
+    navigation.navigate('Clinics');
+  }, [navigation]);
+
+  const handleSettings = useCallback(() => {
+    navigation.navigate('Settings');
+  }, [navigation]);
 
   if (!user) {
     return null;
@@ -83,7 +98,7 @@ export const Profile: React.FC = () => {
       <View style={styles.buttonContainer}>
         <Button
           title="Edit Profile"
-          onPress={() => navigation.navigate('EditProfile')}
+          onPress={handleEditProfile}
           variant="primary"
           size="large"
           fullWidth
@@ -91,7 +106,7 @@ export const Profile: React.FC = () => {
         />
         <Button
           title="View Clinics"
-          onPress={() => navigation.navigate('Clinics')}
+          onPress={handleViewClinics}
           variant="secondary"
           size="large"
           fullWidth
@@ -99,7 +114,7 @@ export const Profile: React.FC = () => {
         />
         <Button
           title="Settings"
-          onPress={() => navigation.navigate('Settings')}
+          onPress={handleSettings}
           variant="outline"
           size="large"
           fullWidth
@@ -117,4 +132,3 @@ export const Profile: React.FC = () => {
     </ScrollView>
   );
 };
-

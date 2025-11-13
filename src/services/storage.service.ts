@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@utils/constants';
-import { User } from '@types';
+import { User, RegisterData } from '@types';
 
 interface StoredUserCredentials {
   email: string;
@@ -42,39 +42,77 @@ export const storageService = {
     return data ? JSON.parse(data) : [];
   },
 
-  async saveRegisteredUser(email: string, password: string, user: User): Promise<void> {
+  async saveRegisteredUser(
+    email: string,
+    password: string,
+    user: User
+  ): Promise<void> {
     const users = await this.getRegisteredUsers();
     // Check if user already exists and update, otherwise add
-    const existingIndex = users.findIndex(u => u.email === email);
+    const existingIndex = users.findIndex((u) => u.email === email);
     const newUser: StoredUserCredentials = { email, password, user };
-    
+
     if (existingIndex >= 0) {
       users[existingIndex] = newUser;
     } else {
       users.push(newUser);
     }
-    
-    await AsyncStorage.setItem(STORAGE_KEYS.REGISTERED_USERS, JSON.stringify(users));
+
+    await AsyncStorage.setItem(
+      STORAGE_KEYS.REGISTERED_USERS,
+      JSON.stringify(users)
+    );
   },
 
-  async findRegisteredUser(email: string, password: string): Promise<User | null> {
+  async findRegisteredUser(
+    email: string,
+    password: string
+  ): Promise<User | null> {
     const users = await this.getRegisteredUsers();
-    const found = users.find(u => u.email === email && u.password === password);
+    const found = users.find(
+      (u) => u.email === email && u.password === password
+    );
     return found ? found.user : null;
   },
 
   async checkEmailExists(email: string): Promise<boolean> {
     const users = await this.getRegisteredUsers();
-    return users.some(u => u.email === email);
+    return users.some((u) => u.email.toLowerCase() === email.toLowerCase());
   },
 
-  // Clear all
+  // Register draft data
+  async saveRegisterDraft(data: Partial<RegisterData>): Promise<void> {
+    await AsyncStorage.setItem(
+      STORAGE_KEYS.REGISTER_DRAFT,
+      JSON.stringify(data)
+    );
+  },
+
+  async getRegisterDraft(): Promise<Partial<RegisterData> | null> {
+    const data = await AsyncStorage.getItem(STORAGE_KEYS.REGISTER_DRAFT);
+    return data ? JSON.parse(data) : null;
+  },
+
+  async clearRegisterDraft(): Promise<void> {
+    await AsyncStorage.removeItem(STORAGE_KEYS.REGISTER_DRAFT);
+  },
+
+  // Clear auth data (token, user data, draft) - used for logout
+  async clearAuthData(): Promise<void> {
+    await AsyncStorage.multiRemove([
+      STORAGE_KEYS.AUTH_TOKEN,
+      STORAGE_KEYS.USER_DATA,
+      STORAGE_KEYS.REGISTER_DRAFT,
+    ]);
+  },
+
+  // Clear all (including registered users) - use with caution
   async clearAll(): Promise<void> {
     await AsyncStorage.multiRemove([
       STORAGE_KEYS.AUTH_TOKEN,
       STORAGE_KEYS.USER_DATA,
       STORAGE_KEYS.REGISTERED_USERS,
+      STORAGE_KEYS.REGISTER_DRAFT,
     ]);
   },
 };
-

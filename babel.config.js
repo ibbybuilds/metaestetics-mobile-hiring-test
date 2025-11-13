@@ -1,27 +1,27 @@
-module.exports = function(api) {
+module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ['babel-preset-expo'],
+    presets: ["babel-preset-expo"],
     plugins: [
       [
-        'module-resolver',
+        "module-resolver",
         {
-          root: ['./src'],
-          extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
+          root: ["./src"],
+          extensions: [".ios.js", ".android.js", ".js", ".ts", ".tsx", ".json"],
           alias: {
-            '@components': './src/components',
-            '@screens': './src/screens',
-            '@navigation': './src/navigation',
-            '@store': './src/store',
-            '@services': './src/services',
-            '@utils': './src/utils',
-            '@types': './src/types',
-            '@theme': './src/theme'
-          }
-        }
+            "@components": "./src/components",
+            "@screens": "./src/screens",
+            "@navigation": "./src/navigation",
+            "@store": "./src/store",
+            "@services": "./src/services",
+            "@utils": "./src/utils",
+            "@types": "./src/types",
+            "@theme": "./src/theme",
+            "@hooks": "./src/hooks",
+          },
+        },
       ],
-      'react-native-reanimated/plugin'
-    ]
+      "react-native-reanimated/plugin",
+    ],
   };
 };
-

@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, ViewStyle, KeyboardTypeOptions } from 'react-native';
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  ViewStyle,
+  KeyboardTypeOptions,
+  StyleProp,
+  TextStyle,
+} from 'react-native';
 import { Typography } from '../Typography';
 import { styles } from './Input.styles';
 
@@ -52,10 +60,7 @@ export const Input: React.FC<InputProps> = ({
     style,
   ];
 
-  const containerStyle = [
-    styles.container,
-    error && styles.containerError,
-  ];
+  const containerStyle = [styles.container, error && styles.containerError];
 
   return (
     <View style={containerStyle}>
@@ -67,7 +72,7 @@ export const Input: React.FC<InputProps> = ({
       <View style={styles.inputContainer}>
         {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
         <TextInput
-          style={inputStyle}
+          style={inputStyle as StyleProp<TextStyle>}
           placeholder={placeholder}
           placeholderTextColor="#9CA3AF"
           value={value}
@@ -106,4 +111,3 @@ export const Input: React.FC<InputProps> = ({
     </View>
   );
 };
-

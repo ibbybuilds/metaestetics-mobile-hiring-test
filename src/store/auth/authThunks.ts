@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { LoginCredentials, RegisterData } from '@types';
+import { LoginCredentials, RegisterData, User } from '@types';
 import { mockApiService, storageService } from '@services';
 
 export const loginThunk = createAsyncThunk(
@@ -30,23 +30,36 @@ export const registerThunk = createAsyncThunk(
   }
 );
 
-export const logoutThunk = createAsyncThunk(
-  'auth/logout',
-  async () => {
-    await mockApiService.logout();
-    await storageService.clearAll();
-  }
-);
+export const logoutThunk = createAsyncThunk('auth/logout', async () => {
+  await mockApiService.logout();
+  await storageService.clearAuthData();
+});
 
-export const checkAuthThunk = createAsyncThunk(
-  'auth/checkAuth',
-  async () => {
-    const token = await storageService.getToken();
-    if (token) {
-      const user = await storageService.getUser();
-      return user;
+export const checkAuthThunk = createAsyncThunk('auth/checkAuth', async () => {
+  const token = await storageService.getToken();
+  if (token) {
+    const user = await storageService.getUser();
+    return user;
+  }
+  return null;
+});
+
+export const updateProfileThunk = createAsyncThunk(
+  'auth/updateProfile',
+  async (updates: Partial<User>, { rejectWithValue, getState }) => {
+    try {
+      const state = getState() as { auth: { user: User | null } };
+      const userId = state.auth.user?.id;
+
+      if (!userId) {
+        return rejectWithValue('User not found');
+      }
+
+      const response = await mockApiService.updateProfile(userId, updates);
+      // Storage is already updated by mockApiService.updateProfile
+      return response.user;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
     }
-    return null;
   }
 );
-

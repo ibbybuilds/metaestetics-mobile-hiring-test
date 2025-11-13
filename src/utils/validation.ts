@@ -31,8 +31,7 @@ export const registerStep2ValidationSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
     .required('Phone number is required'),
-  dateOfBirth: Yup.string()
-    .required('Date of birth is required'),
+  dateOfBirth: Yup.string().required('Date of birth is required'),
   gender: Yup.string()
     .oneOf(['male', 'female', 'other'], 'Please select a gender')
     .required('Gender is required'),
@@ -48,10 +47,8 @@ export const editProfileValidationSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
     .required('Phone number is required'),
-  dateOfBirth: Yup.string()
-    .required('Date of birth is required'),
+  dateOfBirth: Yup.string().required('Date of birth is required'),
   gender: Yup.string()
     .oneOf(['male', 'female', 'other'], 'Please select a gender')
     .required('Gender is required'),
 });
-
