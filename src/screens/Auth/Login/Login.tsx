@@ -16,7 +16,7 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, '
 export const Login: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const { isLoading, error, signupDraft } = useAppSelector((state) => state.auth);
 
   React.useEffect(() => {
     return () => {
@@ -89,16 +89,26 @@ export const Login: React.FC = () => {
                   style={styles.button}
                 />
 
-                <View style={styles.signUpContainer}>
-                  <Typography variant="body2" style={styles.signUpText}>
-                    Don't have an account?{' '}
-                  </Typography>
-                  <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                    <Typography variant="body2" style={styles.signUpLink}>
-                      Sign up
+                {signupDraft ? (
+                  <View style={styles.signUpContainer}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                      <Typography variant="body2" style={styles.signUpLink}>
+                        Finish creating your account
+                      </Typography>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={styles.signUpContainer}>
+                    <Typography variant="body2" style={styles.signUpText}>
+                      Don't have an account?{' '}
                     </Typography>
-                  </TouchableOpacity>
-                </View>
+                    <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                      <Typography variant="body2" style={styles.signUpLink}>
+                        Sign up
+                      </Typography>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
             )}
           </Formik>

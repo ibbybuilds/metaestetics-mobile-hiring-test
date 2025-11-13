@@ -8,10 +8,12 @@ export const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    justifyContent: 'space-between'
   },
   content: {
     flex: 1,
-    padding: spacing.xl,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.sm,
   },
   stepIndicator: {
     marginBottom: spacing.lg,
