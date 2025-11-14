@@ -27,7 +27,7 @@ export const styles = StyleSheet.create<InputStyles>({
     marginBottom: spacing.xs,
   },
   label: {
-    marginBottom: spacing.xs,
+    marginBottom: spacing.lg,
     color: colors.textPrimary,
     fontWeight: "500",
   },
@@ -35,6 +35,7 @@ export const styles = StyleSheet.create<InputStyles>({
     flexDirection: "row",
     alignItems: "center",
     position: "relative",
+    height: 30,
   },
   input: {
     flex: 1,
@@ -77,6 +78,7 @@ export const styles = StyleSheet.create<InputStyles>({
   rightIcon: {
     position: "absolute",
     right: spacing.sm,
+    top: 0,
     zIndex: 1,
   },
   passwordToggle: {
@@ -85,7 +87,7 @@ export const styles = StyleSheet.create<InputStyles>({
   },
   errorText: {
     color: colors.error,
-    marginTop: spacing.xs,
     fontSize: 12,
+    marginBottom: spacing.sm,
   },
 });

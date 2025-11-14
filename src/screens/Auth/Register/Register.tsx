@@ -1,31 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { Typography, LoadingSpinner } from '@components/common';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { registerThunk } from '@store/auth/authThunks';
-import { clearError } from '@store/auth/authSlice';
-import { RegisterData } from '@types';
-import { styles } from './Register.styles';
-import { Step1EmailPassword } from './components/Step1EmailPassword';
-import { Step2PersonalInfo } from './components/Step2PersonalInfo';
-import { Step3ProfilePhoto } from './components/Step3ProfilePhoto';
-import { Step4Review } from './components/Step4Review';
+import React, { useEffect, useState } from "react";
+import { View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import { Typography, LoadingSpinner } from "@components/common";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { registerThunk } from "@store/auth/authThunks";
+import { clearError } from "@store/auth/authSlice";
+import { RegisterData } from "@types";
+import { styles } from "./Register.styles";
+import { Step1EmailPassword } from "@components/RegisterationSteps/Step1EmailPassword";
+import { Step2PersonalInfo } from "@components/RegisterationSteps/Step2PersonalInfo";
+import { Step3ProfilePhoto } from "@components/RegisterationSteps/Step3ProfilePhoto";
+import { Step4Review } from "@components/RegisterationSteps/Step4Review";
 import {
   loadRegistrationDraft,
   updateRegistrationDraft,
   clearRegistrationDraft,
-} from '@store/registration';
-import { DEFAULT_COUNTRY_CODE, DEFAULT_COUNTRY_ISO } from '@utils/constants';
+} from "@store/registration";
+import { DEFAULT_COUNTRY_CODE, DEFAULT_COUNTRY_ISO } from "@utils/constants";
 
 const TOTAL_STEPS = 4;
 
 export const Register: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector(state => state.auth);
-  const { draft: formData, status: registrationStatus, error: registrationError } = useAppSelector(
-    state => state.registration
-  );
-  
+  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const {
+    draft: formData,
+    status: registrationStatus,
+    error: registrationError,
+  } = useAppSelector((state) => state.registration);
+
   const [currentStep, setCurrentStep] = useState(1);
 
   const handleDataChange = async (data: Partial<RegisterData>) => {
@@ -99,16 +101,16 @@ export const Register: React.FC = () => {
         );
       case 4:
         const reviewData: RegisterData = {
-          email: formData.email ?? '',
-          password: formData.password ?? '',
-          confirmPassword: formData.confirmPassword ?? '',
-          firstName: formData.firstName ?? '',
-          lastName: formData.lastName ?? '',
-          phoneNumber: formData.phoneNumber ?? '',
+          email: formData.email ?? "",
+          password: formData.password ?? "",
+          confirmPassword: formData.confirmPassword ?? "",
+          firstName: formData.firstName ?? "",
+          lastName: formData.lastName ?? "",
+          phoneNumber: formData.phoneNumber ?? "",
           countryCode: formData.countryCode ?? DEFAULT_COUNTRY_CODE,
           countryIso: formData.countryIso ?? DEFAULT_COUNTRY_ISO,
-          dateOfBirth: formData.dateOfBirth ?? '',
-          gender: formData.gender ?? 'other',
+          dateOfBirth: formData.dateOfBirth ?? "",
+          gender: formData.gender ?? "other",
           profileImage: formData.profileImage,
         };
 
@@ -126,14 +128,14 @@ export const Register: React.FC = () => {
     }
   };
 
-  if (registrationStatus === 'loading') {
+  if (registrationStatus === "loading") {
     return <LoadingSpinner fullScreen />;
   }
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}

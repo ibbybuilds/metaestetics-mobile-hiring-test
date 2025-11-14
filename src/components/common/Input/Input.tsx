@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   TextInput,
@@ -8,9 +8,9 @@ import {
   KeyboardTypeOptions,
   NativeSyntheticEvent,
   TextInputFocusEventData,
-} from 'react-native';
-import { Typography } from '../Typography';
-import { styles } from './Input.styles';
+} from "react-native";
+import { Typography } from "../Typography";
+import { styles } from "./Input.styles";
 
 type InputBlurEvent =
   | NativeSyntheticEvent<TextInputFocusEventData>
@@ -25,7 +25,7 @@ export interface InputProps {
   error?: string;
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions;
-  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
   editable?: boolean;
   multiline?: boolean;
   numberOfLines?: number;
@@ -42,8 +42,8 @@ export const Input: React.FC<InputProps> = ({
   onBlur,
   error,
   secureTextEntry = false,
-  keyboardType = 'default',
-  autoCapitalize = 'none',
+  keyboardType = "default",
+  autoCapitalize = "none",
   editable = true,
   multiline = false,
   numberOfLines = 1,
@@ -65,10 +65,7 @@ export const Input: React.FC<InputProps> = ({
     style,
   ] as StyleProp<TextStyle>;
 
-  const containerStyle = [
-    styles.container,
-    error && styles.containerError,
-  ];
+  const containerStyle = [styles.container, error && styles.containerError];
 
   return (
     <View style={containerStyle}>
@@ -103,7 +100,7 @@ export const Input: React.FC<InputProps> = ({
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
           >
             <Typography variant="body2" style={styles.passwordToggle}>
-              {isPasswordVisible ? 'Hide' : 'Show'}
+              {isPasswordVisible ? "Hide" : "Show"}
             </Typography>
           </TouchableOpacity>
         )}
