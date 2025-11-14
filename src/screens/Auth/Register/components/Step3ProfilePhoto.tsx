@@ -25,19 +25,19 @@ export const Step3ProfilePhoto: React.FC<Step3ProfilePhotoProps> = ({
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
         if (status !== 'granted') {
-            Alert.alert('Permission needed', 'Grant access to procced.');
+            Alert.alert('Permission needed', 'Grant access to proceed.');
             return;
         }
 
         try {
             const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ['images'],
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 aspect: [1, 1],
                 quality: 0.8,
             });
 
-            if (!result.canceled && result.assets[0]) {
+            if (!result.canceled && result.assets && result.assets[0]) {
                 const uri = result.assets[0].uri;
                 setSelectedImage(uri);
                 onDataChange({ profileImage: uri });
@@ -116,4 +116,27 @@ export const Step3ProfilePhoto: React.FC<Step3ProfilePhotoProps> = ({
         </View>
     );
 };
+
+/**
+ * Shared helper used by Step3ProfilePhoto and EditProfile to pick a photo.
+ * Uses expo-image-picker and returns the selected image URI or null.
+ */
+export async function pickProfilePhoto(): Promise<string | null> {
+    try {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') return null;
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 0.8,
+        });
+
+        if (result.canceled || !result.assets || !result.assets[0]) return null;
+        return result.assets[0].uri ?? null;
+    } catch {
+        return null;
+    }
+}
 
