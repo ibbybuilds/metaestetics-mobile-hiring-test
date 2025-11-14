@@ -1,39 +1,31 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { View, FlatList, ActivityIndicator } from 'react-native';
 import { Input, LoadingSpinner } from '@components/common';
-import { mockApiService } from '@services';
 import { styles } from './ClinicsScreen.styles';
 import { ClinicData } from '@types';
 import { colors } from '@theme';
 import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { ClinicItem } from './components/ClinicItem';
 import { EmptyList } from './components/EmptyList';
+import { useClinicData } from '@hooks/useClinicData';
 
 export const ClinicsScreen: React.FC = () => {
-  const [clinics, setClinics] = useState<ClinicData[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-  const [loading, setLoading] = useState(false);
   const debouncedSearch = useDebouncedValue(searchQuery, 300);
   const flatListRef = useRef<FlatList<ClinicData>>(null);
 
   // Initial load
-  useEffect(() => {
-    const loadClinics = async () => {
-      setLoading(true);
-      const response = await mockApiService.getClinics();
-      setClinics(response.clinics);
-      setLoading(false);
-    };
-    loadClinics();
-  }, []);
+  const { clinics, loading, error, refetch } = useClinicData();
 
   // Memoized search
   const filteredClinics = useMemo(() => {
+    if (!clinics) return [];
+
     const q = debouncedSearch.toLowerCase();
     if (!q) return clinics;
 
-    return clinics.filter(
+    return clinics?.filter(
       (clinic) => clinic.name.toLowerCase().includes(q) || clinic.address.toLowerCase().includes(q)
     );
   }, [clinics, debouncedSearch]);
@@ -63,7 +55,7 @@ export const ClinicsScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {clinics.length > 0 && (
+      {clinics && clinics.length > 0 && (
         <Input
           placeholder="Search clinics..."
           value={searchQuery}
@@ -80,7 +72,6 @@ export const ClinicsScreen: React.FC = () => {
           }
         />
       )}
-
       <FlatList
         ref={flatListRef}
         style={styles.content}

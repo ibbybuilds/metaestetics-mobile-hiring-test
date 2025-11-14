@@ -1,18 +1,14 @@
-// Placeholder for custom hook - candidates will implement this
-// Should handle:
-// - Loading states
-// - Error states
-// - Caching
-// - Refetching
-// - Be reusable for different data types
+import { useFetch } from './useFetch';
+import { ClinicData } from '@types';
+import { mockApiService } from '@services';
 
 export const useClinicData = () => {
-  // Candidates implement this
-  return {
-    data: [],
-    loading: false,
-    error: null,
-    refetch: () => {},
-  };
+  const { data, loading, error, refetch } = useFetch<
+    { success: boolean; clinics: ClinicData[] },
+    ClinicData[]
+  >(mockApiService.getClinics, [], (response) => response.clinics, {
+    cacheKey: 'clinics',
+    cacheExpiry: 5 * 60 * 1000,
+  });
+  return { clinics: data, loading, error, refetch };
 };
-
