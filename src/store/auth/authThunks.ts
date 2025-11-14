@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { LoginCredentials, RegisterData } from '@types';
+import { LoginCredentials, RegisterData, User } from '@types';
 import { mockApiService, storageService } from '@services';
 
 export const loginThunk = createAsyncThunk(
@@ -34,7 +34,11 @@ export const logoutThunk = createAsyncThunk(
   'auth/logout',
   async () => {
     await mockApiService.logout();
-    await storageService.clearAll();
+    // fix: Remove only auth-related data so registered users persist
+    await storageService.removeToken();
+    await storageService.removeUser();
+    // also clear persisted registration form on logout
+    await storageService.clearRegistrationForm();
   }
 );
 
@@ -50,3 +54,44 @@ export const checkAuthThunk = createAsyncThunk(
   }
 );
 
+export const saveRegistrationForm = createAsyncThunk(
+  'auth/saveRegistrationForm',
+  async (
+    payload: { formData: Partial<RegisterData>; currentStep: number },
+  ) => {
+    const { formData, currentStep } = payload;
+    await storageService.saveRegistrationForm(formData, currentStep);
+    return { formData, currentStep };
+  }
+);
+
+export const loadRegistrationForm = createAsyncThunk(
+  'auth/loadRegistrationForm',
+  async () => {
+    return await storageService.loadRegistrationForm();
+  }
+);
+
+export const clearRegistrationForm = createAsyncThunk(
+  'auth/clearRegistrationForm',
+  async () => {
+    await storageService.clearRegistrationForm();
+  }
+);
+
+export const updateProfileThunk = createAsyncThunk(
+  'auth/updateProfile',
+  async (
+    payload: { userId: string; updates: Partial<User> },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await mockApiService.updateProfile(payload.userId, payload.updates);
+      // persist updated user locally
+      await storageService.saveUser(response.user);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);

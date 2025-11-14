@@ -29,7 +29,27 @@ export const registerStep2ValidationSchema = Yup.object().shape({
     .min(2, 'Last name must be at least 2 characters')
     .required('Last name is required'),
   phoneNumber: Yup.string()
-    .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
+    .matches(/^[0-9]{7,15}$/, 'Phone number must be between 7 and 15 digits')
+    .required('Phone number is required'),
+  dateOfBirth: Yup.string()
+    .required('Date of birth is required'),
+  gender: Yup.string()
+    .oneOf(['male', 'female', 'other'], 'Please select a gender')
+    .required('Gender is required'),
+});
+
+export const updateProfileValidationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Invalid email address')
+    .required('Email is required'),
+  firstName: Yup.string()
+    .min(2, 'First name must be at least 2 characters')
+    .required('First name is required'),
+  lastName: Yup.string()
+    .min(2, 'Last name must be at least 2 characters')
+    .required('Last name is required'),
+  phoneNumber: Yup.string()
+    .matches(/^[0-9]{7,15}$/, 'Phone number must be between 7 and 15 digits')
     .required('Phone number is required'),
   dateOfBirth: Yup.string()
     .required('Date of birth is required'),
@@ -46,7 +66,7 @@ export const editProfileValidationSchema = Yup.object().shape({
     .min(2, 'Last name must be at least 2 characters')
     .required('Last name is required'),
   phoneNumber: Yup.string()
-    .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
+    .matches(/^[0-9]{7,15}$/, 'Phone number must be between 7 and 15 digits')
     .required('Phone number is required'),
   dateOfBirth: Yup.string()
     .required('Date of birth is required'),

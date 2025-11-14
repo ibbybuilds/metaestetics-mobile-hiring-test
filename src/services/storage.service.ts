@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@utils/constants';
-import { User } from '@types';
+import { User, RegisterData } from '@types';
 
 interface StoredUserCredentials {
   email: string;
@@ -68,12 +68,39 @@ export const storageService = {
     return users.some(u => u.email === email);
   },
 
+  // Registration form persistence
+  async saveRegistrationForm(formData: Partial<RegisterData>, currentStep: number): Promise<void> {
+    await AsyncStorage.setItem(
+      STORAGE_KEYS.REGISTRATION_FORM,
+      JSON.stringify({ formData, currentStep })
+    );
+  },
+
+  async loadRegistrationForm(): Promise<{ formData: Partial<RegisterData> | null; currentStep: number }> {
+    const data = await AsyncStorage.getItem(STORAGE_KEYS.REGISTRATION_FORM);
+    if (!data) return { formData: null, currentStep: 1 };
+    try {
+      const parsed = JSON.parse(data);
+      return {
+        formData: parsed.formData ?? null,
+        currentStep: parsed.currentStep ?? 1,
+      };
+    } catch {
+      return { formData: null, currentStep: 1 };
+    }
+  },
+
+  async clearRegistrationForm(): Promise<void> {
+    await AsyncStorage.removeItem(STORAGE_KEYS.REGISTRATION_FORM);
+  },
+
   // Clear all
   async clearAll(): Promise<void> {
     await AsyncStorage.multiRemove([
       STORAGE_KEYS.AUTH_TOKEN,
       STORAGE_KEYS.USER_DATA,
       STORAGE_KEYS.REGISTERED_USERS,
+      STORAGE_KEYS.REGISTRATION_FORM,
     ]);
   },
 };

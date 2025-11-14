@@ -1,13 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '@types';
 import { AuthState } from './types';
-import { loginThunk, registerThunk, logoutThunk, checkAuthThunk } from './authThunks';
+import { loginThunk, registerThunk, logoutThunk, checkAuthThunk, saveRegistrationForm, loadRegistrationForm, clearRegistrationForm, updateProfileThunk } from './authThunks';
 
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  // new defaults
+  registrationForm: null,
+  registrationStep: 1,
 };
 
 const authSlice = createSlice({
@@ -53,6 +56,8 @@ const authSlice = createSlice({
     builder.addCase(registerThunk.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload as string;
+      state.registrationForm = null;
+      state.registrationStep = 1;
     });
 
     // Logout
@@ -68,6 +73,37 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.isAuthenticated = true;
       }
+    });
+
+    // Save/load/clear registration form
+    builder.addCase(saveRegistrationForm.fulfilled, (state, action) => {
+      state.registrationForm = action.payload.formData;
+      state.registrationStep = action.payload.currentStep;
+    });
+
+    builder.addCase(loadRegistrationForm.fulfilled, (state, action) => {
+      state.registrationForm = action.payload.formData;
+      state.registrationStep = action.payload.currentStep;
+    });
+
+    builder.addCase(clearRegistrationForm.fulfilled, (state) => {
+      state.registrationForm = null;
+      state.registrationStep = 1;
+    });
+
+    // Update profile
+    builder.addCase(updateProfileThunk.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(updateProfileThunk.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload.user;
+      state.error = null;
+    });
+    builder.addCase(updateProfileThunk.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload as string;
     });
   },
 });
