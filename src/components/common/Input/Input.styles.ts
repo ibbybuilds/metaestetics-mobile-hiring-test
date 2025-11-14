@@ -31,6 +31,11 @@ export const styles = StyleSheet.create<InputStyles>({
     color: colors.textPrimary,
     fontWeight: "500",
   },
+  dateLabel: {
+    marginBottom: spacing.md,
+    color: colors.textPrimary,
+    fontWeight: "500",
+  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",

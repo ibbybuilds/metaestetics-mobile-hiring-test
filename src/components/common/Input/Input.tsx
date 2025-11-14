@@ -72,7 +72,10 @@ export const Input: React.FC<InputProps> = ({
   return (
     <View style={containerStyle}>
       {label && (
-        <Typography variant="body2" style={styles.label}>
+        <Typography
+          variant="body2"
+          style={errorType === "datePicker" ? styles.dateLabel : styles.label}
+        >
           {label}
         </Typography>
       )}

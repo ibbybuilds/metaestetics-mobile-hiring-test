@@ -6,8 +6,7 @@ export const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   label: {
-    marginBottom: spacing.xs,
-    paddingHorizontal: spacing.md,
+    marginBottom: spacing.sm,
     color: colors.textPrimary,
     fontWeight: "500",
   },

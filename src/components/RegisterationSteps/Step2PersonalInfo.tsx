@@ -94,7 +94,7 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
             style={styles.field}
           />
 
-          <View>
+          <View style={{ paddingBottom: spacing.xs }}>
             <PhoneInputComponent
               label="Phone Number"
               value={values.phoneNumber}
@@ -117,7 +117,7 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
             />
           </View>
 
-          <View>
+          <View style={{ paddingBottom: spacing.sm }}>
             <DatePicker
               label="Date of Birth"
               value={values.dateOfBirth ? new Date(values.dateOfBirth) : null}
