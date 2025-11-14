@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, ViewStyle, KeyboardTypeOptions } from 'react-native';
+import { View, TextInput, TouchableOpacity, ViewStyle, KeyboardTypeOptions, StyleProp, TextStyle } from 'react-native';
 import { Typography } from '../Typography';
 import { styles } from './Input.styles';
 
@@ -8,7 +8,7 @@ export interface InputProps {
   placeholder?: string;
   value: string;
   onChangeText: (text: string) => void;
-  onBlur?: () => void;
+  onBlur?: (e: any) => void;
   error?: string;
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions;
@@ -50,7 +50,7 @@ export const Input: React.FC<InputProps> = ({
     !editable && styles.inputDisabled,
     multiline && styles.inputMultiline,
     style,
-  ];
+  ] as StyleProp<TextStyle>;
 
   const containerStyle = [
     styles.container,
@@ -72,9 +72,11 @@ export const Input: React.FC<InputProps> = ({
           placeholderTextColor="#9CA3AF"
           value={value}
           onChangeText={onChangeText}
-          onBlur={() => {
+          onBlur={(e) => {
             setIsFocused(false);
-            onBlur?.();
+            if (typeof onBlur === 'function') {
+              onBlur(e);
+            }
           }}
           onFocus={() => setIsFocused(true)}
           secureTextEntry={secureTextEntry && !isPasswordVisible}

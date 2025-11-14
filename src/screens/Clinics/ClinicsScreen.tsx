@@ -1,42 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Card, Typography, Input, LoadingSpinner } from '@components/common';
-import { mockApiService } from '@services';
-import { colors, spacing } from '@theme';
+import useClinicData from '../../hooks/useClinicData';
+import useDebounce from '../../hooks/useDebounce';
+import { mockApiService } from '@services/mock-api.service';
+import { colors } from '@theme/colors';
+import { spacing } from '@theme/spacing';
 
-// This is intentionally slow and inefficient - candidates need to optimize it
+/**
+ * ClinicsScreen component displays a list of clinics, with search and performance optimizations.
+ */
 export const ClinicsScreen: React.FC = () => {
-  const [clinics, setClinics] = useState<any[]>([]);
+  // Fetch clinic data using the custom useClinicData hook (TASK 4)
+  const { data: clinics, isLoading, error } = useClinicData(mockApiService.getClinics);
+  
+  // State for the search input query
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
+  
+  // Debounce the search query to prevent excessive filtering on every keystroke
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  useEffect(() => {
-    loadClinics();
-  }, []);
+  /**
+   * Memoized list of clinics filtered by the debounced search query.
+   * This prevents re-filtering the entire list on every render unless clinics or the debounced query changes.
+   */
+  const filteredClinics = useMemo(() => {
+    if (!clinics || !clinics.clinics) return [];
+    return clinics.clinics.filter((clinic: { name: string; address: string; }) =>
+      clinic.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+      clinic.address.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+    );
+  }, [clinics, debouncedSearchQuery]);
 
-  // Intentionally inefficient - fetches all clinics every time
-  const loadClinics = async () => {
-    setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const mockClinics = Array.from({ length: 100 }, (_, i) => ({
-      id: `clinic-${i}`,
-      name: `Clinic ${i + 1}`,
-      address: `${i + 1} Main Street`,
-      rating: Math.random() * 5,
-    }));
-    setClinics(mockClinics);
-    setLoading(false);
-  };
-
-  // Intentionally inefficient - filters on every keystroke without debouncing
-  const filteredClinics = clinics.filter(clinic =>
-    clinic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    clinic.address.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const renderClinic = ({ item }: { item: any }) => {
-    // Intentionally inefficient - creates new component on every render
+  /**
+   * Memoized render function for each clinic item in the FlatList.
+   * useCallback prevents this function from being recreated on every render of ClinicsScreen,
+   * which helps FlatList optimize re-renders of individual items.
+   */
+  const renderClinic = useCallback(({ item }: { item: any }) => {
     return (
       <Card style={styles.clinicCard}>
         <Typography variant="h4">{item.name}</Typography>
@@ -44,10 +45,34 @@ export const ClinicsScreen: React.FC = () => {
         <Typography variant="body2">Rating: {item.rating.toFixed(1)}</Typography>
       </Card>
     );
-  };
+  }, []);
 
-  if (loading) {
+  /**
+   * Optimization for FlatList: provides item layout information without needing to measure.
+   * This significantly improves scrolling performance for large lists with fixed-height items.
+   * Assumes a fixed item height of 120.
+   */
+  const getItemLayout = useCallback(
+    (data: any, index: number) => ({
+      length: 120, // Estimated item height
+      offset: 120 * index,
+      index,
+    }),
+    []
+  );
+
+  // Display a loading spinner while data is being fetched
+  if (isLoading) {
     return <LoadingSpinner fullScreen />;
+  }
+
+  // Display an error message if data fetching fails
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Typography variant="h3" style={styles.errorText}>Error: {error}</Typography>
+      </View>
+    );
   }
 
   return (
@@ -62,7 +87,9 @@ export const ClinicsScreen: React.FC = () => {
         data={filteredClinics}
         renderItem={renderClinic}
         keyExtractor={(item) => item.id}
-        // Intentionally missing performance optimizations
+        getItemLayout={getItemLayout} // FlatList optimization
+        windowSize={10} // FlatList optimization
+        initialNumToRender={7} // FlatList optimization
       />
     </View>
   );
@@ -79,6 +106,16 @@ const styles = StyleSheet.create({
   },
   clinicCard: {
     marginBottom: spacing.sm,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing.md,
+  },
+  errorText: {
+    color: colors.error,
+    textAlign: 'center',
   },
 });
 

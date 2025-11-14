@@ -12,11 +12,9 @@ export const styles = StyleSheet.create({
   },
   phoneContainer: {
     width: '100%',
-    height: 44,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 8,
-    backgroundColor: colors.white,
   },
   textContainer: {
     backgroundColor: colors.white,
@@ -34,6 +32,11 @@ export const styles = StyleSheet.create({
     color: colors.error,
     marginTop: spacing.xs,
     fontSize: 12,
+  },
+  flagButton: {
+    width: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

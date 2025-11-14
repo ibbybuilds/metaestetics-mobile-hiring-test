@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '@types';
 import { AuthState } from './types';
-import { loginThunk, registerThunk, logoutThunk, checkAuthThunk } from './authThunks';
+import { loginThunk, registerThunk, logoutThunk, checkAuthThunk, updateUserProfileThunk } from './authThunks';
 
 const initialState: AuthState = {
   user: null,
@@ -51,6 +51,21 @@ const authSlice = createSlice({
       state.error = null;
     });
     builder.addCase(registerThunk.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload as string;
+    });
+
+    // Update User Profile
+    builder.addCase(updateUserProfileThunk.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(updateUserProfileThunk.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload; // action.payload is the updated user
+      state.error = null;
+    });
+    builder.addCase(updateUserProfileThunk.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload as string;
     });
