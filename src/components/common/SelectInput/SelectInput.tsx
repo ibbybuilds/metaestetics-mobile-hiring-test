@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Modal, FlatList } from 'react-native';
-import { Typography } from '../Typography';
-import { styles } from './SelectInput.styles';
+import React, { useState } from "react";
+import { View, TouchableOpacity, Modal, FlatList } from "react-native";
+import { Typography } from "../Typography";
+import { styles } from "./SelectInput.styles";
+import { spacing } from "@theme/spacing";
 
 export interface SelectInputProps {
   label?: string;
@@ -18,11 +19,11 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   options,
   onChange,
   error,
-  placeholder = 'Select an option',
+  placeholder = "Select an option",
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const selectedOption = options.find(opt => opt.value === value);
+  const selectedOption = options.find((opt) => opt.value === value);
   const displayValue = selectedOption ? selectedOption.label : placeholder;
 
   const handleSelect = (selectedValue: string) => {
@@ -33,7 +34,10 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   return (
     <View style={styles.container}>
       {label && (
-        <Typography variant="body2" style={styles.label}>
+        <Typography
+          variant="body2"
+          style={[styles.label, { paddingBottom: spacing.xs }]}
+        >
           {label}
         </Typography>
       )}
@@ -98,4 +102,3 @@ export const SelectInput: React.FC<SelectInputProps> = ({
     </View>
   );
 };
-

@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'stretch',
   },
   title: {
     marginBottom: spacing.lg,
