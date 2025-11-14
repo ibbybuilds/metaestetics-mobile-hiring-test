@@ -89,6 +89,8 @@ export const ClinicsScreen: React.FC = () => {
           index,
         })}
         ListEmptyComponent={<EmptyList searchQuery={searchQuery} />}
+        refreshing={loading}
+        onRefresh={refetch}
       />
     </View>
   );

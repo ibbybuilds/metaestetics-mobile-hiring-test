@@ -39,7 +39,7 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
 
   return (
     <View style={styles.container}>
-       <View style={styles.header}>
+      <View style={styles.header}>
         <Typography variant="h2">Personal Details</Typography>
         <Typography variant="body2" style={styles.subtle}>
           We need this information to complete your profile.
@@ -130,13 +130,11 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
                 style={styles.formButton}
                 title="Back"
                 onPress={onPrevious}
-                loading={isSubmitting}
               />
               <Button
                 style={styles.formButton}
                 title="Next"
                 onPress={handleSubmit}
-                loading={isSubmitting}
               />
             </View>
           </>

@@ -28,7 +28,7 @@ export const Step3ProfilePhoto: React.FC<Step3ProfilePhotoProps> = ({
         <ImagePickerComponent
           currentImage={formData.profileImage}
           onImageSelected={(uri) => onDataChange({ profileImage: uri })}
-          size={140}
+          size={150}
         />
         {formData.profileImage && (
           <Button

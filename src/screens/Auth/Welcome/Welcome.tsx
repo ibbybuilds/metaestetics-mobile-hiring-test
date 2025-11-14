@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Button, Typography } from '@components/common';
 import { AuthStackParamList } from '@types';
-import { colors, spacing } from '@theme';
 import { styles } from './Welcome.styles';
 import { useAppSelector } from '@store/hooks';
 
