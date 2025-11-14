@@ -14,7 +14,8 @@
       "@types/*": ["./src/types/*"],
       "@theme": ["./src/theme/index"],
       "@theme/*": ["./src/theme/*"],
-      "@assets/*": ["./assets/*"]
+      "@assets/*": ["./assets/*"],
+      "@hooks/*": ["./src/hooks/*"],
     }
   },
   "include": ["**/*.ts", "**/*.tsx"]
