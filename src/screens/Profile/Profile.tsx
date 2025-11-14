@@ -1,41 +1,57 @@
-import React from 'react';
-import { View, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Image } from 'expo-image';
-import { Button, Card, Typography } from '@components/common';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { logoutThunk } from '@store/auth/authThunks';
-import { formatDate, formatPhoneNumber, getInitials } from '@utils/formatters';
-import { MainStackParamList } from '@types';
-import { colors, spacing } from '@theme';
-import { styles } from './Profile.styles';
+import React from "react";
+import { View, ScrollView } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Image } from "expo-image";
+import { Button, Card, Typography } from "@components/common";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { logoutThunk } from "@store/auth/authThunks";
+import { formatDate, formatPhoneNumber, getInitials } from "@utils/formatters";
+import { MainStackParamList } from "@types";
+import { styles } from "./Profile.styles";
+import { strings } from "@utils/strings";
 
-type ProfileScreenNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Profile'>;
+type ProfileScreenNavigationProp = NativeStackNavigationProp<
+  MainStackParamList,
+  "Profile"
+>;
 
+/**
+ * Profile component displays the user's profile information, including personal details
+ * and navigation options for editing the profile, viewing clinics, settings, and logging out.
+ */
 export const Profile: React.FC = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector(state => state.auth);
+  // Retrieve user data from the Redux store
+  const { user } = useAppSelector((state) => state.auth);
 
+  /**
+   * Handles the logout action.
+   * Dispatches the `logoutThunk` to clear user session and navigate to the authentication stack.
+   */
   const handleLogout = async () => {
     await dispatch(logoutThunk());
   };
 
+  // If user data is not available, render nothing (or a loading/error state if preferred)
   if (!user) {
     return null;
   }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* Header section displaying profile image/avatar, name, and email */}
       <View style={styles.header}>
         {user.profileImage ? (
+          // Display user's profile image if available
           <Image
-            source={{ uri: user.profileImage }}
+            source={{ uri: `${user.profileImage}?${user.updatedAt}` }}
             style={styles.profileImage}
             contentFit="cover"
           />
         ) : (
+          // Display a placeholder avatar with initials if no profile image
           <View style={styles.avatarPlaceholder}>
             <Typography variant="h2" style={styles.avatarText}>
               {getInitials(user.firstName, user.lastName)}
@@ -50,29 +66,33 @@ export const Profile: React.FC = () => {
         </Typography>
       </View>
 
+      {/* Card displaying contact and personal information */}
       <Card style={styles.infoCard}>
         <Typography variant="h4" style={styles.cardTitle}>
-          Contact Information
+          {strings.contactInformationTitle}
         </Typography>
+        {/* Phone Number */}
         <View style={styles.infoRow}>
           <Typography variant="body2" style={styles.infoLabel}>
-            Phone:
+            {strings.phoneLabel}
           </Typography>
           <Typography variant="body1" style={styles.infoValue}>
-            {formatPhoneNumber(user.phoneNumber, user.countryCode)}
+            {formatPhoneNumber(user.phoneNumber, user.countryCallingCode || "")}
           </Typography>
         </View>
+        {/* Date of Birth */}
         <View style={styles.infoRow}>
           <Typography variant="body2" style={styles.infoLabel}>
-            Date of Birth:
+            {strings.dateOfBirthLabel}:
           </Typography>
           <Typography variant="body1" style={styles.infoValue}>
             {formatDate(user.dateOfBirth)}
           </Typography>
         </View>
+        {/* Gender */}
         <View style={styles.infoRow}>
           <Typography variant="body2" style={styles.infoLabel}>
-            Gender:
+            {strings.genderLabel}:
           </Typography>
           <Typography variant="body1" style={styles.infoValue}>
             {user.gender.charAt(0).toUpperCase() + user.gender.slice(1)}
@@ -80,33 +100,38 @@ export const Profile: React.FC = () => {
         </View>
       </Card>
 
+      {/* Button container for various actions */}
       <View style={styles.buttonContainer}>
+        {/* Button to navigate to Edit Profile screen */}
         <Button
-          title="Edit Profile"
-          onPress={() => navigation.navigate('EditProfile')}
+          title={strings.editProfileButton}
+          onPress={() => navigation.navigate("EditProfile")}
           variant="primary"
           size="large"
           fullWidth
           style={styles.button}
         />
+        {/* Button to navigate to Clinics screen */}
         <Button
-          title="View Clinics"
-          onPress={() => navigation.navigate('Clinics')}
+          title={strings.viewClinicsButton}
+          onPress={() => navigation.navigate("Clinics")}
           variant="secondary"
           size="large"
           fullWidth
           style={styles.button}
         />
+        {/* Button to navigate to Settings screen */}
         <Button
-          title="Settings"
-          onPress={() => navigation.navigate('Settings')}
+          title={strings.settingsButton}
+          onPress={() => navigation.navigate("Settings")}
           variant="outline"
           size="large"
           fullWidth
           style={styles.button}
         />
+        {/* Button to log out the user */}
         <Button
-          title="Logout"
+          title={strings.logoutButton}
           onPress={handleLogout}
           variant="ghost"
           size="large"
@@ -117,4 +142,3 @@ export const Profile: React.FC = () => {
     </ScrollView>
   );
 };
-

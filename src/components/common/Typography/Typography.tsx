@@ -42,8 +42,6 @@ export const Typography: React.FC<TypographyProps> = ({
 };
 
 const styles = StyleSheet.create({
-  base: {
-    lineHeight: typography.lineHeights.normal,
-  },
+  base: {},
 });
 

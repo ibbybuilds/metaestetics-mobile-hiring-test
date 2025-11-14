@@ -1,5 +1,5 @@
 export const formatPhoneNumber = (phone: string, countryCode: string): string => {
-  return `${countryCode} ${phone}`;
+  return `+${countryCode || '1'} ${phone}`;
 };
 
 export const formatDate = (date: Date | string): string => {

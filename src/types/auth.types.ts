@@ -13,6 +13,7 @@ export interface RegisterData {
   lastName: string;
   phoneNumber: string;
   countryCode: string;
+  countryCallingCode: string;
   dateOfBirth: string;
   gender: 'male' | 'female' | 'other';
   profileImage?: string;

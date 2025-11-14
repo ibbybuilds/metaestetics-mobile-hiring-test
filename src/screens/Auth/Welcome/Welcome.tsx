@@ -6,6 +6,7 @@ import { Button, Typography } from '@components/common';
 import { AuthStackParamList } from '@types';
 import { colors, spacing } from '@theme';
 import { styles } from './Welcome.styles';
+import { strings } from '@utils/strings';
 
 type WelcomeScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
 
@@ -17,22 +18,22 @@ export const Welcome: React.FC = () => {
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <Typography variant="h1" style={styles.logo}>
-            MetaEstetics
+            {strings.welcomeLogoText}
           </Typography>
         </View>
 
         <View style={styles.textContainer}>
           <Typography variant="h2" align="center" style={styles.title}>
-            Welcome
+            {strings.welcomeTitle}
           </Typography>
           <Typography variant="body1" align="center" style={styles.subtitle}>
-            Your journey to better aesthetics starts here
+            {strings.welcomeSubtitle}
           </Typography>
         </View>
 
         <View style={styles.buttonContainer}>
           <Button
-            title="Login"
+            title={strings.loginText}
             onPress={() => navigation.navigate('Login')}
             variant="primary"
             size="large"
@@ -40,7 +41,7 @@ export const Welcome: React.FC = () => {
             style={styles.button}
           />
           <Button
-            title="Sign Up"
+            title={strings.welcomeSignUpButton}
             onPress={() => navigation.navigate('Register')}
             variant="outline"
             size="large"
