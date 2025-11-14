@@ -1,5 +1,6 @@
 module.exports = function(api) {
   api.cache(true);
+  const isJest = process.env.JEST_WORKER_ID !== undefined;
   return {
     presets: ['babel-preset-expo'],
     plugins: [
@@ -20,7 +21,8 @@ module.exports = function(api) {
           }
         }
       ],
-      'react-native-reanimated/plugin'
+      // Only include reanimated plugin if not running in Jest
+      ...(!isJest ? ['react-native-reanimated/plugin'] : [])
     ]
   };
 };
