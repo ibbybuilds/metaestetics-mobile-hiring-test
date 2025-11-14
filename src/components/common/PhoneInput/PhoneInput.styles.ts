@@ -25,6 +25,7 @@ export const styles = StyleSheet.create({
   textInput: {
     fontSize: 16,
     color: colors.textPrimary,
+    height: 40,
   },
   codeText: {
     fontSize: 16,
@@ -34,6 +35,23 @@ export const styles = StyleSheet.create({
     color: colors.error,
     marginTop: spacing.xs,
     fontSize: 12,
+  },
+  countryPickerButton: {
+    backgroundColor: 'transparent',
+    paddingHorizontal: spacing.sm,
+    borderRightWidth: 1,
+    borderRightColor: '#E5E7EB',
+    marginRight: spacing.sm,
+    height: 42,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minWidth: 70,
+  },
+  flagButton: {
+    backgroundColor: 'transparent',
+    width: 20,
+    height: 15,
+    marginRight: spacing.xs,
   },
 });
 

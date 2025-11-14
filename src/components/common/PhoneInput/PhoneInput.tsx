@@ -30,15 +30,21 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
       )}
       <PhoneInput
         defaultCode="US"
+        layout="second"
         value={value}
         onChangeText={onChangeText}
-        onChangeFormattedText={(text, code) => {
-          onChangeCountryCode(`+${code.callingCode[0]}`);
+        onChangeCountry={(country: { callingCode?: string[] }) => {
+          if (country && country.callingCode && country.callingCode[0]) {
+            onChangeCountryCode(`+${country.callingCode[0]}`);
+          }
         }}
         containerStyle={styles.phoneContainer}
         textContainerStyle={styles.textContainer}
         textInputStyle={styles.textInput}
         codeTextStyle={styles.codeText}
+        countryPickerButtonStyle={styles.countryPickerButton}
+        flagButtonStyle={styles.flagButton}
+        placeholder="Enter phone number"
       />
       {error && (
         <Typography variant="caption" style={styles.errorText}>

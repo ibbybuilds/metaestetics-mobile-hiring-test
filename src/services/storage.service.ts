@@ -68,12 +68,25 @@ export const storageService = {
     return users.some(u => u.email === email);
   },
 
-  // Clear all
+  // Registration in-progress storage methods
+  async saveRegistrationInProgress(key: string, value: string): Promise<void> {
+    await AsyncStorage.setItem(key, value);
+  },
+
+  async getRegistrationInProgress(key: string): Promise<string | null> {
+    return await AsyncStorage.getItem(key);
+  },
+
+  async clearRegistrationInProgress(key: string): Promise<void> {
+    await AsyncStorage.removeItem(key);
+  },
+
+  // Clear all session data (but preserve registered users)
   async clearAll(): Promise<void> {
     await AsyncStorage.multiRemove([
       STORAGE_KEYS.AUTH_TOKEN,
       STORAGE_KEYS.USER_DATA,
-      STORAGE_KEYS.REGISTERED_USERS,
+      // Note: We don't clear REGISTERED_USERS so users can log back in
     ]);
   },
 };

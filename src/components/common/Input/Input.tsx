@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, ViewStyle, KeyboardTypeOptions } from 'react-native';
+import { View, TextInput, TouchableOpacity, ViewStyle, KeyboardTypeOptions, TextStyle, StyleProp } from 'react-native';
 import { Typography } from '../Typography';
 import { styles } from './Input.styles';
 
@@ -50,7 +50,7 @@ export const Input: React.FC<InputProps> = ({
     !editable && styles.inputDisabled,
     multiline && styles.inputMultiline,
     style,
-  ];
+  ] as StyleProp<TextStyle>;
 
   const containerStyle = [
     styles.container,

@@ -1,53 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
-import { Card, Typography, Input, LoadingSpinner } from '@components/common';
-import { mockApiService } from '@services';
+import React, { useState, useCallback, useMemo } from 'react';
+import { View, FlatList, StyleSheet, ListRenderItem, TouchableOpacity } from 'react-native';
+import { Input, LoadingSpinner, Typography } from '@components/common';
 import { colors, spacing } from '@theme';
+import { Clinic } from '@types';
+import { useClinicData } from '../../hooks/useClinicData';
+import { ClinicItem } from './components';
 
-// This is intentionally slow and inefficient - candidates need to optimize it
 export const ClinicsScreen: React.FC = () => {
-  const [clinics, setClinics] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    loadClinics();
+  // Fetch and search clinics with automatic debouncing and caching
+  const { data: clinics, loading, error, refetch } = useClinicData(searchQuery);
+
+  // Safe data fallback
+  const filteredClinics = clinics || [];
+
+  // Memoized render item callback
+  const renderClinic: ListRenderItem<Clinic> = useCallback(({ item }) => {
+    return <ClinicItem clinic={item} />;
   }, []);
 
-  // Intentionally inefficient - fetches all clinics every time
-  const loadClinics = async () => {
-    setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const mockClinics = Array.from({ length: 100 }, (_, i) => ({
-      id: `clinic-${i}`,
-      name: `Clinic ${i + 1}`,
-      address: `${i + 1} Main Street`,
-      rating: Math.random() * 5,
-    }));
-    setClinics(mockClinics);
-    setLoading(false);
-  };
+  // Memoized key extractor
+  const keyExtractor = useCallback((item: Clinic) => item.id, []);
 
-  // Intentionally inefficient - filters on every keystroke without debouncing
-  const filteredClinics = clinics.filter(clinic =>
-    clinic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    clinic.address.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Memoized get item layout for better scrolling performance
+  const getItemLayout = useCallback((_: any, index: number) => ({
+    length: 120, // Approximate height of each clinic card
+    offset: 120 * index,
+    index,
+  }), []);
 
-  const renderClinic = ({ item }: { item: any }) => {
-    // Intentionally inefficient - creates new component on every render
-    return (
-      <Card style={styles.clinicCard}>
-        <Typography variant="h4">{item.name}</Typography>
-        <Typography variant="body2">{item.address}</Typography>
-        <Typography variant="body2">Rating: {item.rating.toFixed(1)}</Typography>
-      </Card>
-    );
-  };
-
-  if (loading) {
+  if (loading && !clinics) {
     return <LoadingSpinner fullScreen />;
+  }
+
+  if (error && !clinics) {
+    return (
+      <View style={styles.errorContainer}>
+        <Typography variant="h3">Error Loading Clinics</Typography>
+        <Typography variant="body2" style={styles.errorText}>
+          {error}
+        </Typography>
+        <TouchableOpacity onPress={refetch}>
+          <Typography variant="body2" style={styles.retryText}>
+            Tap to retry
+          </Typography>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   return (
@@ -58,11 +58,26 @@ export const ClinicsScreen: React.FC = () => {
         onChangeText={setSearchQuery}
         style={styles.searchInput}
       />
+      
       <FlatList
         data={filteredClinics}
         renderItem={renderClinic}
-        keyExtractor={(item) => item.id}
-        // Intentionally missing performance optimizations
+        keyExtractor={keyExtractor}
+        getItemLayout={getItemLayout}
+        // Pull to refresh
+        refreshing={loading}
+        onRefresh={refetch}
+        // Performance optimizations
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={15}
+        updateCellsBatchingPeriod={50}
+        initialNumToRender={15}
+        windowSize={5}
+        // Better scrolling performance
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={true}
+        // Optimize memory usage
+        disableVirtualization={false}
       />
     </View>
   );
@@ -79,6 +94,24 @@ const styles = StyleSheet.create({
   },
   clinicCard: {
     marginBottom: spacing.sm,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing.lg,
+    backgroundColor: colors.background,
+  },
+  errorText: {
+    textAlign: 'center',
+    marginTop: spacing.sm,
+    color: colors.error || '#FF6B6B',
+  },
+  retryText: {
+    textAlign: 'center',
+    marginTop: spacing.md,
+    color: colors.primary || '#007AFF',
+    textDecorationLine: 'underline',
   },
 });
 
