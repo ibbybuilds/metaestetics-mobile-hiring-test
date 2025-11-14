@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '@types';
 import { AuthState } from './types';
-import { loginThunk, registerThunk, logoutThunk, checkAuthThunk, saveRegistrationForm, loadRegistrationForm, clearRegistrationForm } from './authThunks';
+import { loginThunk, registerThunk, logoutThunk, checkAuthThunk, saveRegistrationForm, loadRegistrationForm, clearRegistrationForm, updateProfileThunk } from './authThunks';
 
 const initialState: AuthState = {
   user: null,
@@ -89,6 +89,21 @@ const authSlice = createSlice({
     builder.addCase(clearRegistrationForm.fulfilled, (state) => {
       state.registrationForm = null;
       state.registrationStep = 1;
+    });
+
+    // Update profile
+    builder.addCase(updateProfileThunk.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(updateProfileThunk.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload.user;
+      state.error = null;
+    });
+    builder.addCase(updateProfileThunk.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload as string;
     });
   },
 });
