@@ -1,4 +1,4 @@
-import { User, LoginCredentials, RegisterData } from '@types';
+import { User, LoginCredentials, RegisterData, ClinicsResponse } from '@types';
 import { MOCK_USERS } from '@utils/constants';
 import { storageService } from './storage.service';
 
@@ -145,7 +145,7 @@ export const mockApiService = {
     return { success: true };
   },
 
-  async getClinics() {
+  async getClinics(): Promise<ClinicsResponse> {
     await delay(1000); // Simulate slow API
 
     const clinics = Array.from({ length: 100 }, (_, i) => ({
@@ -162,7 +162,7 @@ export const mockApiService = {
     };
   },
 
-  async searchClinics(query: string) {
+  async searchClinics(query: string): Promise<ClinicsResponse> {
     await delay(800); // Simulate API delay
 
     const allClinics = Array.from({ length: 100 }, (_, i) => ({
@@ -185,4 +185,3 @@ export const mockApiService = {
     };
   },
 };
-

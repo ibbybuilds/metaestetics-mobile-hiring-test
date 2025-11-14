@@ -5,5 +5,6 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  isUpdatingProfile: boolean;
+  profileError: string | null;
 }
-

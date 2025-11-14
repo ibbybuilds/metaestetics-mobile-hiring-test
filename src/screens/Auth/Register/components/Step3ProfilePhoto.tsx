@@ -1,15 +1,99 @@
 import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Formik } from 'formik';
+import { Button, Typography } from '@components/common';
+import { ImagePickerComponent } from '@components/common/ImagePickerComponent';
 import { RegisterData } from '@types';
+import { colors, spacing } from '@theme';
 
 export interface Step3ProfilePhotoProps {
   formData: Partial<RegisterData>;
-  onDataChange: (data: Partial<RegisterData>) => void;
+  onDataChange: (data: Partial<RegisterData>) => Promise<void>;
   onNext: () => void;
   onPrevious: () => void;
 }
 
-// Placeholder component - candidates will implement this
-export const Step3ProfilePhoto: React.FC<Step3ProfilePhotoProps> = () => {
-  return null;
+const initialValues = (formData: Partial<RegisterData>) => ({
+  profileImage: formData.profileImage ?? '',
+});
+
+type Step3Values = ReturnType<typeof initialValues>;
+
+export const Step3ProfilePhoto: React.FC<Step3ProfilePhotoProps> = ({
+  formData,
+  onDataChange,
+  onNext,
+  onPrevious,
+}) => {
+  const handleSubmit = async (values: Step3Values) => {
+    await onDataChange(values);
+    onNext();
+  };
+
+  return (
+    <Formik<Step3Values>
+      initialValues={initialValues(formData)}
+      onSubmit={handleSubmit}
+      enableReinitialize
+    >
+      {({ handleSubmit, setFieldValue, values }) => (
+        <View style={styles.container}>
+          <Typography variant="h3" style={styles.title}>
+            Profile picture
+          </Typography>
+          <Typography variant="body2" style={styles.description}>
+            Add a photo so others can recognize you. This is optional, but recommended.
+          </Typography>
+
+          <ImagePickerComponent
+            currentImage={values.profileImage || undefined}
+            onImageSelected={(uri) => setFieldValue('profileImage', uri)}
+            size={120}
+          />
+
+          <View style={styles.buttonRow}>
+            <Button
+              title="Back"
+              variant="outline"
+              onPress={onPrevious}
+              size="large"
+              style={styles.button}
+            />
+            <Button
+              title="Continue"
+              variant="primary"
+              onPress={() => handleSubmit()}
+              size="large"
+              style={styles.button}
+            />
+          </View>
+        </View>
+      )}
+    </Formik>
+  );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  title: {
+    marginBottom: spacing.sm,
+  },
+  description: {
+    marginBottom: spacing.lg,
+    textAlign: 'center',
+    color: colors.textSecondary,
+  },
+  buttonRow: {
+    marginTop: spacing.lg,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  button: {
+    flex: 1,
+    marginHorizontal: spacing.xs,
+  },
+});
