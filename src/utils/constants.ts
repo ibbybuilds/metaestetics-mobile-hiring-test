@@ -5,6 +5,9 @@ export const STORAGE_KEYS = {
   REGISTRATION_DRAFT: '@metaestetics/registration_draft',
 };
 
+export const DEFAULT_COUNTRY_CODE = '+1';
+export const DEFAULT_COUNTRY_ISO = 'US';
+
 export const GENDER_OPTIONS = [
   { label: 'Male', value: 'male' },
   { label: 'Female', value: 'female' },

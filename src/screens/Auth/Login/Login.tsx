@@ -11,7 +11,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Formik } from "formik";
 import { Input, Button, Typography } from "@components/common";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { loginThunk, clearError } from "@store/auth/authSlice";
+import { loginThunk } from "@store/auth/authThunks";
+import { clearError } from "@store/auth/authSlice";
 import { loginValidationSchema } from "@utils/validation";
 // Update the path below to the actual location of your type definitions file
 import { AuthStackParamList } from "../../../types";

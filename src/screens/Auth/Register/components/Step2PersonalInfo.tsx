@@ -6,7 +6,7 @@ import { PhoneInputComponent } from '@components/common/PhoneInput';
 import { DatePicker } from '@components/common/DatePicker';
 import { SelectInput } from '@components/common/SelectInput';
 import { RegisterData } from '@types';
-import { GENDER_OPTIONS } from '@utils/constants';
+import { GENDER_OPTIONS, DEFAULT_COUNTRY_CODE, DEFAULT_COUNTRY_ISO } from '@utils/constants';
 import { registerStep2ValidationSchema } from '@utils/validation';
 import { colors, spacing } from '@theme';
 
@@ -21,7 +21,8 @@ const initialValues = (formData: Partial<RegisterData>) => ({
   firstName: formData.firstName ?? '',
   lastName: formData.lastName ?? '',
   phoneNumber: formData.phoneNumber ?? '',
-  countryCode: formData.countryCode ?? '+1',
+  countryCode: formData.countryCode ?? DEFAULT_COUNTRY_CODE,
+  countryIso: formData.countryIso ?? DEFAULT_COUNTRY_ISO,
   dateOfBirth: formData.dateOfBirth ?? '',
   gender: formData.gender ?? '',
 });
@@ -35,7 +36,7 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
   onPrevious,
 }) => {
   const handleSubmit = async (values: Step2Values) => {
-    await onDataChange(values);
+    await onDataChange(values as Partial<RegisterData>);
     onNext();
   };
 
@@ -88,11 +89,15 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
               label="Phone Number"
               value={values.phoneNumber}
               countryCode={values.countryCode}
+              countryIso={values.countryIso}
               onChangeText={(text) => {
                 setFieldValue('phoneNumber', text.replace(/\D/g, ''));
               }}
               onChangeCountryCode={(code) => {
                 setFieldValue('countryCode', code);
+              }}
+              onChangeCountryIso={(iso) => {
+                setFieldValue('countryIso', iso);
               }}
               error={touched.phoneNumber && errors.phoneNumber ? errors.phoneNumber : undefined}
             />

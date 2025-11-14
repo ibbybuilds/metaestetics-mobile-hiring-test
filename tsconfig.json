@@ -22,14 +22,23 @@
       "@services/*": [
         "./src/services/*"
       ],
+      "@services": [
+        "./src/services"
+      ],
       "@utils/*": [
         "./src/utils/*"
       ],
       "@types/*": [
         "./src/types/*"
       ],
+      "@types": [
+        "./src/types"
+      ],
       "@theme/*": [
         "./src/theme/*"
+      ],
+      "@theme": [
+        "./src/theme"
       ]
     }
   },

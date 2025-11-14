@@ -64,7 +64,7 @@ export const ClinicsScreen: React.FC = () => {
     return <ClinicItem clinic={item} />;
   }, []);
 
-  const getItemLayout = useCallback((_, index: number) => {
+  const getItemLayout = useCallback((_: unknown, index: number) => {
     return {
       length: ITEM_HEIGHT,
       offset: ITEM_HEIGHT * index,

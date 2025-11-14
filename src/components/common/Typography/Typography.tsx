@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TextStyle, StyleSheet } from 'react-native';
+import { Text, TextStyle, StyleSheet, StyleProp } from 'react-native';
 import { colors, typography } from '@theme';
 
 export interface TypographyProps {
@@ -7,8 +7,10 @@ export interface TypographyProps {
   color?: string;
   align?: 'left' | 'center' | 'right';
   children: React.ReactNode;
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
 }
+
+type TypographyVariant = NonNullable<TypographyProps['variant']>;
 
 export const Typography: React.FC<TypographyProps> = ({
   variant = 'body1',
@@ -17,14 +19,42 @@ export const Typography: React.FC<TypographyProps> = ({
   children,
   style,
 }) => {
-  const variantStyles = {
-    h1: { fontSize: typography.fontSizes.xxxl, fontWeight: typography.fontWeights.bold },
-    h2: { fontSize: typography.fontSizes.xxl, fontWeight: typography.fontWeights.bold },
-    h3: { fontSize: typography.fontSizes.xl, fontWeight: typography.fontWeights.semibold },
-    h4: { fontSize: typography.fontSizes.lg, fontWeight: typography.fontWeights.semibold },
-    body1: { fontSize: typography.fontSizes.md, fontWeight: typography.fontWeights.regular },
-    body2: { fontSize: typography.fontSizes.sm, fontWeight: typography.fontWeights.regular },
-    caption: { fontSize: typography.fontSizes.xs, fontWeight: typography.fontWeights.regular },
+  const variantStyles: Record<TypographyVariant, TextStyle> = {
+    h1: {
+      fontSize: typography.fontSizes.xxxl,
+      fontWeight: typography.fontWeights.bold,
+      lineHeight: typography.lineHeights.h1,
+    },
+    h2: {
+      fontSize: typography.fontSizes.xxl,
+      fontWeight: typography.fontWeights.bold,
+      lineHeight: typography.lineHeights.h2,
+    },
+    h3: {
+      fontSize: typography.fontSizes.xl,
+      fontWeight: typography.fontWeights.semibold,
+      lineHeight: typography.lineHeights.h3,
+    },
+    h4: {
+      fontSize: typography.fontSizes.lg,
+      fontWeight: typography.fontWeights.semibold,
+      lineHeight: typography.lineHeights.h4,
+    },
+    body1: {
+      fontSize: typography.fontSizes.md,
+      fontWeight: typography.fontWeights.regular,
+      lineHeight: typography.lineHeights.body1,
+    },
+    body2: {
+      fontSize: typography.fontSizes.sm,
+      fontWeight: typography.fontWeights.regular,
+      lineHeight: typography.lineHeights.body2,
+    },
+    caption: {
+      fontSize: typography.fontSizes.xs,
+      fontWeight: typography.fontWeights.regular,
+      lineHeight: typography.lineHeights.caption,
+    },
   };
 
   return (
@@ -46,4 +76,3 @@ const styles = StyleSheet.create({
     lineHeight: typography.lineHeights.normal,
   },
 });
-

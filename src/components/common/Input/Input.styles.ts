@@ -1,7 +1,25 @@
-import { StyleSheet } from 'react-native';
-import { colors, spacing } from '@theme';
+import { StyleSheet, TextStyle, ViewStyle } from "react-native";
+import { colors, spacing } from "@theme";
 
-export const styles = StyleSheet.create({
+type InputStyles = {
+  container: ViewStyle;
+  containerError: ViewStyle;
+  label: TextStyle;
+  inputContainer: ViewStyle;
+  input: TextStyle;
+  inputWithLeftIcon: TextStyle;
+  inputWithRightIcon: TextStyle;
+  inputFocused: TextStyle;
+  inputError: TextStyle;
+  inputDisabled: TextStyle;
+  inputMultiline: TextStyle;
+  leftIcon: ViewStyle;
+  rightIcon: ViewStyle;
+  passwordToggle: TextStyle;
+  errorText: TextStyle;
+};
+
+export const styles = StyleSheet.create<InputStyles>({
   container: {
     marginBottom: spacing.md,
   },
@@ -11,12 +29,12 @@ export const styles = StyleSheet.create({
   label: {
     marginBottom: spacing.xs,
     color: colors.textPrimary,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'relative',
+    flexDirection: "row",
+    alignItems: "center",
+    position: "relative",
   },
   input: {
     flex: 1,
@@ -46,18 +64,18 @@ export const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   inputMultiline: {
-    height: 'auto',
+    height: "auto",
     minHeight: 100,
     paddingTop: spacing.sm,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   leftIcon: {
-    position: 'absolute',
+    position: "absolute",
     left: spacing.sm,
     zIndex: 1,
   },
   rightIcon: {
-    position: 'absolute',
+    position: "absolute",
     right: spacing.sm,
     zIndex: 1,
   },
@@ -71,4 +89,3 @@ export const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-

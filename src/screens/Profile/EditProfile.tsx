@@ -18,7 +18,7 @@ import { MainStackParamList } from '@types';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { updateProfileThunk } from '@store/auth/authThunks';
 import { editProfileValidationSchema } from '@utils/validation';
-import { GENDER_OPTIONS } from '@utils/constants';
+import { GENDER_OPTIONS, DEFAULT_COUNTRY_ISO } from '@utils/constants';
 import { spacing, colors } from '@theme';
 
 type EditProfileScreenNavigationProp = NativeStackNavigationProp<
@@ -31,6 +31,7 @@ interface EditProfileValues {
   lastName: string;
   phoneNumber: string;
   countryCode: string;
+  countryIso?: string;
   dateOfBirth: string;
   gender: 'male' | 'female' | 'other';
   profileImage?: string;
@@ -50,6 +51,7 @@ export const EditProfile: React.FC = () => {
     lastName: user.lastName,
     phoneNumber: user.phoneNumber,
     countryCode: user.countryCode,
+    countryIso: user.countryIso ?? DEFAULT_COUNTRY_ISO,
     dateOfBirth: user.dateOfBirth,
     gender: user.gender,
     profileImage: user.profileImage,
@@ -57,17 +59,18 @@ export const EditProfile: React.FC = () => {
 
   const handleSubmit = async (values: EditProfileValues) => {
     try {
-      await dispatch(
-        updateProfileThunk({
-          userId: user.id,
-          updates: {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            phoneNumber: values.phoneNumber,
-            countryCode: values.countryCode,
-            dateOfBirth: values.dateOfBirth,
-            gender: values.gender,
-            profileImage: values.profileImage,
+        await dispatch(
+          updateProfileThunk({
+            userId: user.id,
+            updates: {
+              firstName: values.firstName,
+              lastName: values.lastName,
+              phoneNumber: values.phoneNumber,
+              countryCode: values.countryCode,
+              countryIso: values.countryIso,
+              dateOfBirth: values.dateOfBirth,
+              gender: values.gender,
+              profileImage: values.profileImage,
           },
         })
       ).unwrap();
@@ -139,8 +142,10 @@ export const EditProfile: React.FC = () => {
                   label="Phone Number"
                   value={values.phoneNumber}
                   countryCode={values.countryCode}
-                  onChangeText={(value) => setFieldValue('phoneNumber', value.replace(/\D/g, ''))}
-                  onChangeCountryCode={(code) => setFieldValue('countryCode', code)}
+                onChangeText={(value) => setFieldValue('phoneNumber', value.replace(/\D/g, ''))}
+                onChangeCountryCode={(code) => setFieldValue('countryCode', code)}
+                onChangeCountryIso={(iso) => setFieldValue('countryIso', iso)}
+                countryIso={values.countryIso}
                   error={touched.phoneNumber && errors.phoneNumber ? errors.phoneNumber : undefined}
                 />
               </View>

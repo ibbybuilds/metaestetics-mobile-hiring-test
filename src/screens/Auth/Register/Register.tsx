@@ -15,6 +15,7 @@ import {
   updateRegistrationDraft,
   clearRegistrationDraft,
 } from '@store/registration';
+import { DEFAULT_COUNTRY_CODE, DEFAULT_COUNTRY_ISO } from '@utils/constants';
 
 const TOTAL_STEPS = 4;
 
@@ -104,7 +105,8 @@ export const Register: React.FC = () => {
           firstName: formData.firstName ?? '',
           lastName: formData.lastName ?? '',
           phoneNumber: formData.phoneNumber ?? '',
-          countryCode: formData.countryCode ?? '+1',
+          countryCode: formData.countryCode ?? DEFAULT_COUNTRY_CODE,
+          countryIso: formData.countryIso ?? DEFAULT_COUNTRY_ISO,
           dateOfBirth: formData.dateOfBirth ?? '',
           gender: formData.gender ?? 'other',
           profileImage: formData.profileImage,
