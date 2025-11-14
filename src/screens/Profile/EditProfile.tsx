@@ -1,29 +1,29 @@
-import React from 'react';
+import React from "react";
 import {
   View,
   ScrollView,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Formik } from 'formik';
-import { Input, Button, Typography } from '@components/common';
-import { PhoneInputComponent } from '@components/common/PhoneInput';
-import { DatePicker } from '@components/common/DatePicker';
-import { SelectInput } from '@components/common/SelectInput';
-import { ImagePickerComponent } from '@components/common/ImagePickerComponent';
-import { MainStackParamList } from '@types';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { updateProfileThunk } from '@store/auth/authThunks';
-import { editProfileValidationSchema } from '@utils/validation';
-import { GENDER_OPTIONS, DEFAULT_COUNTRY_ISO } from '@utils/constants';
-import { spacing, colors } from '@theme';
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Formik } from "formik";
+import { Input, Button, Typography } from "@components/common";
+import { PhoneInputComponent } from "@components/common/PhoneInput";
+import { DatePicker } from "@components/common/DatePicker";
+import { SelectInput } from "@components/common/SelectInput";
+import { ImagePickerComponent } from "@components/common/ImagePickerComponent";
+import { MainStackParamList } from "@types";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { updateProfileThunk } from "@store/auth/authThunks";
+import { editProfileValidationSchema } from "@utils/validation";
+import { GENDER_OPTIONS, DEFAULT_COUNTRY_ISO } from "@utils/constants";
+import { spacing, colors } from "@theme";
 
 type EditProfileScreenNavigationProp = NativeStackNavigationProp<
   MainStackParamList,
-  'EditProfile'
+  "EditProfile"
 >;
 
 interface EditProfileValues {
@@ -33,14 +33,16 @@ interface EditProfileValues {
   countryCode: string;
   countryIso?: string;
   dateOfBirth: string;
-  gender: 'male' | 'female' | 'other';
+  gender: "male" | "female" | "other";
   profileImage?: string;
 }
 
 export const EditProfile: React.FC = () => {
   const navigation = useNavigation<EditProfileScreenNavigationProp>();
   const dispatch = useAppDispatch();
-  const { user, isUpdatingProfile, profileError } = useAppSelector(state => state.auth);
+  const { user, isUpdatingProfile, profileError } = useAppSelector(
+    (state) => state.auth
+  );
 
   if (!user) {
     return null;
@@ -59,18 +61,18 @@ export const EditProfile: React.FC = () => {
 
   const handleSubmit = async (values: EditProfileValues) => {
     try {
-        await dispatch(
-          updateProfileThunk({
-            userId: user.id,
-            updates: {
-              firstName: values.firstName,
-              lastName: values.lastName,
-              phoneNumber: values.phoneNumber,
-              countryCode: values.countryCode,
-              countryIso: values.countryIso,
-              dateOfBirth: values.dateOfBirth,
-              gender: values.gender,
-              profileImage: values.profileImage,
+      await dispatch(
+        updateProfileThunk({
+          userId: user.id,
+          updates: {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            phoneNumber: values.phoneNumber,
+            countryCode: values.countryCode,
+            countryIso: values.countryIso,
+            dateOfBirth: values.dateOfBirth,
+            gender: values.gender,
+            profileImage: values.profileImage,
           },
         })
       ).unwrap();
@@ -84,7 +86,7 @@ export const EditProfile: React.FC = () => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -105,14 +107,10 @@ export const EditProfile: React.FC = () => {
             setFieldValue,
           }) => (
             <View style={styles.content}>
-              <Typography variant="h3" style={styles.title}>
-                Edit Profile
-              </Typography>
-
               <View style={styles.imageWrapper}>
                 <ImagePickerComponent
                   currentImage={values.profileImage || undefined}
-                  onImageSelected={(uri) => setFieldValue('profileImage', uri)}
+                  onImageSelected={(uri) => setFieldValue("profileImage", uri)}
                   size={110}
                 />
               </View>
@@ -121,9 +119,13 @@ export const EditProfile: React.FC = () => {
                 label="First Name"
                 placeholder="First name"
                 value={values.firstName}
-                onChangeText={handleChange('firstName')}
-                onBlur={handleBlur('firstName')}
-                error={touched.firstName && errors.firstName ? errors.firstName : undefined}
+                onChangeText={handleChange("firstName")}
+                onBlur={handleBlur("firstName")}
+                error={
+                  touched.firstName && errors.firstName
+                    ? errors.firstName
+                    : undefined
+                }
                 style={styles.field}
               />
 
@@ -131,31 +133,51 @@ export const EditProfile: React.FC = () => {
                 label="Last Name"
                 placeholder="Last name"
                 value={values.lastName}
-                onChangeText={handleChange('lastName')}
-                onBlur={handleBlur('lastName')}
-                error={touched.lastName && errors.lastName ? errors.lastName : undefined}
+                onChangeText={handleChange("lastName")}
+                onBlur={handleBlur("lastName")}
+                error={
+                  touched.lastName && errors.lastName
+                    ? errors.lastName
+                    : undefined
+                }
                 style={styles.field}
               />
 
-              <View style={styles.field}>
+              <View>
                 <PhoneInputComponent
                   label="Phone Number"
                   value={values.phoneNumber}
                   countryCode={values.countryCode}
-                onChangeText={(value) => setFieldValue('phoneNumber', value.replace(/\D/g, ''))}
-                onChangeCountryCode={(code) => setFieldValue('countryCode', code)}
-                onChangeCountryIso={(iso) => setFieldValue('countryIso', iso)}
-                countryIso={values.countryIso}
-                  error={touched.phoneNumber && errors.phoneNumber ? errors.phoneNumber : undefined}
+                  onChangeText={(value) =>
+                    setFieldValue("phoneNumber", value.replace(/\D/g, ""))
+                  }
+                  onChangeCountryCode={(code) =>
+                    setFieldValue("countryCode", code)
+                  }
+                  onChangeCountryIso={(iso) => setFieldValue("countryIso", iso)}
+                  countryIso={values.countryIso}
+                  error={
+                    touched.phoneNumber && errors.phoneNumber
+                      ? errors.phoneNumber
+                      : undefined
+                  }
                 />
               </View>
 
-              <View style={styles.field}>
+              <View style={{ paddingBottom: spacing.sm }}>
                 <DatePicker
                   label="Date of Birth"
-                  value={values.dateOfBirth ? new Date(values.dateOfBirth) : null}
-                  onChange={(date) => setFieldValue('dateOfBirth', date.toISOString())}
-                  error={touched.dateOfBirth && errors.dateOfBirth ? errors.dateOfBirth : undefined}
+                  value={
+                    values.dateOfBirth ? new Date(values.dateOfBirth) : null
+                  }
+                  onChange={(date) =>
+                    setFieldValue("dateOfBirth", date.toISOString())
+                  }
+                  error={
+                    touched.dateOfBirth && errors.dateOfBirth
+                      ? errors.dateOfBirth
+                      : undefined
+                  }
                   placeholder="Select your birth date"
                 />
               </View>
@@ -165,8 +187,15 @@ export const EditProfile: React.FC = () => {
                   label="Gender"
                   value={values.gender}
                   options={GENDER_OPTIONS}
-                  onChange={(value) => setFieldValue('gender', value as EditProfileValues['gender'])}
-                  error={touched.gender && errors.gender ? errors.gender : undefined}
+                  onChange={(value) =>
+                    setFieldValue(
+                      "gender",
+                      value as EditProfileValues["gender"]
+                    )
+                  }
+                  error={
+                    touched.gender && errors.gender ? errors.gender : undefined
+                  }
                 />
               </View>
 
@@ -213,21 +242,21 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    alignItems: 'stretch',
+    alignItems: "stretch",
   },
   title: {
     marginBottom: spacing.lg,
   },
   imageWrapper: {
     marginBottom: spacing.lg,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   field: {
-    width: '100%',
+    width: "100%",
     marginBottom: spacing.md,
   },
   buttonRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: spacing.lg,
   },
   button: {
@@ -238,7 +267,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: colors.error,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: spacing.sm,
   },
 });

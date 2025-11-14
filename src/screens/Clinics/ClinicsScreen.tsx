@@ -1,16 +1,17 @@
-import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  RefreshControl,
-} from 'react-native';
-import { Card, Typography, Input, LoadingSpinner } from '@components/common';
-import { mockApiService } from '@services';
-import { colors, spacing } from '@theme';
-import { useDataFetcher } from '@hooks/useDataFetcher';
-import { useDebouncedValue } from '@hooks/useDebouncedValue';
-import { ClinicsResponse, Clinic } from '@types';
+import React, {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  useEffect,
+} from "react";
+import { View, FlatList, StyleSheet, RefreshControl } from "react-native";
+import { Card, Typography, Input, LoadingSpinner } from "@components/common";
+import { mockApiService } from "@services";
+import { colors, spacing } from "@theme";
+import { useDataFetcher } from "@hooks/useDataFetcher";
+import { useDebouncedValue } from "@hooks/useDebouncedValue";
+import { ClinicsResponse, Clinic } from "@types";
 
 const ITEM_HEIGHT = 120;
 
@@ -26,24 +27,27 @@ const ClinicItem = React.memo(({ clinic }: { clinic: Clinic }) => (
       Rating: {clinic.rating.toFixed(1)}
     </Typography>
     <Typography variant="caption" style={styles.specialties}>
-      {clinic.specialties.join(', ')}
+      {clinic.specialties.join(", ")}
     </Typography>
   </Card>
 ));
-ClinicItem.displayName = 'ClinicItem';
+ClinicItem.displayName = "ClinicItem";
 
 export const ClinicsScreen: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebouncedValue(searchQuery, 400);
 
-  const { data, loading, error, refetch } = useDataFetcher<ClinicsResponse, [string]>(
+  const { data, loading, error, refetch } = useDataFetcher<
+    ClinicsResponse,
+    [string]
+  >(
     (query) =>
       query.trim()
         ? mockApiService.searchClinics(query)
         : mockApiService.getClinics(),
     {
-      cacheKey: 'clinics',
-      initialParams: [''],
+      cacheKey: "clinics",
+      initialParams: [""],
       initialData: undefined,
     }
   );
@@ -78,12 +82,14 @@ export const ClinicsScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Input
-        placeholder="Search clinics..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        style={styles.searchInput}
-      />
+      <View style={{ paddingTop: spacing.md }}>
+        <Input
+          placeholder="Search clinics..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          style={styles.searchInput}
+        />
+      </View>
       {error && (
         <Typography variant="caption" style={styles.errorText}>
           {error}
@@ -94,7 +100,10 @@ export const ClinicsScreen: React.FC = () => {
         renderItem={renderClinic}
         keyExtractor={(item) => item.id}
         refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={() => refetch([debouncedSearch])} />
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={() => refetch([debouncedSearch])}
+          />
         }
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={
@@ -123,7 +132,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   clinicCard: {
-    marginBottom: spacing.sm,
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.gray["200"],
   },
   clinicTitle: {
     marginBottom: spacing.xs,
@@ -139,13 +150,13 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.lg,
   },
   emptyText: {
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: spacing.lg,
     color: colors.textSecondary,
   },
   errorText: {
     marginBottom: spacing.sm,
     color: colors.error,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
