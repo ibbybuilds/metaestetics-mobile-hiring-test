@@ -38,34 +38,38 @@ export const Step3ProfilePhoto: React.FC<Step3ProfilePhotoProps> = ({
     >
       {({ handleSubmit, setFieldValue, values }) => (
         <View style={styles.container}>
-          <Typography variant="h3" style={styles.title}>
-            Profile picture
-          </Typography>
-          <Typography variant="body2" style={styles.description}>
-            Add a photo so others can recognize you. This is optional, but recommended.
-          </Typography>
+          <View style={styles.content}>
+            <Typography variant="h3" style={styles.title}>
+              Profile picture
+            </Typography>
+            <Typography variant="body2" style={styles.description}>
+              Add a photo so others can recognize you. This is optional, but recommended.
+            </Typography>
 
-          <ImagePickerComponent
-            currentImage={values.profileImage || undefined}
-            onImageSelected={(uri) => setFieldValue('profileImage', uri)}
-            size={120}
-          />
+            <ImagePickerComponent
+              currentImage={values.profileImage || undefined}
+              onImageSelected={(uri) => setFieldValue('profileImage', uri)}
+              size={120}
+            />
+          </View>
 
-          <View style={styles.buttonRow}>
-            <Button
-              title="Back"
-              variant="outline"
-              onPress={onPrevious}
-              size="large"
-              style={styles.button}
-            />
-            <Button
-              title="Continue"
-              variant="primary"
-              onPress={() => handleSubmit()}
-              size="large"
-              style={styles.button}
-            />
+          <View style={styles.buttonWrapper}>
+            <View style={styles.buttonRow}>
+              <Button
+                title="Back"
+                variant="outline"
+                onPress={onPrevious}
+                size="large"
+                style={styles.button}
+              />
+              <Button
+                title="Continue"
+                variant="primary"
+                onPress={() => handleSubmit()}
+                size="large"
+                style={styles.button}
+              />
+            </View>
           </View>
         </View>
       )}
@@ -75,8 +79,10 @@ export const Step3ProfilePhoto: React.FC<Step3ProfilePhotoProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
+    paddingBottom: spacing.lg,
   },
   title: {
     marginBottom: spacing.sm,
@@ -86,10 +92,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: colors.textSecondary,
   },
+  content: {
+    alignItems: 'center',
+  },
   buttonRow: {
     marginTop: spacing.lg,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    width: '100%',
+  },
+  buttonWrapper: {
     width: '100%',
   },
   button: {

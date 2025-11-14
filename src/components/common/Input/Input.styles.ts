@@ -28,6 +28,7 @@ export const styles = StyleSheet.create<InputStyles>({
   },
   label: {
     marginBottom: spacing.lg,
+    paddingHorizontal: spacing.md,
     color: colors.textPrimary,
     fontWeight: "500",
   },

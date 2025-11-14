@@ -29,6 +29,7 @@ export interface InputProps {
   editable?: boolean;
   multiline?: boolean;
   numberOfLines?: number;
+  errorType?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   style?: StyleProp<TextStyle>;
@@ -40,6 +41,7 @@ export const Input: React.FC<InputProps> = ({
   value,
   onChangeText,
   onBlur,
+  errorType,
   error,
   secureTextEntry = false,
   keyboardType = "default",
@@ -108,8 +110,16 @@ export const Input: React.FC<InputProps> = ({
           <View style={styles.rightIcon}>{rightIcon}</View>
         )}
       </View>
-      {error && (
+      {error && !errorType && (
         <Typography variant="caption" style={styles.errorText}>
+          {error}
+        </Typography>
+      )}
+      {error && errorType && (
+        <Typography
+          variant="caption"
+          style={[styles.errorText, { paddingTop: 10 }]}
+        >
           {error}
         </Typography>
       )}

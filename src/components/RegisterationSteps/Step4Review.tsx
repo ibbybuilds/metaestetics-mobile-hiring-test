@@ -32,19 +32,20 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
 
   return (
     <View style={styles.container}>
-      <Typography variant="h3" style={styles.title}>
-        Review & Submit
-      </Typography>
-      <Card style={styles.card}>
-        {formData.profileImage ? (
-          <Image source={{ uri: formData.profileImage }} style={styles.avatar} contentFit="cover" />
-        ) : (
-        <View style={styles.avatarPlaceholder}>
-          <Typography variant="h2" style={styles.avatarText}>
-            {getInitials(formData.firstName ?? '', formData.lastName ?? '')}
-          </Typography>
-        </View>
-        )}
+      <View style={styles.content}>
+        <Typography variant="h3" style={styles.title}>
+          Review & Submit
+        </Typography>
+        <Card style={styles.card}>
+          {formData.profileImage ? (
+            <Image source={{ uri: formData.profileImage }} style={styles.avatar} contentFit="cover" />
+          ) : (
+          <View style={styles.avatarPlaceholder}>
+            <Typography variant="h2" style={styles.avatarText}>
+              {getInitials(formData.firstName ?? '', formData.lastName ?? '')}
+            </Typography>
+          </View>
+          )}
 
         <View style={styles.infoRow}>
           <Typography variant="body2" style={styles.label}>
@@ -86,15 +87,17 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
             {genderLabel}
           </Typography>
         </View>
-      </Card>
+        </Card>
 
-      {error && (
-        <Typography variant="caption" style={styles.errorText}>
-          {error}
-        </Typography>
-      )}
+        {error && (
+          <Typography variant="caption" style={styles.errorText}>
+            {error}
+          </Typography>
+        )}
+      </View>
 
-      <View style={styles.buttonRow}>
+      <View style={styles.buttonWrapper}>
+        <View style={styles.buttonRow}>
         <Button
           title="Back"
           variant="outline"
@@ -111,6 +114,7 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
           loading={isLoading}
           style={styles.button}
         />
+        </View>
       </View>
     </View>
   );
@@ -118,7 +122,9 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
   },
   title: {
     marginBottom: spacing.sm,
@@ -160,12 +166,20 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   button: {
     flex: 1,
   },
   buttonSpacing: {
     marginRight: spacing.sm,
+  },
+  content: {
+    flex: 1,
+  },
+  buttonWrapper: {
+    width: '100%',
+    paddingBottom: spacing.lg,
   },
   errorText: {
     color: colors.error,

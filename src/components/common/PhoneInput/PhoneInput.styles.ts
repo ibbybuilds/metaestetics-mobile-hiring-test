@@ -18,6 +18,9 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: colors.white,
   },
+  errorPhoneInput: {
+    borderColor: colors.error,
+  },
   textContainer: {
     backgroundColor: colors.white,
     borderRadius: 8,

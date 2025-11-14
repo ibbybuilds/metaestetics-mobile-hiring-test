@@ -1,11 +1,12 @@
-import React from 'react';
-import { View } from 'react-native';
-import PhoneInput from 'react-native-phone-number-input';
-import { Typography } from '../Typography';
-import { styles } from './PhoneInput.styles';
-import { DEFAULT_COUNTRY_ISO } from '@utils/constants';
+import React from "react";
+import { View } from "react-native";
+import PhoneInput from "react-native-phone-number-input";
+import { Typography } from "../Typography";
+import { styles } from "./PhoneInput.styles";
+import { DEFAULT_COUNTRY_ISO } from "@utils/constants";
 
-type CountryIsoCode = import('react-native-phone-number-input/node_modules/react-native-country-picker-modal/lib/types').CountryCode;
+type CountryIsoCode =
+  import("react-native-phone-number-input/node_modules/react-native-country-picker-modal/lib/types").CountryCode;
 
 export interface PhoneInputProps {
   label?: string;
@@ -28,7 +29,8 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
   onChangeCountryIso,
   error,
 }) => {
-  const defaultIso: CountryIsoCode = (countryIso ?? DEFAULT_COUNTRY_ISO) as CountryIsoCode;
+  const defaultIso: CountryIsoCode = (countryIso ??
+    DEFAULT_COUNTRY_ISO) as CountryIsoCode;
 
   return (
     <View style={styles.container}>
@@ -51,10 +53,17 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
             onChangeCountryIso?.(country.cca2);
           }
         }}
-        containerStyle={styles.phoneContainer}
+        containerStyle={
+          error
+            ? [styles.phoneContainer, styles.errorPhoneInput]
+            : [styles.phoneContainer]
+        }
         textContainerStyle={styles.textContainer}
         textInputStyle={styles.textInput}
         codeTextStyle={styles.codeText}
+        countryPickerProps={{
+          countryCode: defaultIso,
+        }}
       />
       {error && (
         <Typography variant="caption" style={styles.errorText}>
