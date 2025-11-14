@@ -1,13 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '@types';
 import { AuthState } from './types';
-import { loginThunk, registerThunk, logoutThunk, checkAuthThunk } from './authThunks';
+import {
+  loginThunk,
+  registerThunk,
+  signupDraftThunk,
+  checkSignupDraftThunk,
+  updateProfileThunk,
+  logoutThunk,
+  checkAuthThunk,
+} from './authThunks';
 
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  signupDraft: null,
 };
 
 const authSlice = createSlice({
@@ -33,6 +42,7 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.isAuthenticated = true;
       state.error = null;
+      state.signupDraft = null;
     });
     builder.addCase(loginThunk.rejected, (state, action) => {
       state.isLoading = false;
@@ -49,10 +59,25 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.isAuthenticated = true;
       state.error = null;
+      state.signupDraft = null;
     });
     builder.addCase(registerThunk.rejected, (state, action) => {
       state.isLoading = false;
       state.error = action.payload as string;
+    });
+
+    // Registration Draft
+    builder.addCase(signupDraftThunk.fulfilled, (state, action) => {
+      state.signupDraft = action.payload;
+    });
+
+    builder.addCase(checkSignupDraftThunk.fulfilled, (state, action) => {
+      state.signupDraft = action.payload;
+    });
+
+    // Update profile
+    builder.addCase(updateProfileThunk.fulfilled, (state, action) => {
+      state.user = action.payload;
     });
 
     // Logout
@@ -60,6 +85,7 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       state.error = null;
+      state.signupDraft = null;
     });
 
     // Check auth
@@ -74,4 +100,3 @@ const authSlice = createSlice({
 
 export const { setUser, clearError } = authSlice.actions;
 export default authSlice.reducer;
-

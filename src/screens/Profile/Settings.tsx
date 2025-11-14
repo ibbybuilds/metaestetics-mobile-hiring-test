@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { Typography } from '@components/common';
-import { colors, spacing } from '@theme';
 import { styles } from './Settings.styles';
 
 export const Settings: React.FC = () => {

@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from '@theme';
 
 export const styles = StyleSheet.create({
   container: {
@@ -9,6 +10,11 @@ export const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 20,
+  },
+  input: {
+    backgroundColor: colors.white,
+    color: colors.black,
+    pointerEvents: "none",
   },
 });
 

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Typography, Button } from '@components/common';
+import { Typography } from '@components/common';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { registerThunk } from '@store/auth/authThunks';
+import { registerThunk, signupDraftThunk } from '@store/auth/authThunks';
 import { RegisterData } from '@types';
 import { AuthStackParamList } from '@types';
 import { styles } from './Register.styles';
@@ -20,25 +20,54 @@ const TOTAL_STEPS = 4;
 export const Register: React.FC = () => {
   const navigation = useNavigation<RegisterScreenNavigationProp>();
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector(state => state.auth);
-  
+  const { isLoading, signupDraft } = useAppSelector((state) => state.auth);
+
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<Partial<RegisterData>>({});
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    if (signupDraft) {
+      setFormData(signupDraft.data);
+      setCurrentStep(signupDraft.step);
+    }
+    setIsLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    const saveDraft = async () => {
+      await dispatch(signupDraftThunk({ data: formData, step: currentStep }));
+    };
+    if (Object.keys(formData).length != 0) {
+      saveDraft();
+    }
+  }, [formData, currentStep]);
+
   const handleDataChange = (data: Partial<RegisterData>) => {
-    setFormData(prev => ({ ...prev, ...data }));
+    setFormData((prev) => ({ ...prev, ...data }));
   };
 
   const handleNext = () => {
-    if (currentStep < TOTAL_STEPS) {
+    if (isEditing) {
+      setIsEditing(false);
+      setCurrentStep(TOTAL_STEPS);
+    } else if (currentStep < TOTAL_STEPS) {
       setCurrentStep(currentStep + 1);
     }
   };
 
   const handlePrevious = () => {
+    isEditing && setIsEditing(false);
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  const handleGoTo = (step: number) => {
+    setIsEditing(true);
+    setCurrentStep(step);
   };
 
   const handleSubmit = async () => {
@@ -82,6 +111,7 @@ export const Register: React.FC = () => {
             onPrevious={handlePrevious}
             onSubmit={handleSubmit}
             isLoading={isLoading}
+            goTo={handleGoTo}
           />
         );
       default:
@@ -93,11 +123,9 @@ export const Register: React.FC = () => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
     >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={styles.content}>
           <View style={styles.stepIndicator}>
             <Typography variant="body2" style={styles.stepText}>
@@ -105,10 +133,9 @@ export const Register: React.FC = () => {
             </Typography>
           </View>
 
-          {renderStep()}
+          {isLoaded && renderStep()}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
-

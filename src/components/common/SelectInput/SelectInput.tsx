@@ -5,7 +5,7 @@ import { styles } from './SelectInput.styles';
 
 export interface SelectInputProps {
   label?: string;
-  value: string;
+  value?: string;
   options: Array<{ label: string; value: string }>;
   onChange: (value: string) => void;
   error?: string;

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@utils/constants';
-import { User } from '@types';
+import { User, RegisterDataDraft } from '@types';
 
 interface StoredUserCredentials {
   email: string;
@@ -47,13 +47,13 @@ export const storageService = {
     // Check if user already exists and update, otherwise add
     const existingIndex = users.findIndex(u => u.email === email);
     const newUser: StoredUserCredentials = { email, password, user };
-    
+
     if (existingIndex >= 0) {
       users[existingIndex] = newUser;
     } else {
       users.push(newUser);
     }
-    
+
     await AsyncStorage.setItem(STORAGE_KEYS.REGISTERED_USERS, JSON.stringify(users));
   },
 
@@ -68,13 +68,32 @@ export const storageService = {
     return users.some(u => u.email === email);
   },
 
+  // Signup Draft
+  async saveSignupDraft(draft: RegisterDataDraft): Promise<void> {
+    await AsyncStorage.setItem(STORAGE_KEYS.SIGNUP_DRAFT, JSON.stringify(draft));
+  },
+
+  async getSignupDraft(): Promise<RegisterDataDraft | null> {
+    const draft = await AsyncStorage.getItem(STORAGE_KEYS.SIGNUP_DRAFT);
+    return draft ? JSON.parse(draft) : null;
+  },
+
+  async removeSignupDraft(): Promise<void> {
+    await AsyncStorage.removeItem(STORAGE_KEYS.SIGNUP_DRAFT);
+  },
+
   // Clear all
   async clearAll(): Promise<void> {
     await AsyncStorage.multiRemove([
       STORAGE_KEYS.AUTH_TOKEN,
       STORAGE_KEYS.USER_DATA,
       STORAGE_KEYS.REGISTERED_USERS,
+      STORAGE_KEYS.SIGNUP_DRAFT,
     ]);
   },
-};
 
+  // Clear auth
+  async clearAuth(): Promise<void> {
+    await AsyncStorage.multiRemove([STORAGE_KEYS.AUTH_TOKEN, STORAGE_KEYS.USER_DATA]);
+  },
+};

@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { logoutThunk } from '@store/auth/authThunks';
 import { formatDate, formatPhoneNumber, getInitials } from '@utils/formatters';
 import { MainStackParamList } from '@types';
-import { colors, spacing } from '@theme';
 import { styles } from './Profile.styles';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Profile'>;

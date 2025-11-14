@@ -28,7 +28,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     if (Platform.OS === 'android') {
       setShowPicker(false);
     }
-    
+
     if (selectedDate) {
       setInternalDate(selectedDate);
       onChange(selectedDate);
@@ -47,6 +47,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         style={styles.touchable}
       >
         <Input
+          style={styles.input}
           label={label}
           placeholder={placeholder}
           value={displayValue}
@@ -60,7 +61,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           }
         />
       </TouchableOpacity>
-      
+
       {showPicker && (
         <DateTimePicker
           value={internalDate}
