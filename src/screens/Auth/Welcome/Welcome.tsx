@@ -1,13 +1,15 @@
-import React from 'react';
-import { View, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Button, Typography } from '@components/common';
-import { AuthStackParamList } from '@types';
-import { colors, spacing } from '@theme';
-import { styles } from './Welcome.styles';
+import React from "react";
+import { View, ScrollView } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Button, Typography } from "@components/common";
+import { AuthStackParamList } from "@types";
+import { styles } from "./Welcome.styles";
 
-type WelcomeScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
+type WelcomeScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  "Welcome"
+>;
 
 export const Welcome: React.FC = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
@@ -33,7 +35,7 @@ export const Welcome: React.FC = () => {
         <View style={styles.buttonContainer}>
           <Button
             title="Login"
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate("Login")}
             variant="primary"
             size="large"
             fullWidth
@@ -41,7 +43,7 @@ export const Welcome: React.FC = () => {
           />
           <Button
             title="Sign Up"
-            onPress={() => navigation.navigate('Register')}
+            onPress={() => navigation.navigate("Register")}
             variant="outline"
             size="large"
             fullWidth
@@ -52,4 +54,3 @@ export const Welcome: React.FC = () => {
     </ScrollView>
   );
 };
-

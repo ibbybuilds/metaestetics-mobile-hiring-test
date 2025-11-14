@@ -1,21 +1,32 @@
-import React from 'react';
-import { View, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Formik } from 'formik';
-import { Input, Button, Typography } from '@components/common';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { loginThunk, clearError } from '@store/auth/authSlice';
-import { loginValidationSchema } from '@utils/validation';
-import { AuthStackParamList } from '@types';
-import { styles } from './Login.styles';
+import React from "react";
+import {
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Formik } from "formik";
+import { Input, Button, Typography } from "@components/common";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { loginThunk } from "@store/auth/authThunks";
+import { clearError } from "@store/auth/authSlice";
+import { loginValidationSchema } from "@utils/validation";
+// Update the path below to the actual location of your type definitions file
+import { AuthStackParamList } from "../../../types";
+import { styles } from "./Login.styles";
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
+type LoginScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  "Login"
+>;
 
 export const Login: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector(state => state.auth);
+  const { isLoading, error } = useAppSelector((state) => state.auth);
 
   React.useEffect(() => {
     return () => {
@@ -30,7 +41,7 @@ export const Login: React.FC = () => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -45,31 +56,45 @@ export const Login: React.FC = () => {
           </Typography>
 
           <Formik
-            initialValues={{ email: '', password: '' }}
+            initialValues={{ email: "", password: "" }}
             validationSchema={loginValidationSchema}
             onSubmit={handleLogin}
           >
-            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+            }) => (
               <View style={styles.form}>
                 <Input
                   label="Email"
                   placeholder="Enter your email"
                   value={values.email}
-                  onChangeText={handleChange('email')}
-                  onBlur={handleBlur('email')}
-                  error={touched.email && errors.email ? errors.email : undefined}
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  error={
+                    touched.email && errors.email ? errors.email : undefined
+                  }
                   keyboardType="email-address"
                   autoCapitalize="none"
+                  style={styles.field}
                 />
-
                 <Input
                   label="Password"
-                  placeholder="Enter your password"
+                  placeholder="Create a password"
                   value={values.password}
-                  onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  error={touched.password && errors.password ? errors.password : undefined}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  error={
+                    touched.password && errors.password
+                      ? errors.password
+                      : undefined
+                  }
                   secureTextEntry
+                  style={styles.field}
                 />
 
                 {error && (
@@ -99,9 +124,11 @@ export const Login: React.FC = () => {
 
                 <View style={styles.signUpContainer}>
                   <Typography variant="body2" style={styles.signUpText}>
-                    Don't have an account?{' '}
+                    Don't have an account?{" "}
                   </Typography>
-                  <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("Register")}
+                  >
                     <Typography variant="body2" style={styles.signUpLink}>
                       Sign up
                     </Typography>
@@ -115,4 +142,3 @@ export const Login: React.FC = () => {
     </KeyboardAvoidingView>
   );
 };
-

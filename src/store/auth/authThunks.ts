@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { LoginCredentials, RegisterData } from '@types';
+import { LoginCredentials, RegisterData, User } from '@types';
 import { mockApiService, storageService } from '@services';
 
 export const loginThunk = createAsyncThunk(
@@ -50,3 +50,20 @@ export const checkAuthThunk = createAsyncThunk(
   }
 );
 
+interface UpdateProfilePayload {
+  userId: string;
+  updates: Partial<User>;
+}
+
+export const updateProfileThunk = createAsyncThunk(
+  'auth/updateProfile',
+  async ({ userId, updates }: UpdateProfilePayload, { rejectWithValue }) => {
+    try {
+      const response = await mockApiService.updateProfile(userId, updates);
+      await storageService.saveUser(response.user);
+      return response.user;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);

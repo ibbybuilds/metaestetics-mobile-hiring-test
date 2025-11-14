@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Platform } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Input } from '../Input';
-import { Typography } from '../Typography';
-import { formatDate } from '@utils/formatters';
-import { styles } from './DatePicker.styles';
+import React, { useState } from "react";
+import { View, TouchableOpacity, Platform } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Input } from "../Input";
+import { Typography } from "../Typography";
+import { formatDate } from "@utils/formatters";
+import { styles } from "./DatePicker.styles";
 
 export interface DatePickerProps {
   label?: string;
@@ -19,26 +19,26 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   value,
   onChange,
   error,
-  placeholder = 'Select date',
+  placeholder = "Select date",
 }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [internalDate, setInternalDate] = useState<Date>(value || new Date());
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
-    if (Platform.OS === 'android') {
+    if (Platform.OS === "android") {
       setShowPicker(false);
     }
-    
+
     if (selectedDate) {
       setInternalDate(selectedDate);
       onChange(selectedDate);
-      if (Platform.OS === 'ios') {
+      if (Platform.OS === "ios") {
         setShowPicker(false);
       }
     }
   };
 
-  const displayValue = value ? formatDate(value) : '';
+  const displayValue = value ? formatDate(value) : "";
 
   return (
     <View style={styles.container}>
@@ -53,6 +53,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           onChangeText={() => {}}
           editable={false}
           error={error}
+          errorType={"datePicker"}
           rightIcon={
             <Typography variant="body2" style={styles.icon}>
               📅
@@ -60,12 +61,12 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           }
         />
       </TouchableOpacity>
-      
+
       {showPicker && (
         <DateTimePicker
           value={internalDate}
           mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          display={Platform.OS === "ios" ? "spinner" : "default"}
           onChange={handleDateChange}
           maximumDate={new Date()}
         />
@@ -73,4 +74,3 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     </View>
   );
 };
-

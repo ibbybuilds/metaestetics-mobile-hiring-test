@@ -13,6 +13,7 @@ module.exports = function(api) {
             '@screens': './src/screens',
             '@navigation': './src/navigation',
             '@store': './src/store',
+            '@hooks': './src/hooks',
             '@services': './src/services',
             '@utils': './src/utils',
             '@types': './src/types',
@@ -24,4 +25,3 @@ module.exports = function(api) {
     ]
   };
 };
-

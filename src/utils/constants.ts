@@ -2,7 +2,11 @@ export const STORAGE_KEYS = {
   AUTH_TOKEN: '@metaestetics/auth_token',
   USER_DATA: '@metaestetics/user_data',
   REGISTERED_USERS: '@metaestetics/registered_users', // Store registered users
+  REGISTRATION_DRAFT: '@metaestetics/registration_draft',
 };
+
+export const DEFAULT_COUNTRY_CODE = '+1';
+export const DEFAULT_COUNTRY_ISO = 'US';
 
 export const GENDER_OPTIONS = [
   { label: 'Male', value: 'male' },
@@ -18,4 +22,3 @@ export const MOCK_USERS = [
     lastName: 'Doe',
   },
 ];
-

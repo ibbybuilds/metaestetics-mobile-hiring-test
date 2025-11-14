@@ -1,5 +1,6 @@
-import { StyleSheet } from 'react-native';
-import { colors, spacing } from '@theme';
+import { StyleSheet } from "react-native";
+// Update the path below to the actual location of your theme file
+import { colors, spacing } from "../../../theme";
 
 export const styles = StyleSheet.create({
   container: {
@@ -12,7 +13,7 @@ export const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: spacing.xl,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
     marginBottom: spacing.xs,
@@ -23,10 +24,13 @@ export const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   form: {
-    width: '100%',
+    width: "100%",
+  },
+  field: {
+    marginBottom: spacing.md,
   },
   forgotPassword: {
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     marginBottom: spacing.lg,
   },
   forgotPasswordText: {
@@ -38,11 +42,11 @@ export const styles = StyleSheet.create({
   errorText: {
     color: colors.error,
     marginBottom: spacing.md,
-    textAlign: 'center',
+    textAlign: "center",
   },
   signUpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: spacing.md,
   },
   signUpText: {
@@ -50,7 +54,6 @@ export const styles = StyleSheet.create({
   },
   signUpLink: {
     color: colors.primary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
-

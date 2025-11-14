@@ -1,13 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '@types';
 import { AuthState } from './types';
-import { loginThunk, registerThunk, logoutThunk, checkAuthThunk } from './authThunks';
+import {
+  loginThunk,
+  registerThunk,
+  logoutThunk,
+  checkAuthThunk,
+  updateProfileThunk,
+} from './authThunks';
 
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  isUpdatingProfile: false,
+  profileError: null,
 };
 
 const authSlice = createSlice({
@@ -69,9 +77,23 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
       }
     });
+
+    // Profile updates
+    builder.addCase(updateProfileThunk.pending, (state) => {
+      state.isUpdatingProfile = true;
+      state.profileError = null;
+    });
+    builder.addCase(updateProfileThunk.fulfilled, (state, action) => {
+      state.isUpdatingProfile = false;
+      state.user = action.payload;
+      state.profileError = null;
+    });
+    builder.addCase(updateProfileThunk.rejected, (state, action) => {
+      state.isUpdatingProfile = false;
+      state.profileError = (action.payload as string) ?? action.error.message ?? 'Failed to update profile';
+    });
   },
 });
 
 export const { setUser, clearError } = authSlice.actions;
 export default authSlice.reducer;
-

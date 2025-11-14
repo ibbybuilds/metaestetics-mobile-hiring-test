@@ -1,5 +1,5 @@
-import { User, LoginCredentials, RegisterData } from '@types';
-import { MOCK_USERS } from '@utils/constants';
+import { User, LoginCredentials, RegisterData, ClinicsResponse } from '@types';
+import { MOCK_USERS, DEFAULT_COUNTRY_ISO } from '@utils/constants';
 import { storageService } from './storage.service';
 
 // Simulate network delay
@@ -32,6 +32,7 @@ export const mockApiService = {
         lastName: mockUser.lastName,
         phoneNumber: '1234567890',
         countryCode: '+1',
+        countryIso: DEFAULT_COUNTRY_ISO,
         dateOfBirth: '1990-01-01',
         gender: 'male',
         createdAt: new Date().toISOString(),
@@ -85,6 +86,7 @@ export const mockApiService = {
       lastName: data.lastName,
       phoneNumber: data.phoneNumber,
       countryCode: data.countryCode,
+      countryIso: data.countryIso ?? DEFAULT_COUNTRY_ISO,
       dateOfBirth: data.dateOfBirth,
       gender: data.gender,
       profileImage: data.profileImage,
@@ -145,7 +147,7 @@ export const mockApiService = {
     return { success: true };
   },
 
-  async getClinics() {
+  async getClinics(): Promise<ClinicsResponse> {
     await delay(1000); // Simulate slow API
 
     const clinics = Array.from({ length: 100 }, (_, i) => ({
@@ -162,7 +164,7 @@ export const mockApiService = {
     };
   },
 
-  async searchClinics(query: string) {
+  async searchClinics(query: string): Promise<ClinicsResponse> {
     await delay(800); // Simulate API delay
 
     const allClinics = Array.from({ length: 100 }, (_, i) => ({
@@ -185,4 +187,3 @@ export const mockApiService = {
     };
   },
 };
-
