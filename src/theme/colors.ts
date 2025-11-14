@@ -43,5 +43,8 @@ export const colors = {
   // Border colors
   border: '#E5E7EB',
   borderFocus: '#6B4CE6',
+  
+  // Other colors
+  transparent: 'transparent',
 };
 
