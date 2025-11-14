@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { STORAGE_KEYS } from '@utils/constants';
-import { User } from '@types';
+import { User } from '../types/user.types';
 
 interface StoredUserCredentials {
   email: string;
