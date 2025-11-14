@@ -80,11 +80,11 @@ export const Login: React.FC = () => {
                   }
                   keyboardType="email-address"
                   autoCapitalize="none"
+                  style={styles.field}
                 />
-
                 <Input
                   label="Password"
-                  placeholder="Enter your password"
+                  placeholder="Create a password"
                   value={values.password}
                   onChangeText={handleChange("password")}
                   onBlur={handleBlur("password")}
@@ -94,6 +94,7 @@ export const Login: React.FC = () => {
                       : undefined
                   }
                   secureTextEntry
+                  style={styles.field}
                 />
 
                 {error && (

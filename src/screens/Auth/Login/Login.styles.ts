@@ -26,6 +26,9 @@ export const styles = StyleSheet.create({
   form: {
     width: "100%",
   },
+  field: {
+    marginBottom: spacing.md,
+  },
   forgotPassword: {
     alignSelf: "flex-end",
     marginBottom: spacing.lg,

@@ -46,6 +46,7 @@ export const Step1EmailPassword: React.FC<Step1EmailPasswordProps> = ({
         errors,
       }) => (
         <View style={styles.container}>
+          <View style={styles.formContent}>
           <Typography variant="h3" style={styles.title}>
             Create an account
           </Typography>
@@ -93,6 +94,8 @@ export const Step1EmailPassword: React.FC<Step1EmailPasswordProps> = ({
             style={styles.field}
           />
 
+          </View>
+
           <Button
             title="Continue"
             onPress={() => handleSubmit()}
@@ -109,7 +112,13 @@ export const Step1EmailPassword: React.FC<Step1EmailPasswordProps> = ({
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: "column",
+    justifyContent: "space-between",
+    paddingBottom: spacing.lg,
+  },
+  formContent: {
+    flex: 1,
   },
   title: {
     marginBottom: spacing.sm,

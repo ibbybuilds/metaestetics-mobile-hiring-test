@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
-import { Button, Card, Typography } from '@components/common';
-import { RegisterData } from '@types';
-import { formatDate, formatPhoneNumber, getInitials } from '@utils/formatters';
-import { spacing, colors } from '@theme';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { Image } from "expo-image";
+import { Button, Card, Typography } from "@components/common";
+import { RegisterData } from "@types";
+import { formatDate, formatPhoneNumber, getInitials } from "@utils/formatters";
+import { spacing, colors } from "@theme";
 
 export interface Step4ReviewProps {
   formData: RegisterData;
@@ -21,14 +21,18 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
   isLoading,
   error,
 }) => {
-  const displayName = `${formData.firstName || ''} ${formData.lastName || ''}`.trim();
+  const displayName = `${formData.firstName || ""} ${
+    formData.lastName || ""
+  }`.trim();
   const genderLabel = formData.gender
     ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1)
-    : 'Not set';
-  const dobLabel = formData.dateOfBirth ? formatDate(formData.dateOfBirth) : 'Not set';
+    : "Not set";
+  const dobLabel = formData.dateOfBirth
+    ? formatDate(formData.dateOfBirth)
+    : "Not set";
   const phoneLabel = formData.phoneNumber
     ? formatPhoneNumber(formData.phoneNumber, formData.countryCode)
-    : 'Not set';
+    : "Not set";
 
   return (
     <View style={styles.container}>
@@ -38,82 +42,80 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
         </Typography>
         <Card style={styles.card}>
           {formData.profileImage ? (
-            <Image source={{ uri: formData.profileImage }} style={styles.avatar} contentFit="cover" />
+            <Image
+              source={{ uri: formData.profileImage }}
+              style={styles.avatar}
+              contentFit="cover"
+            />
           ) : (
-          <View style={styles.avatarPlaceholder}>
-            <Typography variant="h2" style={styles.avatarText}>
-              {getInitials(formData.firstName ?? '', formData.lastName ?? '')}
-            </Typography>
-          </View>
+            <View style={styles.avatarPlaceholder}>
+              <Typography variant="h2" style={styles.avatarText}>
+                {getInitials(formData.firstName ?? "", formData.lastName ?? "")}
+              </Typography>
+            </View>
           )}
 
-        <View style={styles.infoRow}>
-          <Typography variant="body2" style={styles.label}>
-            Name:
-          </Typography>
-          <Typography variant="body1" style={styles.value}>
-            {displayName || 'Not set'}
-          </Typography>
-        </View>
-        <View style={styles.infoRow}>
-          <Typography variant="body2" style={styles.label}>
-            Email:
-          </Typography>
-          <Typography variant="body1" style={styles.value}>
-            {formData.email}
-          </Typography>
-        </View>
-        <View style={styles.infoRow}>
-          <Typography variant="body2" style={styles.label}>
-            Phone:
-          </Typography>
-          <Typography variant="body1" style={styles.value}>
-            {phoneLabel}
-          </Typography>
-        </View>
-        <View style={styles.infoRow}>
-          <Typography variant="body2" style={styles.label}>
-            Date of birth:
-          </Typography>
-          <Typography variant="body1" style={styles.value}>
-            {dobLabel}
-          </Typography>
-        </View>
-        <View style={styles.infoRow}>
-          <Typography variant="body2" style={styles.label}>
-            Gender:
-          </Typography>
-          <Typography variant="body1" style={styles.value}>
-            {genderLabel}
-          </Typography>
-        </View>
+          <View style={styles.infoRow}>
+            <Typography variant="body2" style={styles.label}>
+              Name:
+            </Typography>
+            <Typography variant="body1" style={styles.value}>
+              {displayName || "Not set"}
+            </Typography>
+          </View>
+          <View style={styles.infoRow}>
+            <Typography variant="body2" style={styles.label}>
+              Email:
+            </Typography>
+            <Typography variant="body1" style={styles.value}>
+              {formData.email}
+            </Typography>
+          </View>
+          <View style={styles.infoRow}>
+            <Typography variant="body2" style={styles.label}>
+              Phone:
+            </Typography>
+            <Typography variant="body1" style={styles.value}>
+              {phoneLabel}
+            </Typography>
+          </View>
+          <View style={styles.infoRow}>
+            <Typography variant="body2" style={styles.label}>
+              Date of birth:
+            </Typography>
+            <Typography variant="body1" style={styles.value}>
+              {dobLabel}
+            </Typography>
+          </View>
+          <View style={styles.infoRow}>
+            <Typography variant="body2" style={styles.label}>
+              Gender:
+            </Typography>
+            <Typography variant="body1" style={styles.value}>
+              {genderLabel}
+            </Typography>
+          </View>
         </Card>
-
-        {error && (
-          <Typography variant="caption" style={styles.errorText}>
-            {error}
-          </Typography>
-        )}
       </View>
 
       <View style={styles.buttonWrapper}>
         <View style={styles.buttonRow}>
-        <Button
-          title="Back"
-          variant="outline"
-          onPress={onPrevious}
-          size="large"
-          style={[styles.button, styles.buttonSpacing]}
-        />
-        <Button
-          title="Submit"
-          variant="primary"
-          onPress={onSubmit}
-          size="large"
-          fullWidth
-          loading={isLoading}
-          style={styles.button}
-        />
+          <Button
+            title="Back"
+            variant="outline"
+            onPress={onPrevious}
+            size="large"
+            style={[styles.button, styles.buttonSpacing]}
+          />
+          <Button
+            title="Submit"
+            variant="primary"
+            onPress={onSubmit}
+            size="large"
+            fullWidth
+            loading={isLoading}
+            style={styles.button}
+          />
         </View>
       </View>
     </View>
@@ -123,8 +125,8 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
-    alignItems: 'stretch',
+    justifyContent: "space-between",
+    alignItems: "stretch",
   },
   title: {
     marginBottom: spacing.sm,
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 45,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginBottom: spacing.md,
   },
   avatarPlaceholder: {
@@ -145,28 +147,28 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: 45,
     backgroundColor: colors.secondary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
     marginBottom: spacing.md,
   },
   avatarText: {
     color: colors.white,
   },
   infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: spacing.sm,
   },
   label: {
     color: colors.textSecondary,
   },
   value: {
-    textAlign: 'right',
+    textAlign: "right",
   },
   buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   button: {
     flex: 1,
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonWrapper: {
-    width: '100%',
+    width: "100%",
     paddingBottom: spacing.lg,
   },
   errorText: {

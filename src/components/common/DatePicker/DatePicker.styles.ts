@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 20,
-    marginTop: 5,
+    marginTop: 10,
   },
   errorText: {
     color: colors.error,

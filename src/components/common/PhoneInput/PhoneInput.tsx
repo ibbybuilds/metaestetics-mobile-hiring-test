@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View } from "react-native";
-import PhoneInput from "react-native-phone-number-input";
+import PhoneInput, {
+  Country,
+  CountryCode,
+} from "@linhnguyen96114/react-native-phone-input";
 import { Typography } from "../Typography";
 import { styles } from "./PhoneInput.styles";
 import { DEFAULT_COUNTRY_ISO } from "@utils/constants";
-
-type CountryIsoCode =
-  import("react-native-phone-number-input/node_modules/react-native-country-picker-modal/lib/types").CountryCode;
 
 export interface PhoneInputProps {
   label?: string;
@@ -29,8 +29,35 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
   onChangeCountryIso,
   error,
 }) => {
-  const defaultIso: CountryIsoCode = (countryIso ??
-    DEFAULT_COUNTRY_ISO) as CountryIsoCode;
+  const defaultCode = useMemo<CountryCode>(
+    () => (countryIso ?? DEFAULT_COUNTRY_ISO) as CountryCode,
+    [countryIso]
+  );
+
+  const defaultCallingCode = useMemo(() => {
+    const digits = countryCode.replace(/\D/g, "");
+    return digits.length > 0 ? digits : undefined;
+  }, [countryCode]);
+
+  const handleCountryChange = (country: Country) => {
+    const callingCode = country.callingCode?.[0];
+    if (callingCode) {
+      onChangeCountryCode(`+${callingCode}`);
+    }
+    onChangeCountryIso?.(country.cca2);
+  };
+
+  const handleTextChange = (text: string) => {
+    onChangeText(text.replace(/\D/g, ""));
+  };
+
+  const containerStyle = useMemo(
+    () =>
+      error
+        ? [styles.phoneContainer, styles.errorPhoneInput]
+        : styles.phoneContainer,
+    [error]
+  );
 
   return (
     <View style={styles.container}>
@@ -40,30 +67,18 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
         </Typography>
       )}
       <PhoneInput
-        key={`phone-input-${defaultIso}-${countryCode}`}
-        defaultCode={defaultIso}
+        defaultCode={defaultCode}
+        defaultCallingCode={defaultCallingCode}
         value={value}
-        onChangeText={onChangeText}
-        onChangeCountry={(country) => {
-          const callingCode = country?.callingCode?.[0];
-          if (callingCode) {
-            onChangeCountryCode(`+${callingCode}`);
-          }
-          if (country?.cca2) {
-            onChangeCountryIso?.(country.cca2);
-          }
-        }}
-        containerStyle={
-          error
-            ? [styles.phoneContainer, styles.errorPhoneInput]
-            : [styles.phoneContainer]
-        }
+        onChangeText={handleTextChange}
+        onChangeCountry={handleCountryChange}
+        containerStyle={containerStyle}
         textContainerStyle={styles.textContainer}
         textInputStyle={styles.textInput}
         codeTextStyle={styles.codeText}
-        countryPickerProps={{
-          countryCode: defaultIso,
-        }}
+        flagSize={22}
+        autoFocus={false}
+        showCountryCode
       />
       {error && (
         <Typography variant="caption" style={styles.errorText}>

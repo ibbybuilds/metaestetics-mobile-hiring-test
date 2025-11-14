@@ -83,7 +83,7 @@ export const styles = StyleSheet.create<InputStyles>({
   rightIcon: {
     position: "absolute",
     right: spacing.sm,
-    top: 0,
+    top: -4,
     zIndex: 1,
   },
   passwordToggle: {
