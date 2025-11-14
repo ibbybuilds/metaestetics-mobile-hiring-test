@@ -1,54 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import React, { useState, useCallback, useRef, useMemo } from 'react';
+import { View, FlatList, StyleSheet, ListRenderItem, FlatListProps } from 'react-native';
 import { Card, Typography, Input, LoadingSpinner } from '@components/common';
-import { mockApiService } from '@services';
-import { colors, spacing } from '@theme';
+import { Text } from 'react-native';
+import { colors, spacing } from '../../theme';
+import useDebouncedValue from '@hooks/useDebouncedValue';
+import { useClinicData } from '@hooks/useClinicData';
 
-// This is intentionally slow and inefficient - candidates need to optimize it
+// Add at the top of the file, after imports
+
+declare global {
+  // eslint-disable-next-line no-var
+  var gmlogs: Array<{ event: string; time: number; timestamp: number }> | undefined;
+}
+
+// Clinic type for explicit typing
+interface Clinic {
+  id: string;
+  name: string;
+  address: string;
+  rating: number;
+}
+
 export const ClinicsScreen: React.FC = () => {
-  const [clinics, setClinics] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
+  const flatListRef = useRef<FlatList<Clinic>>(null);
+  const debouncedSearchQuery = useDebouncedValue(searchQuery, 300);
 
-  useEffect(() => {
-    loadClinics();
-  }, []);
+  // Use the custom clinic data hook (which uses React Query under the hood)
+  const { data: clinics = [], isLoading, error } = useClinicData();
 
-  // Intentionally inefficient - fetches all clinics every time
-  const loadClinics = async () => {
-    setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const mockClinics = Array.from({ length: 100 }, (_, i) => ({
-      id: `clinic-${i}`,
-      name: `Clinic ${i + 1}`,
-      address: `${i + 1} Main Street`,
-      rating: Math.random() * 5,
-    }));
-    setClinics(mockClinics);
-    setLoading(false);
-  };
-
-  // Intentionally inefficient - filters on every keystroke without debouncing
-  const filteredClinics = clinics.filter(clinic =>
-    clinic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    clinic.address.toLowerCase().includes(searchQuery.toLowerCase())
+  // Memoized filtered clinics for performance
+  const filteredClinics = useMemo(
+    () =>
+      clinics.filter(
+        (clinic) =>
+          clinic.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+          clinic.address.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      ),
+    [clinics, debouncedSearchQuery]
   );
 
-  const renderClinic = ({ item }: { item: any }) => {
-    // Intentionally inefficient - creates new component on every render
-    return (
-      <Card style={styles.clinicCard}>
-        <Typography variant="h4">{item.name}</Typography>
-        <Typography variant="body2">{item.address}</Typography>
-        <Typography variant="body2">Rating: {item.rating.toFixed(1)}</Typography>
-      </Card>
-    );
+  // Memoized renderClinic for performance and accessibility
+  const renderClinic: ListRenderItem<Clinic> = useCallback(
+    ({ item }) => (
+      <View
+        accessible
+        accessibilityLabel={`Clinic: ${item.name}, Address: ${item.address}, Rating: ${item.rating.toFixed(1)}`}
+        accessibilityRole="summary"
+      >
+        <Card style={styles.clinicCard}>
+          <Typography variant="h4">{item.name}</Typography>
+          <Typography variant="body2">{item.address}</Typography>
+          <Text style={styles.ratingText}>{`Rating: ${item.rating.toFixed(1)}`}</Text>
+        </Card>
+      </View>
+    ),
+    []
+  );
+
+  // For fixed height optimization (if all cards are same height)
+  const getItemLayout: FlatListProps<Clinic>["getItemLayout"] = useCallback(
+    (_data: ArrayLike<Clinic> | null | undefined, index: number) => ({ length: 100, offset: 100 * index, index }),
+    []
+  );
+
+  // --- Performance Metrics Logging for FlatList (Expo Go compatible) ---
+  const flatListRenderStart = useRef<number | null>(null);
+
+  const getNow = () => {
+    if (typeof performance !== 'undefined' && performance.now) {
+      return performance.now();
+    }
+    return Date.now();
   };
 
-  if (loading) {
-    return <LoadingSpinner fullScreen />;
-  }
+  const onFlatListLayout = useCallback(() => {
+    flatListRenderStart.current = getNow();
+  }, []);
+
+  const onFlatListContentSizeChange = useCallback(() => {
+    if (flatListRenderStart.current !== null) {
+      const renderTime = getNow() - flatListRenderStart.current;
+      if (typeof global !== 'undefined' && global.gmlogs) {
+        global.gmlogs.push({
+          event: 'ClinicsFlatListRender',
+          time: renderTime,
+          timestamp: Date.now(),
+        });
+      } else {
+        // Fallback: log to console for manual metrics
+        console.log('[Performance] Clinics FlatList render time (ms):', renderTime);
+      }
+      flatListRenderStart.current = null;
+    }
+  }, []);
+
+  if (isLoading) return <LoadingSpinner fullScreen />;
+  if (error) return <Text>Failed to load clinics.</Text>;
 
   return (
     <View style={styles.container}>
@@ -57,27 +105,49 @@ export const ClinicsScreen: React.FC = () => {
         value={searchQuery}
         onChangeText={setSearchQuery}
         style={styles.searchInput}
+        accessibilityLabel="Search clinics"
       />
       <FlatList
+        ref={flatListRef}
         data={filteredClinics}
-        renderItem={renderClinic}
         keyExtractor={(item) => item.id}
-        // Intentionally missing performance optimizations
+        renderItem={renderClinic}
+        getItemLayout={getItemLayout}
+        onLayout={onFlatListLayout}
+        onContentSizeChange={onFlatListContentSizeChange}
+        contentContainerStyle={styles.listContent}
+        accessibilityLabel="Clinics list"
+        accessibilityRole="list"
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  clinicCard: {
+    marginBottom: spacing.sm,
+    margin: spacing.md,
+    elevation: 2,
+    shadowColor: colors.gray[900],
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 1,
+  },
   container: {
-    flex: 1,
     backgroundColor: colors.background,
+    flex: 1,
     padding: spacing.md,
   },
-  searchInput: {
-    marginBottom: spacing.md,
+  listContent: {
+    paddingBottom: spacing.lg,
   },
-  clinicCard: {
+  ratingText: {
+    color: colors.primary,
+    fontWeight: 'bold',
+    marginTop: spacing.xs,
+  },
+  searchInput: {
+    margin: spacing.md,
     marginBottom: spacing.sm,
   },
 });

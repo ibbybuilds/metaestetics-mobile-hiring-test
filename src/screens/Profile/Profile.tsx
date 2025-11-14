@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Image } from 'expo-image';
@@ -7,8 +7,7 @@ import { Button, Card, Typography } from '@components/common';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { logoutThunk } from '@store/auth/authThunks';
 import { formatDate, formatPhoneNumber, getInitials } from '@utils/formatters';
-import { MainStackParamList } from '@types';
-import { colors, spacing } from '@theme';
+import { MainStackParamList } from '../../types/navigation.types';
 import { styles } from './Profile.styles';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Profile'>;
@@ -43,7 +42,7 @@ export const Profile: React.FC = () => {
           </View>
         )}
         <Typography variant="h2" style={styles.name}>
-          {user.firstName} {user.lastName}
+          {user.firstName}{user.lastName}
         </Typography>
         <Typography variant="body2" style={styles.email}>
           {user.email}
@@ -51,29 +50,29 @@ export const Profile: React.FC = () => {
       </View>
 
       <Card style={styles.infoCard}>
-        <Typography variant="h4" style={styles.cardTitle}>
+        <Text style={styles.cardTitle}>
           Contact Information
-        </Typography>
+        </Text>
         <View style={styles.infoRow}>
-          <Typography variant="body2" style={styles.infoLabel}>
+          <Text style={styles.infoLabel}>
             Phone:
-          </Typography>
+          </Text>
           <Typography variant="body1" style={styles.infoValue}>
             {formatPhoneNumber(user.phoneNumber, user.countryCode)}
           </Typography>
         </View>
         <View style={styles.infoRow}>
-          <Typography variant="body2" style={styles.infoLabel}>
+          <Text style={styles.infoLabel}>
             Date of Birth:
-          </Typography>
+          </Text>
           <Typography variant="body1" style={styles.infoValue}>
             {formatDate(user.dateOfBirth)}
           </Typography>
         </View>
         <View style={styles.infoRow}>
-          <Typography variant="body2" style={styles.infoLabel}>
+          <Text style={styles.infoLabel}>
             Gender:
-          </Typography>
+          </Text>
           <Typography variant="body1" style={styles.infoValue}>
             {user.gender.charAt(0).toUpperCase() + user.gender.slice(1)}
           </Typography>

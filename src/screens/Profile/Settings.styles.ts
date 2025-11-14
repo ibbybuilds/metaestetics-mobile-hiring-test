@@ -1,20 +1,20 @@
 import { StyleSheet } from 'react-native';
-import { colors, spacing } from '@theme';
+import { colors, spacing } from '@theme/index';
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: colors.background,
+    flex: 1,
   },
   content: {
     padding: spacing.xl,
   },
-  title: {
-    marginBottom: spacing.md,
-    color: colors.textPrimary,
-  },
   subtitle: {
     color: colors.textSecondary,
+  },
+  title: {
+    color: colors.textPrimary,
+    marginBottom: spacing.md,
   },
 });
 

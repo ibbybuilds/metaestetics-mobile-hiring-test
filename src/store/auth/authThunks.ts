@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { LoginCredentials, RegisterData } from '@types';
-import { mockApiService, storageService } from '@services';
+import { LoginCredentials, RegisterData } from '../../types';
+import { mockApiService, storageService } from '@services/index';
 
 export const loginThunk = createAsyncThunk(
   'auth/login',
@@ -10,8 +10,12 @@ export const loginThunk = createAsyncThunk(
       await storageService.saveToken(response.token);
       await storageService.saveUser(response.user);
       return response;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      let errorMessage = 'Unknown error';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -24,8 +28,12 @@ export const registerThunk = createAsyncThunk(
       await storageService.saveToken(response.token);
       await storageService.saveUser(response.user);
       return response;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error: unknown) {
+      let errorMessage = 'Unknown error';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -34,7 +42,8 @@ export const logoutThunk = createAsyncThunk(
   'auth/logout',
   async () => {
     await mockApiService.logout();
-    await storageService.clearAll();
+    await storageService.removeToken();
+    await storageService.removeUser();
   }
 );
 

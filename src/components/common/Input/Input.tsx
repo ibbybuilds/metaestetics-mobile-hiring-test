@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, ViewStyle, KeyboardTypeOptions } from 'react-native';
+import { View, TextInput, TouchableOpacity, ViewStyle, TextStyle, KeyboardTypeOptions } from 'react-native';
 import { Typography } from '../Typography';
 import { styles } from './Input.styles';
 
@@ -8,7 +8,7 @@ export interface InputProps {
   placeholder?: string;
   value: string;
   onChangeText: (text: string) => void;
-  onBlur?: () => void;
+  onBlur?: (event?: any) => void; // Changed onBlur to accept (event?: any) => void
   error?: string;
   secureTextEntry?: boolean;
   keyboardType?: KeyboardTypeOptions;
@@ -19,6 +19,10 @@ export interface InputProps {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   style?: ViewStyle;
+  inputStyle?: TextStyle; // Add inputStyle for TextInput
+  accessibilityLabel?: string; // Added for accessibility
+  accessibilityHint?: string; // Added for accessibility
+  backgroundColor?: string; // Optional background color for input container
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -37,6 +41,10 @@ export const Input: React.FC<InputProps> = ({
   leftIcon,
   rightIcon,
   style,
+  inputStyle: inputStyleProp,
+  accessibilityLabel, // Added for accessibility
+  accessibilityHint, // Added for accessibility
+  backgroundColor, // New prop
 }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -49,13 +57,16 @@ export const Input: React.FC<InputProps> = ({
     error && styles.inputError,
     !editable && styles.inputDisabled,
     multiline && styles.inputMultiline,
-    style,
-  ];
+    inputStyleProp,
+    backgroundColor ? { backgroundColor: backgroundColor } : undefined, // Ensure this is last for override
+  ].filter((v): v is TextStyle => Boolean(v)); // Ensure only TextStyle objects
 
   const containerStyle = [
     styles.container,
     error && styles.containerError,
-  ];
+    style,
+    backgroundColor ? { backgroundColor } : undefined,
+  ].filter((v): v is ViewStyle => Boolean(v)); // Ensure only ViewStyle objects
 
   return (
     <View style={containerStyle}>
@@ -72,9 +83,9 @@ export const Input: React.FC<InputProps> = ({
           placeholderTextColor="#9CA3AF"
           value={value}
           onChangeText={onChangeText}
-          onBlur={() => {
+          onBlur={event => {
             setIsFocused(false);
-            onBlur?.();
+            onBlur?.(event);
           }}
           onFocus={() => setIsFocused(true)}
           secureTextEntry={secureTextEntry && !isPasswordVisible}
@@ -83,6 +94,8 @@ export const Input: React.FC<InputProps> = ({
           editable={editable}
           multiline={multiline}
           numberOfLines={numberOfLines}
+          accessibilityLabel={accessibilityLabel || label} // Forward accessibilityLabel
+          accessibilityHint={accessibilityHint} // Forward accessibilityHint
         />
         {secureTextEntry && (
           <TouchableOpacity

@@ -8,42 +8,36 @@ export const styles = StyleSheet.create({
   containerError: {
     marginBottom: spacing.xs,
   },
-  label: {
-    marginBottom: spacing.xs,
-    color: colors.textPrimary,
-    fontWeight: '500',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'relative',
+  errorText: {
+    color: colors.error,
+    fontSize: 12,
+    marginTop: spacing.xs,
   },
   input: {
-    flex: 1,
-    height: 44,
-    borderWidth: 1,
+    backgroundColor: colors.white,
     borderColor: colors.border,
     borderRadius: 8,
-    paddingHorizontal: spacing.md,
-    fontSize: 16,
+    borderWidth: 1,
     color: colors.textPrimary,
-    backgroundColor: colors.white,
+    flex: 1,
+    fontSize: 16,
+    height: 44,
+    paddingHorizontal: spacing.md,
   },
-  inputWithLeftIcon: {
-    paddingLeft: 40,
-  },
-  inputWithRightIcon: {
-    paddingRight: 40,
-  },
-  inputFocused: {
-    borderColor: colors.borderFocus,
-  },
-  inputError: {
-    borderColor: colors.error,
+  inputContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    position: 'relative',
   },
   inputDisabled: {
     backgroundColor: colors.gray[100],
     color: colors.textSecondary,
+  },
+  inputError: {
+    borderColor: colors.error,
+  },
+  inputFocused: {
+    borderColor: colors.borderFocus,
   },
   inputMultiline: {
     height: 'auto',
@@ -51,24 +45,30 @@ export const styles = StyleSheet.create({
     paddingTop: spacing.sm,
     textAlignVertical: 'top',
   },
-  leftIcon: {
-    position: 'absolute',
-    left: spacing.sm,
-    zIndex: 1,
+  inputWithLeftIcon: {
+    paddingLeft: 40,
   },
-  rightIcon: {
+  inputWithRightIcon: {
+    paddingRight: 40,
+  },
+  label: {
+    color: colors.textPrimary,
+    fontWeight: '500',
+    marginBottom: spacing.xs,
+  },
+  leftIcon: {
+    left: spacing.sm,
     position: 'absolute',
-    right: spacing.sm,
     zIndex: 1,
   },
   passwordToggle: {
     color: colors.primary,
     fontSize: 12,
   },
-  errorText: {
-    color: colors.error,
-    marginTop: spacing.xs,
-    fontSize: 12,
+  rightIcon: {
+    position: 'absolute',
+    right: spacing.sm,
+    zIndex: 1,
   },
 });
 
