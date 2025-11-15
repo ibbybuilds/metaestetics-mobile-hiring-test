@@ -1,29 +1,23 @@
 import { StyleSheet } from 'react-native';
-import { colors, spacing } from '@theme';
+import { colors, spacing } from '@theme/index';
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
+  button: {
+    marginBottom: spacing.lg,
   },
-  scrollContent: {
-    flexGrow: 1,
+  container: {
+    backgroundColor: colors.background,
+    flex: 1,
   },
   content: {
     flex: 1,
-    padding: spacing.xl,
     justifyContent: 'center',
+    padding: spacing.xl,
   },
-  title: {
-    marginBottom: spacing.xs,
-    color: colors.textPrimary,
-  },
-  subtitle: {
-    marginBottom: spacing.xl,
-    color: colors.textSecondary,
-  },
-  form: {
-    width: '100%',
+  errorText: {
+    color: colors.error,
+    marginBottom: spacing.md,
+    textAlign: 'center',
   },
   forgotPassword: {
     alignSelf: 'flex-end',
@@ -32,25 +26,33 @@ export const styles = StyleSheet.create({
   forgotPasswordText: {
     color: colors.primary,
   },
-  button: {
-    marginBottom: spacing.lg,
+  form: {
+    width: '100%',
   },
-  errorText: {
-    color: colors.error,
-    marginBottom: spacing.md,
-    textAlign: 'center',
+  scrollContent: {
+    flexGrow: 1,
   },
   signUpContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: spacing.md,
   },
-  signUpText: {
-    color: colors.textSecondary,
-  },
   signUpLink: {
     color: colors.primary,
     fontWeight: '600',
+  },
+  signUpText: {
+    color: colors.textSecondary,
+  },
+  subtitle: {
+    color: colors.textSecondary,
+    marginBottom: spacing.xl,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
   },
 });
 

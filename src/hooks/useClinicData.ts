@@ -1,18 +1,17 @@
-// Placeholder for custom hook - candidates will implement this
-// Should handle:
-// - Loading states
-// - Error states
-// - Caching
-// - Refetching
-// - Be reusable for different data types
+import { useDataResource } from './useDataResource';
+
+// Example fetcher for clinics (replace with real API if needed)
+const fetchClinics = async () => {
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  return Array.from({ length: 100 }, (_, i) => ({
+    id: `clinic-${i}`,
+    name: `Clinic ${i + 1}`,
+    address: `${i + 1} Main Street`,
+    rating: Math.random() * 5,
+  }));
+};
 
 export const useClinicData = () => {
-  // Candidates implement this
-  return {
-    data: [],
-    loading: false,
-    error: null,
-    refetch: () => {},
-  };
+  return useDataResource(['clinics'], fetchClinics);
 };
 

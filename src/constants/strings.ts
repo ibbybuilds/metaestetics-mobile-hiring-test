@@ -1,0 +1,45 @@
+export const STRINGS = {
+  app: {
+    loading: 'Loading...',
+  },
+  registration: {
+    title: 'Create your account',
+    emailLabel: 'Email',
+    passwordLabel: 'Password',
+    confirmPasswordLabel: 'Confirm Password',
+    next: 'Next',
+    back: 'Back',
+    reviewTitle: 'Review Your Information',
+    reviewSubtitle: 'Please review your details before submitting',
+    createAccount: 'Create Account',
+    submitting: 'Submitting...'
+  },
+  login: {
+    title: 'Login',
+    subtitle: 'Sign in to your account',
+    emailLabel: 'Email',
+    passwordLabel: 'Password',
+    login: 'Login',
+    forgotPassword: 'Forgot Password?',
+    noAccount: "Don't have an account?",
+    signUp: 'Sign up',
+  },
+  profile: {
+    edit: 'Edit Profile',
+    save: 'Save',
+    saving: 'Saving...',
+    cancel: 'Cancel',
+    success: 'Profile updated successfully',
+    error: 'Failed to update profile',
+    name: 'Name',
+    lastName: 'Last Name',
+    phone: 'Phone',
+    dob: 'Date of Birth',
+    gender: 'Gender',
+  },
+  clinics: {
+    searchPlaceholder: 'Search clinics...',
+    failedToLoad: 'Failed to load clinics.',
+    rating: 'Rating',
+  },
+};

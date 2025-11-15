@@ -2,48 +2,22 @@ import { StyleSheet } from 'react-native';
 import { colors, spacing } from '@theme';
 
 export const styles = StyleSheet.create({
-  container: {
-    marginBottom: spacing.md,
-  },
-  label: {
-    marginBottom: spacing.xs,
-    color: colors.textPrimary,
-    fontWeight: '500',
-  },
-  selectButton: {
-    height: 44,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 8,
-    paddingHorizontal: spacing.md,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.white,
-  },
-  selectButtonError: {
-    borderColor: colors.error,
-  },
-  selectText: {
-    flex: 1,
-    color: colors.textPrimary,
-  },
-  placeholder: {
-    color: colors.textTertiary,
-  },
   arrow: {
     color: colors.textSecondary,
     fontSize: 12,
   },
+  container: {
+    marginBottom: spacing.md,
+  },
   errorText: {
     color: colors.error,
-    marginTop: spacing.xs,
     fontSize: 12,
+    marginTop: spacing.xs,
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
+  label: {
+    color: colors.textPrimary,
+    fontWeight: '500',
+    marginBottom: spacing.xs,
   },
   modalContent: {
     backgroundColor: colors.white,
@@ -52,10 +26,15 @@ export const styles = StyleSheet.create({
     maxHeight: '50%',
     paddingBottom: spacing.lg,
   },
+  modalOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
   option: {
-    padding: spacing.md,
-    borderBottomWidth: 1,
     borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    padding: spacing.md,
   },
   optionSelected: {
     backgroundColor: colors.gray[50],
@@ -66,6 +45,27 @@ export const styles = StyleSheet.create({
   optionTextSelected: {
     color: colors.primary,
     fontWeight: '600',
+  },
+  placeholder: {
+    color: colors.textTertiary,
+  },
+  selectButton: {
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderColor: colors.border,
+    borderRadius: 8,
+    borderWidth: 1,
+    flexDirection: 'row',
+    height: 44,
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.md,
+  },
+  selectButtonError: {
+    borderColor: colors.error,
+  },
+  selectText: {
+    color: colors.textPrimary,
+    flex: 1,
   },
 });
 

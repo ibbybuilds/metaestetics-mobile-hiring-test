@@ -11,6 +11,7 @@ export interface RegisterData {
   confirmPassword: string;
   firstName: string;
   lastName: string;
+  phone: string; // Added for step 1 compatibility
   phoneNumber: string;
   countryCode: string;
   dateOfBirth: string;

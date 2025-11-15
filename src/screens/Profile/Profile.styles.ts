@@ -1,67 +1,67 @@
 import { StyleSheet } from 'react-native';
-import { colors, spacing } from '@theme';
+import { colors, spacing } from '@theme/index';
 
 export const styles = StyleSheet.create({
+  avatarPlaceholder: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: 60,
+    height: 120,
+    justifyContent: 'center',
+    marginBottom: spacing.md,
+    width: 120,
+  },
+  avatarText: {
+    color: colors.white,
+  },
+  button: {
+    marginBottom: spacing.sm,
+  },
+  buttonContainer: {
+    gap: spacing.md,
+  },
+  cardTitle: {
+    color: colors.textPrimary,
+    marginBottom: spacing.md,
+  },
   container: {
-    flex: 1,
     backgroundColor: colors.backgroundSecondary,
+    flex: 1,
   },
   content: {
     padding: spacing.lg,
+  },
+  email: {
+    color: colors.textSecondary,
   },
   header: {
     alignItems: 'center',
     marginBottom: spacing.xl,
   },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: spacing.md,
-  },
-  avatarPlaceholder: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: spacing.md,
-  },
-  avatarText: {
-    color: colors.white,
-  },
-  name: {
-    marginBottom: spacing.xs,
-    color: colors.textPrimary,
-  },
-  email: {
-    color: colors.textSecondary,
-  },
   infoCard: {
     marginBottom: spacing.lg,
   },
-  cardTitle: {
-    marginBottom: spacing.md,
-    color: colors.textPrimary,
+  infoLabel: {
+    color: colors.textSecondary,
   },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: spacing.sm,
   },
-  infoLabel: {
-    color: colors.textSecondary,
-  },
   infoValue: {
     color: colors.textPrimary,
     fontWeight: '500',
   },
-  buttonContainer: {
-    gap: spacing.md,
+  name: {
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
   },
-  button: {
-    marginBottom: spacing.sm,
+  profileImage: {
+    borderRadius: 60,
+    height: 120,
+    marginBottom: spacing.md,
+    width: 120,
   },
 });
 

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { colors, spacing } from '@theme';
+import { colors, spacing } from '@theme/index';
 
 export const styles = StyleSheet.create({
   container: {
@@ -12,8 +12,7 @@ export const styles = StyleSheet.create({
   },
   phoneContainer: {
     width: '100%',
-    height: 44,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: colors.border,
     borderRadius: 8,
     backgroundColor: colors.white,
@@ -24,6 +23,7 @@ export const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 16,
+    lineHeight: 20,
     color: colors.textPrimary,
   },
   codeText: {

@@ -1,47 +1,47 @@
 import { StyleSheet } from 'react-native';
-import { colors, spacing } from '@theme';
+import { colors, spacing } from '../../../theme';
 
 export const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },
   
   // Variants
+  ghost: {
+    backgroundColor: colors.transparent,
+  },
+  outline: {
+    backgroundColor: colors.transparent,
+    borderColor: colors.primary,
+    borderWidth: 1,
+  },
   primary: {
     backgroundColor: colors.primary,
   },
   secondary: {
     backgroundColor: colors.secondary,
   },
-  outline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
-  ghost: {
-    backgroundColor: 'transparent',
-  },
   
   // Sizes
   smallSize: {
+    minHeight: 32,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
-    minHeight: 32,
   },
   mediumSize: {
+    minHeight: 44,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    minHeight: 44,
   },
   largeSize: {
+    minHeight: 52,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
-    minHeight: 52,
   },
   
   // Text styles
@@ -70,6 +70,10 @@ export const styles = StyleSheet.create({
   },
   largeText: {
     fontSize: 18,
+  },
+  // Base text style to ensure centered alignment in buttons
+  textBase: {
+    textAlign: 'center',
   },
   
   // States

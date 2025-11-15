@@ -1,4 +1,4 @@
-import { User, LoginCredentials, RegisterData } from '@types';
+import { User, LoginCredentials, RegisterData } from '../types';
 import { MOCK_USERS } from '@utils/constants';
 import { storageService } from './storage.service';
 
