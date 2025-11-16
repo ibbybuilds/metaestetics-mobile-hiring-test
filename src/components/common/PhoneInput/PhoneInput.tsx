@@ -60,6 +60,8 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
           onChangeCountry={(country) => {
             if (country?.callingCode?.length) {
               onChangeCountryCode(`+${country.callingCode[0]}`);
+            } else {
+              onChangeCountryCode('+');
             }
           }}
           countryPickerProps={{ renderFlagButton: false }}
@@ -78,4 +80,3 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
     </View>
   );
 };
-

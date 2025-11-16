@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { View, FlatList, ActivityIndicator } from 'react-native';
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { Input, LoadingSpinner, Typography } from '@components/common';
 import { styles } from './ClinicsScreen.styles';
 import { ClinicData } from '@types';
@@ -35,8 +42,10 @@ export const ClinicsScreen: React.FC = () => {
   }, [filteredClinics]);
 
   const handleSearchChange = (text: string) => {
-    setSearchQuery(text);
-    setIsSearching(true);
+    if (text != searchQuery) {
+      setSearchQuery(text);
+      setIsSearching(true);
+    }
   };
 
   useEffect(() => {
@@ -49,56 +58,78 @@ export const ClinicsScreen: React.FC = () => {
     []
   );
 
+  const refresh = () => {
+    setSearchQuery('');
+    refetch();
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+  };
+
   if (loading) {
     return <LoadingSpinner text="Loading clinics..." fullScreen />;
   }
 
   return (
-    <View style={styles.container}>
-      {clinics && clinics.length > 0 && (
-        <Input
-          placeholder="Search clinics..."
-          value={searchQuery}
-          onChangeText={handleSearchChange}
-          style={styles.searchInput}
-          leftIcon={
-            isSearching ? (
-              <ActivityIndicator size="small" style={styles.searchIcon} />
-            ) : (
-              <Ionicons name="search-outline" size={24} style={styles.searchIcon} />
-            )
-          }
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+    >
+      <View style={styles.container}>
+        {clinics && clinics.length > 0 && (
+          <Input
+            placeholder="Search clinics..."
+            value={searchQuery}
+            onChangeText={handleSearchChange}
+            style={styles.searchInput}
+            leftIcon={
+              isSearching ? (
+                <ActivityIndicator size="small" style={styles.searchIconLeft} />
+              ) : (
+                <Ionicons name="search-outline" size={24} style={styles.searchIconLeft} />
+              )
+            }
+            rightIcon={
+              searchQuery && (
+                <TouchableOpacity onPress={clearSearch} activeOpacity={1}>
+                  <Ionicons name="close" size={24} style={styles.searchIconRight} />
+                </TouchableOpacity>
+              )
+            }
+          />
+        )}
+        {debouncedSearch && filteredClinics.length != 0 && (
+          <View style={styles.searchDescription}>
+            <Typography color={colors.textSecondary}>
+              {filteredClinics.length} clinic{filteredClinics.length > 1 ? 's' : ''} found for "
+              {debouncedSearch}"
+            </Typography>
+          </View>
+        )}
+        <FlatList
+          ref={flatListRef}
+          style={styles.content}
+          data={filteredClinics}
+          renderItem={renderClinic}
+          keyExtractor={(item) => item.id}
+          initialNumToRender={12}
+          maxToRenderPerBatch={10}
+          windowSize={10}
+          removeClippedSubviews
+          showsVerticalScrollIndicator={false}
+          getItemLayout={(_, index) => ({
+            length: 100,
+            offset: 100 * index,
+            index,
+          })}
+          ListEmptyComponent={<EmptyList searchQuery={searchQuery} />}
+          refreshing={loading}
+          onRefresh={() => refresh()}
+          contentContainerStyle={filteredClinics.length === 0 && styles.emptyListContainer}
         />
-      )}
-      {searchQuery && filteredClinics.length != 0 && (
-        <View style={styles.searchDescription}>
-          <Typography color={colors.textSecondary}>
-            {filteredClinics.length} clinic{filteredClinics.length > 1 ? 's' : ''} found for "
-            {searchQuery}"
-          </Typography>
-        </View>
-      )}
-      <FlatList
-        ref={flatListRef}
-        style={styles.content}
-        data={filteredClinics}
-        renderItem={renderClinic}
-        keyExtractor={(item) => item.id}
-        initialNumToRender={12}
-        maxToRenderPerBatch={10}
-        windowSize={10}
-        removeClippedSubviews
-        showsVerticalScrollIndicator={false}
-        getItemLayout={(_, index) => ({
-          length: 100,
-          offset: 100 * index,
-          index,
-        })}
-        ListEmptyComponent={<EmptyList searchQuery={searchQuery} />}
-        refreshing={loading}
-        onRefresh={refetch}
-        contentContainerStyle={filteredClinics.length === 0 && styles.emptyListContainer}
-      />
-    </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };

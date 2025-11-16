@@ -138,8 +138,10 @@ export const Register: React.FC = () => {
           <View style={styles.indicator}>
             {Array.from({ length: TOTAL_STEPS }, (_, i) => {
               const stepNumber = i + 1;
-              const isCompleted = stepNumber < currentStep;
+              const isCompleted =
+                (isEditing && stepNumber != TOTAL_STEPS) || stepNumber < currentStep;
               const isCurrent = stepNumber === currentStep;
+              const isEdit = isEditing && stepNumber != TOTAL_STEPS && stepNumber === currentStep;
 
               return (
                 <View
@@ -148,6 +150,7 @@ export const Register: React.FC = () => {
                     styles.step,
                     isCompleted && styles.completedStep,
                     isCurrent && styles.currentStep,
+                    isEdit && styles.editStep,
                   ]}
                 />
               );

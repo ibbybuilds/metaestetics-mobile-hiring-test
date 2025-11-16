@@ -5,14 +5,19 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingVertical: spacing.md,
+    paddingVertical: spacing.sm,
   },
   searchInput: {
     marginHorizontal: spacing.md,
   },
-  searchIcon: {
+  searchIconLeft: {
     marginLeft: spacing.md,
     color: colors.gray[500],
+  },
+  searchIconRight: {
+    marginRight: spacing.md,
+    color: colors.primary,
+    backgroundColor: 'transparent',
   },
   content: {
     paddingVertical: spacing.sm,

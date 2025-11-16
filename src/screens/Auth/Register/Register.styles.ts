@@ -31,15 +31,21 @@ export const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   step: {
-    height: 6,
+    height: 8,
     borderRadius: 4,
     backgroundColor: colors.gray[100],
     width: 30,
+    outlineColor: colors.gray[100],
+    outlineWidth: 1,
   },
   completedStep: {
     backgroundColor: colors.primary,
+    outlineColor: colors.primary,
   },
   currentStep: {
-    backgroundColor: colors.gray[200],
+    outlineColor: colors.primary,
+  },
+  editStep: {
+    opacity: 0.5,
   },
 });

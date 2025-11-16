@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView,Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Button, Typography } from '@components/common';
@@ -17,9 +17,10 @@ export const Welcome: React.FC = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.content}>
         <View style={styles.logoContainer}>
-          <Typography variant="h1" style={styles.logo}>
+          {/* <Typography variant="h1" style={styles.logo}>
             MetaEstetics
-          </Typography>
+          </Typography> */}
+          <Image source={require('@assets/images/logo.png')} style={{width:180,height:100}}/>
         </View>
 
         <View style={styles.textContainer}>
