@@ -7,11 +7,14 @@ import { styles } from './Step.styles';
 import { RegisterData } from '@types';
 import { GENDER_OPTIONS } from '@utils/constants';
 import { formatDateOfBirth } from '@utils/formatters';
+import Entypo from '@expo/vector-icons/Entypo';
+
 export interface Step2PersonalInfoProps {
   formData: Partial<RegisterData>;
   onDataChange: (data: Partial<RegisterData>) => void;
   onNext: () => void;
   onPrevious: () => void;
+  isEditing: boolean;
 }
 
 export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
@@ -19,6 +22,7 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
   onDataChange,
   onNext,
   onPrevious,
+  isEditing,
 }) => {
   const initialValues = {
     firstName: formData.firstName ?? '',
@@ -100,7 +104,13 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
                   setFieldValue('countryCode', code);
                   onDataChange({ ...values, countryCode: code });
                 }}
-                error={touched.phoneNumber && errors.phoneNumber ? errors.phoneNumber : undefined}
+                error={
+                  touched.phoneNumber && errors.phoneNumber
+                    ? errors.phoneNumber
+                    : touched.countryCode && !errors.phoneNumber && errors.countryCode
+                    ? errors.countryCode
+                    : undefined
+                }
               />
 
               <DatePicker
@@ -132,8 +142,9 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
                 onPress={onPrevious}
               />
               <Button
+                rightIcon={<Entypo name="chevron-right" size={24} color="white" />}
                 style={styles.formButton}
-                title="Next"
+                title={isEditing ? 'Review' : 'Next'}
                 onPress={handleSubmit}
               />
             </View>

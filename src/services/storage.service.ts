@@ -88,7 +88,7 @@ export const storageService = {
       STORAGE_KEYS.AUTH_TOKEN,
       STORAGE_KEYS.USER_DATA,
       STORAGE_KEYS.REGISTERED_USERS,
-      STORAGE_KEYS.SIGNUP_DRAFT,
+      STORAGE_KEYS.SIGNUP_DRAFT
     ]);
   },
 

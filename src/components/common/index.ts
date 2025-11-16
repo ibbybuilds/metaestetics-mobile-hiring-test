@@ -7,4 +7,5 @@ export * from './PhoneInput';
 export * from './SelectInput';
 export * from './ImagePickerComponent';
 export * from './LoadingSpinner';
+export * from './Toast';
 

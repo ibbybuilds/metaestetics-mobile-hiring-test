@@ -5,6 +5,8 @@ import { styles } from './Step.styles';
 import { RegisterData } from '@types';
 import { formatPhoneNumber, formatDate, capitalize } from '@utils/formatters';
 import { colors } from '@theme';
+import Feather from '@expo/vector-icons/Feather';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export interface Step4ReviewProps {
   formData: RegisterData;
@@ -45,12 +47,37 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
       <View style={styles.review}>
         <View style={styles.profileImageWrapper}>
           <Image source={profileImageSource} style={styles.profileImage} />
-          <Button variant="ghost" title="Edit photo" onPress={() => goTo(3)} disabled={isLoading} />
+          <Button
+            variant="ghost"
+            title="Update photo"
+            onPress={() => goTo(3)}
+            disabled={isLoading}
+            rightIcon={
+              <Ionicons
+                name="camera-reverse-outline"
+                size={18}
+                style={styles.editButtonIcon}
+              />
+            }
+          />
         </View>
         <Card style={styles.reviewSection}>
           <View style={styles.sectionHeader}>
             <Typography variant="h3">Account</Typography>
-            <Button variant="ghost" title="Edit" onPress={() => goTo(1)} disabled={isLoading} />
+
+            <Button
+              variant="ghost"
+              title="Edit"
+              onPress={() => goTo(1)}
+              disabled={isLoading}
+              rightIcon={
+                <Feather
+                  name="edit"
+                  size={18}
+                  style={styles.editButtonIcon}
+                />
+              }
+            />
           </View>
           <View style={styles.sectionItem}>
             <Typography variant="body1" color={colors.textSecondary}>
@@ -68,7 +95,20 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
         <Card style={styles.reviewSection}>
           <View style={styles.sectionHeader}>
             <Typography variant="h3">Personal Details</Typography>
-            <Button variant="ghost" title="Edit" onPress={() => goTo(2)} disabled={isLoading} />
+
+            <Button
+              variant="ghost"
+              title="Edit"
+              onPress={() => goTo(2)}
+              disabled={isLoading}
+              rightIcon={
+                <Feather
+                  name="edit"
+                  size={18}
+                  style={styles.editButtonIcon}
+                />
+              }
+            />
           </View>
           <View style={styles.sectionItem}>
             <Typography variant="body1" color={colors.textSecondary}>
@@ -112,7 +152,20 @@ export const Step4Review: React.FC<Step4ReviewProps> = ({
           onPress={onPrevious}
           disabled={isLoading}
         />
-        <Button style={styles.formButton} title="Next" onPress={onSubmit} loading={isLoading} />
+        <Button
+          rightIcon={
+            <Ionicons
+              name="checkmark-circle-outline"
+              size={24}
+              color="white"
+              style={styles.formButtonIcon}
+            />
+          }
+          style={styles.formButton}
+          title="Confirm"
+          onPress={onSubmit}
+          loading={isLoading}
+        />
       </View>
     </View>
   );

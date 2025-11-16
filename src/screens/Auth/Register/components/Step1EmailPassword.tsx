@@ -6,16 +6,19 @@ import { registerStep1ValidationSchema } from '@utils/validation';
 import { styles } from './Step.styles';
 import { RegisterData } from '@types';
 import { storageService } from '@services';
+import Entypo from '@expo/vector-icons/Entypo';
 export interface Step1EmailPasswordProps {
   formData: Partial<RegisterData>;
   onDataChange: (data: Partial<RegisterData>) => void;
   onNext: () => void;
+  isEditing: boolean;
 }
 
 export const Step1EmailPassword: React.FC<Step1EmailPasswordProps> = ({
   formData,
   onDataChange,
   onNext,
+  isEditing,
 }) => {
   const initialValues = {
     email: formData.email ?? '',
@@ -103,7 +106,8 @@ export const Step1EmailPassword: React.FC<Step1EmailPasswordProps> = ({
             </View>
             <View style={styles.formFooter}>
               <Button
-                title="Next"
+                rightIcon={<Entypo name="chevron-right" size={24} color="white" />}
+                title={isEditing ? 'Review' : 'Next'}
                 onPress={async () => {
                   const exists = await storageService.checkEmailExists(values.email);
                   if (exists) {

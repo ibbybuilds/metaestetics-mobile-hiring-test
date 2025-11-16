@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   content: {
     flex: 1,
@@ -16,12 +16,30 @@ export const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
   },
   stepIndicator: {
-    marginBottom: spacing.lg,
+    marginBottom: spacing.sm,
     alignItems: 'center',
   },
   stepText: {
     color: colors.textSecondary,
     fontWeight: '500',
   },
+  indicator: {
+    flexDirection: 'row',
+    gap: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  step: {
+    height: 6,
+    borderRadius: 4,
+    backgroundColor: colors.gray[100],
+    width: 30,
+  },
+  completedStep: {
+    backgroundColor: colors.primary,
+  },
+  currentStep: {
+    backgroundColor: colors.gray[200],
+  },
 });
-

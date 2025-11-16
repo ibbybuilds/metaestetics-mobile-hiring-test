@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { showToast } from '@components/common/Toast';
 
 interface UseFetchResult<Data> {
   data: Data | null;
@@ -43,6 +44,7 @@ export function useFetch<APIResponse, Data = APIResponse>(
       cache.set(cacheKey, { data: result, timestamp: Date.now() });
     } catch (err) {
       setError(err);
+      showToast({ text: 'Something went wrong. Try again.', type: 'error' });
     } finally {
       setLoading(false);
     }

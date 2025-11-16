@@ -3,11 +3,14 @@ import { View } from 'react-native';
 import { ImagePickerComponent, Button, Typography } from '@components/common';
 import { styles } from './Step.styles';
 import { RegisterData } from '@types';
+import Entypo from '@expo/vector-icons/Entypo';
+
 export interface Step3ProfilePhotoProps {
   formData: Partial<RegisterData>;
   onDataChange: (data: Partial<RegisterData>) => void;
   onNext: () => void;
   onPrevious: () => void;
+  isEditing: boolean;
 }
 
 export const Step3ProfilePhoto: React.FC<Step3ProfilePhotoProps> = ({
@@ -15,6 +18,7 @@ export const Step3ProfilePhoto: React.FC<Step3ProfilePhotoProps> = ({
   onDataChange,
   onNext,
   onPrevious,
+  isEditing,
 }) => {
   return (
     <View style={styles.container}>
@@ -41,7 +45,12 @@ export const Step3ProfilePhoto: React.FC<Step3ProfilePhotoProps> = ({
       </View>
       <View style={styles.formFooter}>
         <Button variant="outline" style={styles.formButton} title="Back" onPress={onPrevious} />
-        <Button style={styles.formButton} title="Next" onPress={onNext} />
+        <Button
+          rightIcon={<Entypo name="chevron-right" size={24} color="white" />}
+          style={styles.formButton}
+          title={isEditing ? 'Review' : 'Next'}
+          onPress={onNext}
+        />
       </View>
     </View>
   );

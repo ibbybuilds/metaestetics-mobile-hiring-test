@@ -10,10 +10,19 @@ export const styles = StyleSheet.create({
   searchInput: {
     marginHorizontal: spacing.md,
   },
-  searchLoader: {
-    marginRight: spacing.lg,
+  searchIcon: {
+    marginLeft: spacing.md,
+    color: colors.gray[500],
   },
   content: {
-    paddingVertical: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  searchDescription: {
+    marginHorizontal: spacing.md,
+  },
+  emptyListContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

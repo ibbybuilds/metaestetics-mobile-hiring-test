@@ -84,6 +84,7 @@ export const Register: React.FC = () => {
             formData={formData}
             onDataChange={handleDataChange}
             onNext={handleNext}
+            isEditing={isEditing}
           />
         );
       case 2:
@@ -93,6 +94,7 @@ export const Register: React.FC = () => {
             onDataChange={handleDataChange}
             onNext={handleNext}
             onPrevious={handlePrevious}
+            isEditing={isEditing}
           />
         );
       case 3:
@@ -102,6 +104,7 @@ export const Register: React.FC = () => {
             onDataChange={handleDataChange}
             onNext={handleNext}
             onPrevious={handlePrevious}
+            isEditing={isEditing}
           />
         );
       case 4:
@@ -132,7 +135,24 @@ export const Register: React.FC = () => {
               Step {currentStep} of {TOTAL_STEPS}
             </Typography>
           </View>
+          <View style={styles.indicator}>
+            {Array.from({ length: TOTAL_STEPS }, (_, i) => {
+              const stepNumber = i + 1;
+              const isCompleted = stepNumber < currentStep;
+              const isCurrent = stepNumber === currentStep;
 
+              return (
+                <View
+                  key={i}
+                  style={[
+                    styles.step,
+                    isCompleted && styles.completedStep,
+                    isCurrent && styles.currentStep,
+                  ]}
+                />
+              );
+            })}
+          </View>
           {isLoaded && renderStep()}
         </View>
       </ScrollView>

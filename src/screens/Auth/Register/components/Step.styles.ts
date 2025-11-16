@@ -49,5 +49,12 @@ export const styles = StyleSheet.create({
   },
   sectionItem: {
     marginBottom: spacing.sm,
-  }
+  },
+  formButtonIcon: {
+    marginLeft: spacing.sm,
+  },
+  editButtonIcon: {
+    marginLeft: spacing.sm,
+    color: colors.primary
+  },
 });

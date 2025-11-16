@@ -1,18 +1,14 @@
 import * as Yup from 'yup';
 
 export const loginValidationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Invalid email address')
-    .required('Email is required'),
+  email: Yup.string().email('Invalid email address').required('Email is required'),
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
     .required('Password is required'),
 });
 
 export const registerStep1ValidationSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Invalid email address')
-    .required('Email is required'),
+  email: Yup.string().email('Invalid email address').required('Email is required'),
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
     .required('Password is required'),
@@ -31,8 +27,12 @@ export const registerStep2ValidationSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .matches(/^[0-9]{7,15}$/, 'Phone number is invalid')
     .required('Phone number is required'),
-  dateOfBirth: Yup.string()
-    .required('Date of birth is required'),
+  countryCode: Yup.string().when('phoneNumber', {
+    is: (phoneNumber: string) => phoneNumber && /^[0-9]{7,15}$/.test(phoneNumber),
+    then: (schema) => schema.required('Country code is required'),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  dateOfBirth: Yup.string().required('Date of birth is required'),
   gender: Yup.string()
     .oneOf(['male', 'female', 'other'], 'Please select a gender')
     .required('Gender is required'),
@@ -48,10 +48,8 @@ export const editProfileValidationSchema = Yup.object().shape({
   phoneNumber: Yup.string()
     .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
     .required('Phone number is required'),
-  dateOfBirth: Yup.string()
-    .required('Date of birth is required'),
+  dateOfBirth: Yup.string().required('Date of birth is required'),
   gender: Yup.string()
     .oneOf(['male', 'female', 'other'], 'Please select a gender')
     .required('Gender is required'),
 });
-

@@ -168,7 +168,7 @@ export const EditProfile: React.FC = () => {
                   />
                   <Button
                     style={styles.formButton}
-                    title="Update profile"
+                    title="Save changes"
                     onPress={handleSubmit}
                     loading={isSubmitting}
                     disabled={!dirty}

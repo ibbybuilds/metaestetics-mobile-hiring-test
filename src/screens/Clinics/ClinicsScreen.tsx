@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { View, FlatList, ActivityIndicator } from 'react-native';
-import { Input, LoadingSpinner } from '@components/common';
+import { Input, LoadingSpinner, Typography } from '@components/common';
 import { styles } from './ClinicsScreen.styles';
 import { ClinicData } from '@types';
 import { colors } from '@theme';
@@ -8,6 +8,7 @@ import { useDebouncedValue } from '@hooks/useDebouncedValue';
 import { ClinicItem } from './components/ClinicItem';
 import { EmptyList } from './components/EmptyList';
 import { useClinicData } from '@hooks/useClinicData';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export const ClinicsScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -24,7 +25,6 @@ export const ClinicsScreen: React.FC = () => {
 
     const q = debouncedSearch.toLowerCase();
     if (!q) return clinics;
-
     return clinics?.filter(
       (clinic) => clinic.name.toLowerCase().includes(q) || clinic.address.toLowerCase().includes(q)
     );
@@ -50,7 +50,7 @@ export const ClinicsScreen: React.FC = () => {
   );
 
   if (loading) {
-    return <LoadingSpinner fullScreen />;
+    return <LoadingSpinner text="Loading clinics..." fullScreen />;
   }
 
   return (
@@ -61,16 +61,22 @@ export const ClinicsScreen: React.FC = () => {
           value={searchQuery}
           onChangeText={handleSearchChange}
           style={styles.searchInput}
-          rightIcon={
-            isSearching && (
-              <ActivityIndicator
-                size="small"
-                color={colors.gray[500]}
-                style={styles.searchLoader}
-              />
+          leftIcon={
+            isSearching ? (
+              <ActivityIndicator size="small" style={styles.searchIcon} />
+            ) : (
+              <Ionicons name="search-outline" size={24} style={styles.searchIcon} />
             )
           }
         />
+      )}
+      {searchQuery && filteredClinics.length != 0 && (
+        <View style={styles.searchDescription}>
+          <Typography color={colors.textSecondary}>
+            {filteredClinics.length} clinic{filteredClinics.length > 1 ? 's' : ''} found for "
+            {searchQuery}"
+          </Typography>
+        </View>
       )}
       <FlatList
         ref={flatListRef}
@@ -91,6 +97,7 @@ export const ClinicsScreen: React.FC = () => {
         ListEmptyComponent={<EmptyList searchQuery={searchQuery} />}
         refreshing={loading}
         onRefresh={refetch}
+        contentContainerStyle={filteredClinics.length === 0 && styles.emptyListContainer}
       />
     </View>
   );
