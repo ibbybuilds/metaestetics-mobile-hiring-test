@@ -7,7 +7,10 @@ import { AuthStackParamList } from '@types';
 import { colors, spacing } from '@theme';
 import { styles } from './Welcome.styles';
 
-type WelcomeScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
+type WelcomeScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'Welcome'
+>;
 
 export const Welcome: React.FC = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
@@ -52,4 +55,3 @@ export const Welcome: React.FC = () => {
     </ScrollView>
   );
 };
-

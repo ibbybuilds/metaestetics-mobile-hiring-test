@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
+import { CountryCode } from 'react-native-country-picker-modal';
 import { Typography } from '../Typography';
+import { callingCodeToCountryCode } from '@utils/formatters';
 import { styles } from './PhoneInput.styles';
 
 export interface PhoneInputProps {
@@ -21,6 +23,14 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
   countryCode,
   error,
 }) => {
+  // Convert calling code (e.g., '+92') to country code (e.g., 'PK')
+  const defaultCountryCode = useMemo((): CountryCode => {
+    if (countryCode) {
+      return callingCodeToCountryCode(countryCode) as CountryCode;
+    }
+    return 'US' as CountryCode;
+  }, [countryCode]);
+
   return (
     <View style={styles.container}>
       {label && (
@@ -29,12 +39,15 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
         </Typography>
       )}
       <PhoneInput
-        defaultCode="US"
+        defaultCode={defaultCountryCode}
         value={value}
         onChangeText={onChangeText}
-        onChangeFormattedText={(text, code) => {
-          onChangeCountryCode(`+${code.callingCode[0]}`);
+        onChangeCountry={(country) => {
+          if (country && country.callingCode) {
+            onChangeCountryCode(`+${country.callingCode[0]}`);
+          }
         }}
+        countryPickerProps={{ renderFlagButton: false }}
         containerStyle={styles.phoneContainer}
         textContainerStyle={styles.textContainer}
         textInputStyle={styles.textInput}
@@ -48,4 +61,3 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
     </View>
   );
 };
-
