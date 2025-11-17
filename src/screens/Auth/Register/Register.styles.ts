@@ -21,5 +21,9 @@ export const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontWeight: '500',
   },
+  errorText: {
+    color: colors.error,
+    textAlign: 'center',
+    marginBottom: spacing.sm,
+  },
 });
-

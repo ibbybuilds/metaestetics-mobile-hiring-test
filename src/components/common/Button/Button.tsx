@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
+import { TouchableOpacity, ActivityIndicator, ViewStyle, StyleProp, TextStyle } from 'react-native';
 import { Typography } from '../Typography';
 import { styles } from './Button.styles';
 
@@ -13,7 +13,7 @@ export interface ButtonProps {
   fullWidth?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -66,4 +66,3 @@ export const Button: React.FC<ButtonProps> = ({
     </TouchableOpacity>
   );
 };
-

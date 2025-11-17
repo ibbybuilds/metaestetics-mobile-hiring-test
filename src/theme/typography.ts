@@ -13,11 +13,17 @@ export const typography = {
     medium: '500',
     semibold: '600',
     bold: '700',
-  },
+  } as const,
   lineHeights: {
-    tight: 1.2,
-    normal: 1.5,
-    relaxed: 1.75,
-  },
-};
-
+    tight: 18,
+    normal: 24,
+    relaxed: 28,
+    h1: 44,
+    h2: 38,
+    h3: 32,
+    h4: 28,
+    body1: 24,
+    body2: 20,
+    caption: 18,
+  } as const,
+} as const;

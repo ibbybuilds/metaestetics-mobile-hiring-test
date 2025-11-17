@@ -1,32 +1,41 @@
-import React, { useState } from 'react';
-import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Typography, Button } from '@components/common';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { registerThunk } from '@store/auth/authThunks';
-import { RegisterData } from '@types';
-import { AuthStackParamList } from '@types';
-import { styles } from './Register.styles';
-import { Step1EmailPassword } from './components/Step1EmailPassword';
-import { Step2PersonalInfo } from './components/Step2PersonalInfo';
-import { Step3ProfilePhoto } from './components/Step3ProfilePhoto';
-import { Step4Review } from './components/Step4Review';
-
-type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
+import React, { useEffect, useState } from "react";
+import { View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import { Typography, LoadingSpinner } from "@components/common";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { registerThunk } from "@store/auth/authThunks";
+import { clearError } from "@store/auth/authSlice";
+import { RegisterData } from "@types";
+import { styles } from "./Register.styles";
+import { Step1EmailPassword } from "@components/RegisterationSteps/Step1EmailPassword";
+import { Step2PersonalInfo } from "@components/RegisterationSteps/Step2PersonalInfo";
+import { Step3ProfilePhoto } from "@components/RegisterationSteps/Step3ProfilePhoto";
+import { Step4Review } from "@components/RegisterationSteps/Step4Review";
+import {
+  loadRegistrationDraft,
+  updateRegistrationDraft,
+  clearRegistrationDraft,
+} from "@store/registration";
+import { DEFAULT_COUNTRY_CODE, DEFAULT_COUNTRY_ISO } from "@utils/constants";
 
 const TOTAL_STEPS = 4;
 
 export const Register: React.FC = () => {
-  const navigation = useNavigation<RegisterScreenNavigationProp>();
   const dispatch = useAppDispatch();
-  const { isLoading } = useAppSelector(state => state.auth);
-  
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<Partial<RegisterData>>({});
+  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const {
+    draft: formData,
+    status: registrationStatus,
+    error: registrationError,
+  } = useAppSelector((state) => state.registration);
 
-  const handleDataChange = (data: Partial<RegisterData>) => {
-    setFormData(prev => ({ ...prev, ...data }));
+  const [currentStep, setCurrentStep] = useState(1);
+
+  const handleDataChange = async (data: Partial<RegisterData>) => {
+    try {
+      await dispatch(updateRegistrationDraft(data)).unwrap();
+    } catch {
+      // persistence errors are surfaced via the registration slice if needed
+    }
   };
 
   const handleNext = () => {
@@ -43,9 +52,24 @@ export const Register: React.FC = () => {
 
   const handleSubmit = async () => {
     if (currentStep === TOTAL_STEPS) {
-      await dispatch(registerThunk(formData as RegisterData));
+      try {
+        await dispatch(registerThunk(formData as RegisterData)).unwrap();
+        await dispatch(clearRegistrationDraft());
+      } catch {
+        // rely on auth slice for error messaging
+      }
     }
   };
+
+  useEffect(() => {
+    dispatch(loadRegistrationDraft());
+  }, [dispatch]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   const renderStep = () => {
     switch (currentStep) {
@@ -76,12 +100,27 @@ export const Register: React.FC = () => {
           />
         );
       case 4:
+        const reviewData: RegisterData = {
+          email: formData.email ?? "",
+          password: formData.password ?? "",
+          confirmPassword: formData.confirmPassword ?? "",
+          firstName: formData.firstName ?? "",
+          lastName: formData.lastName ?? "",
+          phoneNumber: formData.phoneNumber ?? "",
+          countryCode: formData.countryCode ?? DEFAULT_COUNTRY_CODE,
+          countryIso: formData.countryIso ?? DEFAULT_COUNTRY_ISO,
+          dateOfBirth: formData.dateOfBirth ?? "",
+          gender: formData.gender ?? "other",
+          profileImage: formData.profileImage,
+        };
+
         return (
           <Step4Review
-            formData={formData as RegisterData}
+            formData={reviewData}
             onPrevious={handlePrevious}
             onSubmit={handleSubmit}
             isLoading={isLoading}
+            error={error}
           />
         );
       default:
@@ -89,10 +128,14 @@ export const Register: React.FC = () => {
     }
   };
 
+  if (registrationStatus === "loading") {
+    return <LoadingSpinner fullScreen />;
+  }
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -105,10 +148,15 @@ export const Register: React.FC = () => {
             </Typography>
           </View>
 
+          {registrationError && (
+            <Typography variant="caption" style={styles.errorText}>
+              {registrationError}
+            </Typography>
+          )}
+
           {renderStep()}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 };
-
