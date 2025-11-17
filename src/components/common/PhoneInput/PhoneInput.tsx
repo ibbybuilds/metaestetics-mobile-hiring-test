@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import PhoneInput from 'react-native-phone-number-input';
 import { Typography } from '../Typography';
 import { styles } from './PhoneInput.styles';
+import { Country } from "react-native-country-picker-modal";
 
 export interface PhoneInputProps {
   label?: string;
@@ -32,13 +33,15 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
         defaultCode="US"
         value={value}
         onChangeText={onChangeText}
-        onChangeFormattedText={(text, code) => {
-          onChangeCountryCode(`+${code.callingCode[0]}`);
+        onChangeCountry={(country: Country) => {
+          onChangeCountryCode(`+${country.callingCode[0]}`);
         }}
         containerStyle={styles.phoneContainer}
         textContainerStyle={styles.textContainer}
         textInputStyle={styles.textInput}
         codeTextStyle={styles.codeText}
+        countryPickerProps={{ renderFlagButton: false }}
+        placeholder='e.g. +1 234 567 890'
       />
       {error && (
         <Typography variant="caption" style={styles.errorText}>

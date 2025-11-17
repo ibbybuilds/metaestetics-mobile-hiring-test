@@ -34,6 +34,8 @@ export const Typography: React.FC<TypographyProps> = ({
         variantStyles[variant],
         { color, textAlign: align },
         style,
+        // Add proper line height using the font size
+        { lineHeight: variantStyles[variant].fontSize * typography.lineHeights.normal }
       ]}
     >
       {children}
@@ -43,7 +45,7 @@ export const Typography: React.FC<TypographyProps> = ({
 
 const styles = StyleSheet.create({
   base: {
-    lineHeight: typography.lineHeights.normal,
+    lineHeight: typography.fontSizes.md * typography.lineHeights.normal,
   },
 });
 
