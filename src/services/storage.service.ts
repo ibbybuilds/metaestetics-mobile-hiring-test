@@ -73,7 +73,7 @@ export const storageService = {
     await AsyncStorage.multiRemove([
       STORAGE_KEYS.AUTH_TOKEN,
       STORAGE_KEYS.USER_DATA,
-      STORAGE_KEYS.REGISTERED_USERS,
+      // STORAGE_KEYS.REGISTERED_USERS, // Uncomment if you want to clear registered users as well
     ]);
   },
 };

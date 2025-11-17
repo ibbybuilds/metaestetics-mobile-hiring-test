@@ -7,12 +7,12 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   scrollContent: {
-    flexGrow: 1,
+    justifyContent: 'center',
+    marginTop: spacing.xxxl,
   },
   content: {
     flex: 1,
     padding: spacing.xl,
-    justifyContent: 'center',
   },
   title: {
     marginBottom: spacing.xs,
@@ -24,6 +24,7 @@ export const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
+    gap: spacing.md,
   },
   forgotPassword: {
     alignSelf: 'flex-end',

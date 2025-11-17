@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Platform } from 'react-native';
+import { View, TouchableOpacity, Platform, Modal, Button } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Input } from '../Input';
 import { Typography } from '../Typography';
@@ -27,18 +27,52 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   const handleDateChange = (event: any, selectedDate?: Date) => {
     if (Platform.OS === 'android') {
       setShowPicker(false);
-    }
-    
-    if (selectedDate) {
-      setInternalDate(selectedDate);
-      onChange(selectedDate);
-      if (Platform.OS === 'ios') {
-        setShowPicker(false);
+      if (selectedDate) {
+        onChange(selectedDate);
+      }
+    } else {
+      if (selectedDate) {
+        setInternalDate(selectedDate);
       }
     }
   };
 
+  const handleDone = () => {
+    onChange(internalDate);
+    setShowPicker(false);
+  };
+
+  const handleCancel = () => {
+    setInternalDate(value || new Date());
+    setShowPicker(false);
+  };
+
   const displayValue = value ? formatDate(value) : '';
+
+  const renderIOSPicker = () => (
+    <Modal
+      transparent={true}
+      animationType="slide"
+      visible={showPicker}
+      onRequestClose={handleCancel}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.pickerContainer}>
+          <View style={styles.toolbar}>
+            <Button title="Cancel" onPress={handleCancel} />
+            <Button title="Done" onPress={handleDone} />
+          </View>
+          <DateTimePicker
+            value={internalDate}
+            mode="date"
+            display="spinner"
+            onChange={handleDateChange}
+            maximumDate={new Date()}
+          />
+        </View>
+      </View>
+    </Modal>
+  );
 
   return (
     <View style={styles.container}>
@@ -61,15 +95,16 @@ export const DatePicker: React.FC<DatePickerProps> = ({
         />
       </TouchableOpacity>
       
-      {showPicker && (
+      {showPicker && Platform.OS === 'android' && (
         <DateTimePicker
           value={internalDate}
           mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          display="default"
           onChange={handleDateChange}
           maximumDate={new Date()}
         />
       )}
+      {Platform.OS === 'ios' && renderIOSPicker()}
     </View>
   );
 };
