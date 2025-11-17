@@ -1,84 +1,135 @@
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
-import { Card, Typography, Input, LoadingSpinner } from '@components/common';
-import { mockApiService } from '@services';
-import { colors, spacing } from '@theme';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { Input, LoadingSpinner, Typography } from '@components/common';
+import { styles } from './ClinicsScreen.styles';
+import { ClinicData } from '@types';
+import { colors } from '@theme';
+import { useDebouncedValue } from '@hooks/useDebouncedValue';
+import { ClinicItem } from './components/ClinicItem';
+import { EmptyList } from './components/EmptyList';
+import { useClinicData } from '@hooks/useClinicData';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-// This is intentionally slow and inefficient - candidates need to optimize it
 export const ClinicsScreen: React.FC = () => {
-  const [clinics, setClinics] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const debouncedSearch = useDebouncedValue(searchQuery, 300);
+  const flatListRef = useRef<FlatList<ClinicData>>(null);
+
+  // Initial load
+  const { clinics, loading, error, refetch } = useClinicData();
+
+  // Memoized search
+  const filteredClinics = useMemo(() => {
+    if (!clinics) return [];
+
+    const q = debouncedSearch.toLowerCase();
+    if (!q) return clinics;
+    return clinics?.filter(
+      (clinic) => clinic.name.toLowerCase().includes(q) || clinic.address.toLowerCase().includes(q)
+    );
+  }, [clinics, debouncedSearch]);
 
   useEffect(() => {
-    loadClinics();
-  }, []);
+    flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
+  }, [filteredClinics]);
 
-  // Intentionally inefficient - fetches all clinics every time
-  const loadClinics = async () => {
-    setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const mockClinics = Array.from({ length: 100 }, (_, i) => ({
-      id: `clinic-${i}`,
-      name: `Clinic ${i + 1}`,
-      address: `${i + 1} Main Street`,
-      rating: Math.random() * 5,
-    }));
-    setClinics(mockClinics);
-    setLoading(false);
+  const handleSearchChange = (text: string) => {
+    if (text != searchQuery) {
+      setSearchQuery(text);
+      setIsSearching(true);
+    }
   };
 
-  // Intentionally inefficient - filters on every keystroke without debouncing
-  const filteredClinics = clinics.filter(clinic =>
-    clinic.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    clinic.address.toLowerCase().includes(searchQuery.toLowerCase())
+  useEffect(() => {
+    setIsSearching(false);
+  }, [debouncedSearch]);
+
+  // Memoized render
+  const renderClinic = useCallback(
+    ({ item }: { item: ClinicData }) => <ClinicItem data={item} />,
+    []
   );
 
-  const renderClinic = ({ item }: { item: any }) => {
-    // Intentionally inefficient - creates new component on every render
-    return (
-      <Card style={styles.clinicCard}>
-        <Typography variant="h4">{item.name}</Typography>
-        <Typography variant="body2">{item.address}</Typography>
-        <Typography variant="body2">Rating: {item.rating.toFixed(1)}</Typography>
-      </Card>
-    );
+  const refresh = () => {
+    setSearchQuery('');
+    refetch();
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
   };
 
   if (loading) {
-    return <LoadingSpinner fullScreen />;
+    return <LoadingSpinner text="Loading clinics..." fullScreen />;
   }
 
   return (
-    <View style={styles.container}>
-      <Input
-        placeholder="Search clinics..."
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        style={styles.searchInput}
-      />
-      <FlatList
-        data={filteredClinics}
-        renderItem={renderClinic}
-        keyExtractor={(item) => item.id}
-        // Intentionally missing performance optimizations
-      />
-    </View>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+    >
+      <View style={styles.container}>
+        {clinics && clinics.length > 0 && (
+          <Input
+            placeholder="Search clinics..."
+            value={searchQuery}
+            onChangeText={handleSearchChange}
+            style={styles.searchInput}
+            leftIcon={
+              isSearching ? (
+                <ActivityIndicator size="small" style={styles.searchIconLeft} />
+              ) : (
+                <Ionicons name="search-outline" size={24} style={styles.searchIconLeft} />
+              )
+            }
+            rightIcon={
+              searchQuery && (
+                <TouchableOpacity onPress={clearSearch} activeOpacity={1}>
+                  <Ionicons name="close" size={24} style={styles.searchIconRight} />
+                </TouchableOpacity>
+              )
+            }
+          />
+        )}
+        {debouncedSearch && filteredClinics.length != 0 && (
+          <View style={styles.searchDescription}>
+            <Typography color={colors.textSecondary}>
+              {filteredClinics.length} clinic{filteredClinics.length > 1 ? 's' : ''} found for "
+              {debouncedSearch}"
+            </Typography>
+          </View>
+        )}
+        <FlatList
+          ref={flatListRef}
+          style={styles.content}
+          data={filteredClinics}
+          renderItem={renderClinic}
+          keyExtractor={(item) => item.id}
+          initialNumToRender={12}
+          maxToRenderPerBatch={10}
+          windowSize={10}
+          removeClippedSubviews
+          showsVerticalScrollIndicator={false}
+          getItemLayout={(_, index) => ({
+            length: 100,
+            offset: 100 * index,
+            index,
+          })}
+          ListEmptyComponent={<EmptyList searchQuery={searchQuery} />}
+          refreshing={loading}
+          onRefresh={() => refresh()}
+          contentContainerStyle={filteredClinics.length === 0 && styles.emptyListContainer}
+        />
+      </View>
+    </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-    padding: spacing.md,
-  },
-  searchInput: {
-    marginBottom: spacing.md,
-  },
-  clinicCard: {
-    marginBottom: spacing.sm,
-  },
-});
-

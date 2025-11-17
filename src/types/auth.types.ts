@@ -18,6 +18,11 @@ export interface RegisterData {
   profileImage?: string;
 }
 
+export type RegisterDataDraft = {
+  data: Partial<RegisterData>;
+  step: number;
+};
+
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;

@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { LoginCredentials, RegisterData } from '@types';
+import { LoginCredentials, RegisterData, RegisterDataDraft, User } from '@types';
 import { mockApiService, storageService } from '@services';
+import { showToast } from '@components/common/Toast';
 
 export const loginThunk = createAsyncThunk(
   'auth/login',
@@ -9,8 +10,11 @@ export const loginThunk = createAsyncThunk(
       const response = await mockApiService.login(credentials);
       await storageService.saveToken(response.token);
       await storageService.saveUser(response.user);
+      await storageService.removeSignupDraft();
+      showToast({ text: 'Logged in successfully', type: 'success' });
       return response;
     } catch (error: any) {
+      showToast({ text: 'Something went wrong', type: 'error' });
       return rejectWithValue(error.message);
     }
   }
@@ -23,30 +27,67 @@ export const registerThunk = createAsyncThunk(
       const response = await mockApiService.register(data);
       await storageService.saveToken(response.token);
       await storageService.saveUser(response.user);
+      await storageService.removeSignupDraft();
+      showToast({ text: 'Account created successfully', type: 'success' });
       return response;
+    } catch (error: any) {
+      showToast({ text: 'Something went wrong', type: 'error' });
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const signupDraftThunk = createAsyncThunk(
+  'auth/signupDraft',
+  async (draft: RegisterDataDraft, { rejectWithValue }) => {
+    try {
+      await storageService.saveSignupDraft(draft);
+      return draft;
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
   }
 );
 
-export const logoutThunk = createAsyncThunk(
-  'auth/logout',
-  async () => {
-    await mockApiService.logout();
-    await storageService.clearAll();
-  }
-);
-
-export const checkAuthThunk = createAsyncThunk(
-  'auth/checkAuth',
-  async () => {
-    const token = await storageService.getToken();
-    if (token) {
-      const user = await storageService.getUser();
-      return user;
+export const checkSignupDraftThunk = createAsyncThunk(
+  'auth/checkSignupDraft',
+  async (_, { rejectWithValue }) => {
+    try {
+      const draft = await storageService.getSignupDraft();
+      return draft;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
     }
-    return null;
   }
 );
 
+export const updateProfileThunk = createAsyncThunk(
+  'auth/updateProfile',
+  async (data: { userId: User['id']; updates: Partial<User> }, { rejectWithValue }) => {
+    try {
+      const response = await mockApiService.updateProfile(data.userId, data.updates);
+      showToast({ text: 'Profile updated successfully', type: 'success' });
+      return response.user;
+    } catch (error: any) {
+      showToast({ text: 'Something went wrong', type: 'error' });
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const logoutThunk = createAsyncThunk('auth/logout', async () => {
+  await mockApiService.logout();
+  await storageService.clearAuth();
+  showToast({ text: 'Logged out successfully', type: 'success' });
+});
+
+export const checkAuthThunk = createAsyncThunk('auth/checkAuth', async (_, { dispatch }) => {
+  const token = await storageService.getToken();
+  if (token) {
+    const user = await storageService.getUser();
+    return user;
+  } else {
+    dispatch(checkSignupDraftThunk());
+  }
+  return null;
+});

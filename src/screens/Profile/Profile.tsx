@@ -8,15 +8,17 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { logoutThunk } from '@store/auth/authThunks';
 import { formatDate, formatPhoneNumber, getInitials } from '@utils/formatters';
 import { MainStackParamList } from '@types';
-import { colors, spacing } from '@theme';
 import { styles } from './Profile.styles';
+import Feather from '@expo/vector-icons/Feather';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { colors } from '@theme';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Profile'>;
 
 export const Profile: React.FC = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector(state => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
   const handleLogout = async () => {
     await dispatch(logoutThunk());
@@ -26,22 +28,14 @@ export const Profile: React.FC = () => {
     return null;
   }
 
+  const profileImageSource = user.profileImage
+    ? { uri: user.profileImage }
+    : require('@assets/images/default-avatar.png');
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
-        {user.profileImage ? (
-          <Image
-            source={{ uri: user.profileImage }}
-            style={styles.profileImage}
-            contentFit="cover"
-          />
-        ) : (
-          <View style={styles.avatarPlaceholder}>
-            <Typography variant="h2" style={styles.avatarText}>
-              {getInitials(user.firstName, user.lastName)}
-            </Typography>
-          </View>
-        )}
+        <Image source={profileImageSource} style={styles.profileImage} />
         <Typography variant="h2" style={styles.name}>
           {user.firstName} {user.lastName}
         </Typography>
@@ -88,6 +82,7 @@ export const Profile: React.FC = () => {
           size="large"
           fullWidth
           style={styles.button}
+          rightIcon={<Feather name="edit" size={24} color={colors.white} style={styles.buttonIcon} />}
         />
         <Button
           title="View Clinics"
@@ -96,6 +91,7 @@ export const Profile: React.FC = () => {
           size="large"
           fullWidth
           style={styles.button}
+          rightIcon={<Ionicons name="business-outline" color={colors.white} size={24} style={styles.buttonIcon} />}
         />
         <Button
           title="Settings"
@@ -104,6 +100,7 @@ export const Profile: React.FC = () => {
           size="large"
           fullWidth
           style={styles.button}
+          rightIcon={<Ionicons name="settings-outline" color={colors.primary} size={24} style={styles.buttonIcon} />}
         />
         <Button
           title="Logout"
@@ -117,4 +114,3 @@ export const Profile: React.FC = () => {
     </ScrollView>
   );
 };
-

@@ -5,7 +5,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Formik } from 'formik';
 import { Input, Button, Typography } from '@components/common';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { loginThunk, clearError } from '@store/auth/authSlice';
+import { loginThunk } from '@store/auth/authThunks';
+import { clearError } from '@store/auth/authSlice';
 import { loginValidationSchema } from '@utils/validation';
 import { AuthStackParamList } from '@types';
 import { styles } from './Login.styles';
@@ -15,7 +16,7 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, '
 export const Login: React.FC = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector(state => state.auth);
+  const { isLoading, error, signupDraft } = useAppSelector((state) => state.auth);
 
   React.useEffect(() => {
     return () => {
@@ -28,14 +29,8 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={styles.content}>
           <Typography variant="h2" style={styles.title}>
             Login
@@ -56,7 +51,7 @@ export const Login: React.FC = () => {
                   placeholder="Enter your email"
                   value={values.email}
                   onChangeText={handleChange('email')}
-                  onBlur={handleBlur('email')}
+                  onBlur={() => handleBlur('email')}
                   error={touched.email && errors.email ? errors.email : undefined}
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -67,7 +62,7 @@ export const Login: React.FC = () => {
                   placeholder="Enter your password"
                   value={values.password}
                   onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
+                  onBlur={() => handleBlur('password')}
                   error={touched.password && errors.password ? errors.password : undefined}
                   secureTextEntry
                 />
@@ -78,10 +73,7 @@ export const Login: React.FC = () => {
                   </Typography>
                 )}
 
-                <TouchableOpacity
-                  onPress={() => {}}
-                  style={styles.forgotPassword}
-                >
+                <TouchableOpacity onPress={() => {}} style={styles.forgotPassword}>
                   <Typography variant="body2" style={styles.forgotPasswordText}>
                     Forgot Password?
                   </Typography>
@@ -97,16 +89,26 @@ export const Login: React.FC = () => {
                   style={styles.button}
                 />
 
-                <View style={styles.signUpContainer}>
-                  <Typography variant="body2" style={styles.signUpText}>
-                    Don't have an account?{' '}
-                  </Typography>
-                  <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                    <Typography variant="body2" style={styles.signUpLink}>
-                      Sign up
+                {signupDraft ? (
+                  <View style={styles.signUpContainer}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                      <Typography variant="body2" style={styles.signUpLink}>
+                        Finish creating your account
+                      </Typography>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={styles.signUpContainer}>
+                    <Typography variant="body2" style={styles.signUpText}>
+                      Don't have an account?{' '}
                     </Typography>
-                  </TouchableOpacity>
-                </View>
+                    <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                      <Typography variant="body2" style={styles.signUpLink}>
+                        Sign up
+                      </Typography>
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
             )}
           </Formik>
@@ -115,4 +117,3 @@ export const Login: React.FC = () => {
     </KeyboardAvoidingView>
   );
 };
-

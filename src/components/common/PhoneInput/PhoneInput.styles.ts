@@ -12,15 +12,16 @@ export const styles = StyleSheet.create({
   },
   phoneContainer: {
     width: '100%',
-    height: 44,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 8,
     backgroundColor: colors.white,
   },
   textContainer: {
+    paddingVertical: 0,
     backgroundColor: colors.white,
     borderRadius: 8,
+    height: 44,
   },
   textInput: {
     fontSize: 16,

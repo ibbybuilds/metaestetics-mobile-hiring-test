@@ -63,5 +63,7 @@ export const styles = StyleSheet.create({
   button: {
     marginBottom: spacing.sm,
   },
+  buttonIcon: {
+    marginLeft: spacing.sm,
+  },
 });
-

@@ -1,29 +1,31 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView,Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Button, Typography } from '@components/common';
 import { AuthStackParamList } from '@types';
-import { colors, spacing } from '@theme';
 import { styles } from './Welcome.styles';
+import { useAppSelector } from '@store/hooks';
 
 type WelcomeScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Welcome'>;
 
 export const Welcome: React.FC = () => {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
+  const { signupDraft } = useAppSelector((state) => state.auth);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.content}>
         <View style={styles.logoContainer}>
-          <Typography variant="h1" style={styles.logo}>
+          {/* <Typography variant="h1" style={styles.logo}>
             MetaEstetics
-          </Typography>
+          </Typography> */}
+          <Image source={require('@assets/images/logo.png')} style={{width:180,height:100}}/>
         </View>
 
         <View style={styles.textContainer}>
           <Typography variant="h2" align="center" style={styles.title}>
-            Welcome
+            {signupDraft ? 'Welcome Back!' : 'Welcome'}
           </Typography>
           <Typography variant="body1" align="center" style={styles.subtitle}>
             Your journey to better aesthetics starts here
@@ -40,7 +42,7 @@ export const Welcome: React.FC = () => {
             style={styles.button}
           />
           <Button
-            title="Sign Up"
+            title={signupDraft ? 'Continue Sign Up' : 'Sign Up'}
             onPress={() => navigation.navigate('Register')}
             variant="outline"
             size="large"
@@ -52,4 +54,3 @@ export const Welcome: React.FC = () => {
     </ScrollView>
   );
 };
-
