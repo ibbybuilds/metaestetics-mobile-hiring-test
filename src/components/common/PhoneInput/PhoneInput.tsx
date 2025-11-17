@@ -21,6 +21,24 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
   countryCode,
   error,
 }) => {
+  const phoneInputRef = React.useRef<PhoneInput>(null);
+
+  React.useEffect(() => {
+    const instance = phoneInputRef.current as any;
+    if (!instance) {
+      return;
+    }
+
+    const normalizedCode = (countryCode || '+1').replace(/^\+/, '');
+
+    if (normalizedCode && instance.setState) {
+      instance.setState((prevState: any) => ({
+        ...prevState,
+        code: normalizedCode,
+      }));
+    }
+  }, [countryCode]);
+
   return (
     <View style={styles.container}>
       {label && (
@@ -29,11 +47,15 @@ export const PhoneInputComponent: React.FC<PhoneInputProps> = ({
         </Typography>
       )}
       <PhoneInput
+        ref={phoneInputRef}
         defaultCode="US"
         value={value}
         onChangeText={onChangeText}
-        onChangeFormattedText={(text, code) => {
-          onChangeCountryCode(`+${code.callingCode[0]}`);
+        onChangeCountry={(country) => {
+          const callingCode = country?.callingCode?.[0];
+          if (callingCode) {
+            onChangeCountryCode(`+${callingCode}`);
+          }
         }}
         containerStyle={styles.phoneContainer}
         textContainerStyle={styles.textContainer}

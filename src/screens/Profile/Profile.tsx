@@ -7,8 +7,8 @@ import { Button, Card, Typography } from '@components/common';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { logoutThunk } from '@store/auth/authThunks';
 import { formatDate, formatPhoneNumber, getInitials } from '@utils/formatters';
-import { MainStackParamList } from '@types';
-import { colors, spacing } from '@theme';
+import { MainStackParamList } from '../../types';
+import { colors, spacing } from '../../theme';
 import { styles } from './Profile.styles';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<MainStackParamList, 'Profile'>;
@@ -31,9 +31,11 @@ export const Profile: React.FC = () => {
       <View style={styles.header}>
         {user.profileImage ? (
           <Image
+            key={user.profileImage}
             source={{ uri: user.profileImage }}
             style={styles.profileImage}
             contentFit="cover"
+            cachePolicy="none"
           />
         ) : (
           <View style={styles.avatarPlaceholder}>

@@ -31,16 +31,20 @@ export const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
 
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ['images'],
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.8,
       });
 
-      if (!result.canceled && result.assets[0]) {
-        onImageSelected(result.assets[0].uri);
+      if (!result.canceled && result.assets) {
+        const [firstAsset] = result.assets;
+        if (firstAsset?.uri) {
+          onImageSelected(firstAsset.uri);
+        }
       }
     } catch (error) {
+      console.error('ImagePicker error', error);
       Alert.alert('Error', 'Failed to pick image. Please try again.');
     } finally {
       setLoading(false);
