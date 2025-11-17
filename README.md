@@ -85,7 +85,7 @@ src/
 
 ## Your Tasks
 
-See `CHALLENGE.md` for what you need to build.
+See `CHALLENGE.md` for Round 1 and `ROUND2_CHALLENGE.md` for Round 2. Read both documents carefully, as some requirements are intentionally open-ended and are meant to test your judgment and attention to detail.
 
 ## Submission Process
 
