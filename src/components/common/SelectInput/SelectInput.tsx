@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Modal, FlatList } from 'react-native';
+import { View, TouchableOpacity, Modal, FlatList, Text } from 'react-native';
 import { Typography } from '../Typography';
 import { styles } from './SelectInput.styles';
 
@@ -40,15 +40,17 @@ export const SelectInput: React.FC<SelectInputProps> = ({
       <TouchableOpacity
         style={[styles.selectButton, error && styles.selectButtonError]}
         onPress={() => setModalVisible(true)}
+        accessibilityRole="button"
+        accessibilityLabel={label || placeholder}
       >
         <Typography
           variant="body1"
-          style={[styles.selectText, !selectedOption && styles.placeholder]}
+          style={[styles.selectText, !selectedOption && styles.placeholder].filter(Boolean)}
         >
           {displayValue}
         </Typography>
         <Typography variant="body2" style={styles.arrow}>
-          ▼
+          <Text>▼</Text>
         </Typography>
       </TouchableOpacity>
       {error && (
@@ -85,7 +87,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
                     style={[
                       styles.optionText,
                       item.value === value && styles.optionTextSelected,
-                    ]}
+                    ].filter(Boolean)}
                   >
                     {item.label}
                   </Typography>

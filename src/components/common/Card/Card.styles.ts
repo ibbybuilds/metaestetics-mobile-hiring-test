@@ -5,8 +5,9 @@ export const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.white,
     borderRadius: 12,
-    padding: spacing.md,
+    elevation: 3,
     marginBottom: spacing.md,
+    padding: spacing.md,
     shadowColor: colors.black,
     shadowOffset: {
       width: 0,
@@ -14,7 +15,6 @@ export const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
   },
 });
 

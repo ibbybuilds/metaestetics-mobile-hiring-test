@@ -1,41 +1,41 @@
 import { StyleSheet } from 'react-native';
-import { colors, spacing } from '@theme';
+import { colors, spacing } from '@theme/index';
 
 export const styles = StyleSheet.create({
+  button: {
+    marginBottom: spacing.sm,
+  },
+  buttonContainer: {
+    gap: spacing.md,
+    width: '100%',
+  },
   container: {
-    flexGrow: 1,
     backgroundColor: colors.background,
+    flexGrow: 1,
   },
   content: {
+    alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     padding: spacing.xl,
-  },
-  logoContainer: {
-    marginBottom: spacing.xxl,
   },
   logo: {
     color: colors.primary,
   },
-  textContainer: {
-    marginBottom: spacing.xxxl,
-    alignItems: 'center',
-  },
-  title: {
-    marginBottom: spacing.md,
-    color: colors.textPrimary,
+  logoContainer: {
+    marginBottom: spacing.xxl,
   },
   subtitle: {
     color: colors.textSecondary,
     textAlign: 'center',
   },
-  buttonContainer: {
-    width: '100%',
-    gap: spacing.md,
+  textContainer: {
+    alignItems: 'center',
+    marginBottom: spacing.xxxl,
   },
-  button: {
-    marginBottom: spacing.sm,
+  title: {
+    color: colors.textPrimary,
+    marginBottom: spacing.md,
   },
 });
 
