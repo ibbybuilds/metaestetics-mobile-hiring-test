@@ -1,13 +1,25 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { View, FlatList, StyleSheet, ListRenderItem } from 'react-native';
-import { Card, Typography, Input, LoadingSpinner } from '@components/common';
-import { Clinic } from '@types';
-import { useDebounce } from '@hooks/useDebounce';
-import { useClinicData } from '@hooks/useClinicData';
-import { colors, spacing } from '@theme';
+import React, { useState, useMemo, useCallback } from "react";
+import { View, FlatList, StyleSheet, ListRenderItem } from "react-native";
+import {
+  Card,
+  Typography,
+  Input,
+  LoadingSpinner,
+  Button,
+} from "@components/common";
+import { Clinic, MainStackParamList } from "@types";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+import { useDebounce } from "@hooks/useDebounce";
+import { useClinicData } from "@hooks/useClinicData";
+import { colors, spacing } from "@theme";
 
 // Memoized clinic item component to prevent unnecessary re-renders
-const ClinicItem = React.memo<{ clinic: Clinic }>(({ clinic }) => {
+const ClinicItem = React.memo<{
+  clinic: Clinic;
+  onBookPress: (id: string) => void;
+}>(({ clinic, onBookPress }) => {
   return (
     <Card style={styles.clinicCard}>
       <Typography variant="h4">{clinic.name}</Typography>
@@ -17,14 +29,20 @@ const ClinicItem = React.memo<{ clinic: Clinic }>(({ clinic }) => {
       </Typography>
       {clinic.specialties && clinic.specialties.length > 0 && (
         <Typography variant="caption" style={styles.specialties}>
-          {clinic.specialties.join(', ')}
+          {clinic.specialties.join(", ")}
         </Typography>
       )}
+      <Button
+        title="Book Appointment"
+        onPress={() => onBookPress(clinic.id)}
+        style={styles.bookButton}
+        size="small"
+      />
     </Card>
   );
 });
 
-ClinicItem.displayName = 'ClinicItem';
+ClinicItem.displayName = "ClinicItem";
 
 // Empty component for when no results are found
 const EmptyComponent = () => (
@@ -36,7 +54,9 @@ const EmptyComponent = () => (
 );
 
 export const ClinicsScreen: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigation =
+    useNavigation<NativeStackNavigationProp<MainStackParamList>>();
 
   // Use the reusable data fetching hook
   const { data: clinics, loading, error } = useClinicData();
@@ -68,8 +88,13 @@ export const ClinicsScreen: React.FC = () => {
 
   // Memoize renderItem callback
   const renderItem: ListRenderItem<Clinic> = useCallback(
-    ({ item }) => <ClinicItem clinic={item} />,
-    []
+    ({ item }) => (
+      <ClinicItem
+        clinic={item}
+        onBookPress={(id) => navigation.navigate("Booking", { clinicId: id })}
+      />
+    ),
+    [navigation]
   );
 
   // Memoize keyExtractor callback
@@ -128,11 +153,16 @@ const styles = StyleSheet.create({
   specialties: {
     marginTop: spacing.xs,
     color: colors.textSecondary,
+    marginBottom: spacing.sm,
   },
+  bookButton: {
+    marginTop: spacing.sm,
+  },
+
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: spacing.xl,
   },
   emptyText: {

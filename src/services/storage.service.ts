@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_KEYS } from '@utils/constants';
-import { User, RegisterData } from '@types';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { STORAGE_KEYS } from "@utils/constants";
+import { User, RegisterData, Booking } from "@types";
 
 interface StoredUserCredentials {
   email: string;
@@ -113,6 +113,17 @@ export const storageService = {
       STORAGE_KEYS.USER_DATA,
       STORAGE_KEYS.REGISTERED_USERS,
       STORAGE_KEYS.REGISTER_DRAFT,
+      STORAGE_KEYS.BOOKINGS,
     ]);
+  },
+
+  // Bookings
+  async getBookings(): Promise<Booking[]> {
+    const data = await AsyncStorage.getItem(STORAGE_KEYS.BOOKINGS);
+    return data ? JSON.parse(data) : [];
+  },
+
+  async saveBookings(bookings: Booking[]): Promise<void> {
+    await AsyncStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
   },
 };
