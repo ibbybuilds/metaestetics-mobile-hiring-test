@@ -9,12 +9,14 @@ import {
   createBooking,
   resetBookingStatus,
   clearSlots,
+  cancelBooking,
+  fetchUserBookings,
 } from "@store/booking/bookingSlice";
 import { Calendar } from "@components/booking/Calendar";
 import { TimeSlotPicker } from "@components/booking/TimeSlotPicker";
 import { colors } from "@theme/colors";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { getLocalDateString } from "@utils/formatters";
+import { getLocalDateString, formatTime } from "@utils/formatters";
 
 type BookingScreenRouteProp = RouteProp<MainStackParamList, "Booking">;
 type BookingScreenNavigationProp = NativeStackNavigationProp<
@@ -28,7 +30,7 @@ export const BookingScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { clinicId } = route.params;
 
-  const { slots, loading, error, bookingSuccess } = useSelector(
+  const { slots, loading, error, bookingSuccess, userBookings } = useSelector(
     (state: RootState) => state.booking
   );
 
@@ -39,6 +41,8 @@ export const BookingScreen = () => {
 
   useEffect(() => {
     dispatch(fetchSlots({ clinicId, date: selectedDate }));
+    // Fetch user bookings to check for conflicts
+    dispatch(fetchUserBookings());
     return () => {
       dispatch(clearSlots());
     };
@@ -73,12 +77,66 @@ export const BookingScreen = () => {
 
   const handleSlotSelect = (slotId: string) => {
     setSelectedSlotId(slotId);
+
+    // Find the selected slot details
+    const selectedSlot = slots.find((s) => s.id === slotId);
+    if (!selectedSlot) return;
+
+    // Check for conflicting booking
+    const conflictingBooking = userBookings.find(
+      (booking) =>
+        booking.status !== "cancelled" &&
+        booking.slot.startTime === selectedSlot.startTime
+    );
+
+    if (conflictingBooking) {
+      Alert.alert(
+        "Conflicting Appointment",
+        `You already have an appointment at ${formatTime(
+          selectedSlot.startTime
+        )} with ${conflictingBooking.clinicName}. Do you want to replace it?`,
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+            onPress: () => setSelectedSlotId(undefined),
+          },
+          {
+            text: "Replace",
+            style: "destructive",
+            onPress: async () => {
+              // Cancel old booking then create new one
+              await dispatch(cancelBooking(conflictingBooking.id));
+              dispatch(
+                createBooking({
+                  clinicId,
+                  slotId,
+                  note: "Replaced previous appointment",
+                })
+              );
+            },
+          },
+        ]
+      );
+      return;
+    }
+
     Alert.alert("Confirm Booking", "Do you want to book this slot?", [
-      { text: "Cancel", style: "cancel" },
+      {
+        text: "Cancel",
+        style: "cancel",
+        onPress: () => setSelectedSlotId(undefined),
+      },
       {
         text: "Confirm",
         onPress: () => {
-          dispatch(createBooking({ clinicId, slotId }));
+          dispatch(
+            createBooking({
+              clinicId,
+              slotId,
+              note: "Booked via app",
+            })
+          );
         },
       },
     ]);

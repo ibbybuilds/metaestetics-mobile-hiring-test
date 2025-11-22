@@ -45,6 +45,18 @@ export const createBooking = createAsyncThunk(
   }
 );
 
+export const cancelBooking = createAsyncThunk(
+  "booking/cancelBooking",
+  async (bookingId: string, { rejectWithValue }) => {
+    try {
+      await mockApiService.cancelBooking(bookingId);
+      return bookingId;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const fetchUserBookings = createAsyncThunk(
   "booking/fetchUserBookings",
   async (_, { rejectWithValue }) => {
@@ -113,6 +125,32 @@ const bookingSlice = createSlice({
       state.error = action.payload as string;
       state.bookingSuccess = false;
     });
+
+    builder.addCase(
+      cancelBooking.fulfilled,
+      (state, action: PayloadAction<string>) => {
+        state.loading = false;
+        // Remove from userBookings or mark as cancelled
+        const index = state.userBookings.findIndex(
+          (b) => b.id === action.payload
+        );
+        if (index >= 0) {
+          state.userBookings[index].status = "cancelled";
+        }
+
+        // If the cancelled booking corresponds to a slot in the current view, mark it as available
+        // We need to find the slotId from the booking we just cancelled
+        const booking = state.userBookings.find((b) => b.id === action.payload);
+        if (booking) {
+          const slotIndex = state.slots.findIndex(
+            (s) => s.id === booking.slotId
+          );
+          if (slotIndex >= 0) {
+            state.slots[slotIndex].isBooked = false;
+          }
+        }
+      }
+    );
 
     // Fetch User Bookings
     builder.addCase(fetchUserBookings.pending, (state) => {

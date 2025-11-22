@@ -302,6 +302,36 @@ export const mockApiService = {
     };
   },
 
+  async cancelBooking(bookingId: string) {
+    await delay(800);
+    const currentUser = await storageService.getUser();
+    if (!currentUser) throw new Error("User not authenticated");
+
+    const bookings = await storageService.getBookings();
+    const bookingIndex = bookings.findIndex(
+      (b) => b.id === bookingId && b.userId === currentUser.id
+    );
+
+    if (bookingIndex === -1) {
+      throw new Error("Booking not found");
+    }
+
+    // Instead of deleting, we mark as cancelled to keep history
+    bookings[bookingIndex].status = "cancelled";
+    bookings[bookingIndex].updatedAt = new Date().toISOString();
+
+    // Also free up the slot if we want to allow re-booking immediately
+    // In this mock implementation, the slot.isBooked is derived from bookings list
+    // so changing status to 'cancelled' is enough because getSlots filters by status !== 'cancelled'
+
+    await storageService.saveBookings(bookings);
+
+    return {
+      success: true,
+      bookingId,
+    };
+  },
+
   async getUserBookings() {
     await delay(800);
     const currentUser = await storageService.getUser();
