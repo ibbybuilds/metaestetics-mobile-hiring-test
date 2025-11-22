@@ -1,4 +1,4 @@
-import { NavigatorScreenParams } from '@react-navigation/native';
+import { NavigatorScreenParams } from "@react-navigation/native";
 
 export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
@@ -16,5 +16,7 @@ export type MainStackParamList = {
   EditProfile: undefined;
   Settings: undefined;
   Clinics: undefined;
+  Booking: { clinicId: string };
+  TimeSlotSelection: { clinicId: string; selectedDate: string; note: string };
+  MyAppointments: undefined;
 };
-
