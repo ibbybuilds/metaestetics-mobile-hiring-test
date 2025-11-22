@@ -85,7 +85,6 @@ export const ClinicsScreen: React.FC = () => {
           ))
     );
   }, [clinics, debouncedSearchQuery]);
-  console.log("filteredClinics", filteredClinics);
 
   // Memoize renderItem callback
   const renderItem: ListRenderItem<Clinic> = useCallback(

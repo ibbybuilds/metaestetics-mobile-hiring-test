@@ -54,8 +54,6 @@ export const MyAppointmentsScreen = () => {
       return filter === "past" ? timeB - timeA : timeA - timeB;
     });
 
-  console.log("filteredBookings", filteredBookings);
-
   const renderItem = ({ item }: { item: Booking }) => (
     <Card style={styles.card}>
       <View style={styles.cardHeader}>

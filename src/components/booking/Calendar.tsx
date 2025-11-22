@@ -9,12 +9,14 @@ interface CalendarProps {
   selectedDate: string;
   onDateSelect: (date: string) => void;
   minDate?: string;
+  onMonthChange?: (date: DateData) => void;
 }
 
 export const Calendar: React.FC<CalendarProps> = ({
   selectedDate,
   onDateSelect,
   minDate,
+  onMonthChange,
 }) => {
   // Calculate default minDate using local time if not provided
   const defaultMinDate = minDate || getLocalDateString();
@@ -25,6 +27,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         current={selectedDate}
         minDate={defaultMinDate}
         onDayPress={(day: DateData) => onDateSelect(day.dateString)}
+        onMonthChange={onMonthChange}
         markedDates={{
           [selectedDate]: {
             selected: true,

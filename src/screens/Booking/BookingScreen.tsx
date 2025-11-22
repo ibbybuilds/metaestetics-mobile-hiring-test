@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text, Alert, ScrollView } from "react-native";
 import { useRoute, useNavigation, RouteProp } from "@react-navigation/native";
+import { DateData } from "react-native-calendars";
 import { useDispatch, useSelector } from "react-redux";
+
 import { MainStackParamList } from "@types";
 import { AppDispatch, RootState } from "@store";
 import {
@@ -39,6 +41,10 @@ export const BookingScreen = () => {
     undefined
   );
 
+  const [visibleMonth, setVisibleMonth] = useState(
+    selectedDate.substring(0, 7)
+  );
+
   useEffect(() => {
     dispatch(fetchSlots({ clinicId, date: selectedDate }));
     // Fetch user bookings to check for conflicts
@@ -73,7 +79,18 @@ export const BookingScreen = () => {
   const handleDateSelect = (date: string) => {
     setSelectedDate(date);
     setSelectedSlotId(undefined);
+    // When selecting a date, ensure visible month matches (though calendar usually handles this)
+    setVisibleMonth(date.substring(0, 7));
   };
+
+  const handleMonthChange = (date: DateData) => {
+    // Update visible month state
+    const monthString = date.dateString.substring(0, 7);
+    setVisibleMonth(monthString);
+  };
+
+  // Calculate if slots should be shown
+  const showSlots = selectedDate.substring(0, 7) === visibleMonth;
 
   const handleSlotSelect = (slotId: string) => {
     setSelectedSlotId(slotId);
@@ -146,10 +163,14 @@ export const BookingScreen = () => {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.header}>Select Date & Time</Text>
 
-      <Calendar selectedDate={selectedDate} onDateSelect={handleDateSelect} />
+      <Calendar
+        selectedDate={selectedDate}
+        onDateSelect={handleDateSelect}
+        onMonthChange={handleMonthChange}
+      />
 
       <TimeSlotPicker
-        slots={slots}
+        slots={showSlots ? slots : []}
         selectedSlotId={selectedSlotId}
         onSlotSelect={handleSlotSelect}
         loading={loading}
