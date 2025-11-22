@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Alert, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { useRoute, useNavigation, RouteProp } from "@react-navigation/native";
+
 import { DateData } from "react-native-calendars";
-import { useDispatch, useSelector } from "react-redux";
 
 import { MainStackParamList } from "@types";
-import { AppDispatch, RootState } from "@store";
-import {
-  fetchSlots,
-  createBooking,
-  resetBookingStatus,
-  clearSlots,
-  cancelBooking,
-  fetchUserBookings,
-} from "@store/booking/bookingSlice";
+
 import { Calendar } from "@components/booking/Calendar";
-import { TimeSlotPicker } from "@components/booking/TimeSlotPicker";
+
 import { colors } from "@theme/colors";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { getLocalDateString, formatTime } from "@utils/formatters";
+import { getLocalDateString } from "@utils/formatters";
 
 type BookingScreenRouteProp = RouteProp<MainStackParamList, "Booking">;
 type BookingScreenNavigationProp = NativeStackNavigationProp<
@@ -29,56 +28,17 @@ type BookingScreenNavigationProp = NativeStackNavigationProp<
 export const BookingScreen = () => {
   const route = useRoute<BookingScreenRouteProp>();
   const navigation = useNavigation<BookingScreenNavigationProp>();
-  const dispatch = useDispatch<AppDispatch>();
   const { clinicId } = route.params;
 
-  const { slots, loading, error, bookingSuccess, userBookings } = useSelector(
-    (state: RootState) => state.booking
-  );
-
   const [selectedDate, setSelectedDate] = useState(getLocalDateString());
-  const [selectedSlotId, setSelectedSlotId] = useState<string | undefined>(
-    undefined
-  );
+  const [bookingNote, setBookingNote] = useState<string>("");
 
   const [visibleMonth, setVisibleMonth] = useState(
     selectedDate.substring(0, 7)
   );
 
-  useEffect(() => {
-    dispatch(fetchSlots({ clinicId, date: selectedDate }));
-    // Fetch user bookings to check for conflicts
-    dispatch(fetchUserBookings());
-    return () => {
-      dispatch(clearSlots());
-    };
-  }, [dispatch, clinicId, selectedDate]);
-
-  useEffect(() => {
-    if (bookingSuccess) {
-      Alert.alert("Success", "Appointment booked successfully!", [
-        {
-          text: "OK",
-          onPress: () => {
-            dispatch(resetBookingStatus());
-            navigation.goBack();
-          },
-        },
-      ]);
-    }
-  }, [bookingSuccess, dispatch, navigation]);
-
-  useEffect(() => {
-    if (error) {
-      Alert.alert("Error", error, [
-        { text: "OK", onPress: () => dispatch(resetBookingStatus()) },
-      ]);
-    }
-  }, [error, dispatch]);
-
   const handleDateSelect = (date: string) => {
     setSelectedDate(date);
-    setSelectedSlotId(undefined);
     // When selecting a date, ensure visible month matches (though calendar usually handles this)
     setVisibleMonth(date.substring(0, 7));
   };
@@ -89,79 +49,17 @@ export const BookingScreen = () => {
     setVisibleMonth(monthString);
   };
 
-  // Calculate if slots should be shown
-  const showSlots = selectedDate.substring(0, 7) === visibleMonth;
-
-  const handleSlotSelect = (slotId: string) => {
-    setSelectedSlotId(slotId);
-
-    // Find the selected slot details
-    const selectedSlot = slots.find((s) => s.id === slotId);
-    if (!selectedSlot) return;
-
-    // Check for conflicting booking
-    const conflictingBooking = userBookings.find(
-      (booking) =>
-        booking.status !== "cancelled" &&
-        booking.slot.startTime === selectedSlot.startTime
-    );
-
-    if (conflictingBooking) {
-      Alert.alert(
-        "Conflicting Appointment",
-        `You already have an appointment at ${formatTime(
-          selectedSlot.startTime
-        )} with ${conflictingBooking.clinicName}. Do you want to replace it?`,
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-            onPress: () => setSelectedSlotId(undefined),
-          },
-          {
-            text: "Replace",
-            style: "destructive",
-            onPress: async () => {
-              // Cancel old booking then create new one
-              await dispatch(cancelBooking(conflictingBooking.id));
-              dispatch(
-                createBooking({
-                  clinicId,
-                  slotId,
-                  note: "Replaced previous appointment",
-                })
-              );
-            },
-          },
-        ]
-      );
-      return;
-    }
-
-    Alert.alert("Confirm Booking", "Do you want to book this slot?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-        onPress: () => setSelectedSlotId(undefined),
-      },
-      {
-        text: "Confirm",
-        onPress: () => {
-          dispatch(
-            createBooking({
-              clinicId,
-              slotId,
-              note: "Booked via app",
-            })
-          );
-        },
-      },
-    ]);
+  const handleContinue = () => {
+    navigation.navigate("TimeSlotSelection", {
+      clinicId,
+      selectedDate,
+      note: bookingNote,
+    });
   };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.header}>Select Date & Time</Text>
+      <Text style={styles.header}>Select Date & Add Note</Text>
 
       <Calendar
         selectedDate={selectedDate}
@@ -169,12 +67,28 @@ export const BookingScreen = () => {
         onMonthChange={handleMonthChange}
       />
 
-      <TimeSlotPicker
-        slots={showSlots ? slots : []}
-        selectedSlotId={selectedSlotId}
-        onSlotSelect={handleSlotSelect}
-        loading={loading}
-      />
+      <View style={styles.noteContainer}>
+        <Text style={styles.noteLabel}>Add a note (optional)</Text>
+        <TextInput
+          style={styles.noteInput}
+          placeholder="e.g., First visit, follow-up appointment..."
+          placeholderTextColor={colors.textTertiary}
+          value={bookingNote}
+          onChangeText={setBookingNote}
+          multiline
+          numberOfLines={3}
+          maxLength={200}
+        />
+        <Text style={styles.characterCount}>{bookingNote.length}/200</Text>
+      </View>
+
+      <TouchableOpacity
+        style={styles.continueButton}
+        onPress={handleContinue}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.continueButtonText}>Continue to Select Time</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -192,5 +106,45 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: colors.textPrimary,
     marginBottom: 20,
+  },
+  noteContainer: {
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  noteLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: colors.textPrimary,
+    marginBottom: 8,
+  },
+  noteInput: {
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    color: colors.textPrimary,
+    minHeight: 80,
+    textAlignVertical: "top",
+  },
+  characterCount: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    textAlign: "right",
+    marginTop: 4,
+  },
+  continueButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    padding: 16,
+    alignItems: "center",
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  continueButtonText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

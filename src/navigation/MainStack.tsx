@@ -3,7 +3,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { MainStackParamList } from "@types";
 import { Profile, EditProfile, Settings } from "@screens/Profile";
 import { ClinicsScreen } from "@screens/Clinics";
-import { BookingScreen, MyAppointmentsScreen } from "@screens/Booking";
+import {
+  BookingScreen,
+  MyAppointmentsScreen,
+  TimeSlotSelectionScreen,
+} from "@screens/Booking";
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
@@ -33,7 +37,12 @@ export const MainStack = () => {
       <Stack.Screen
         name="Booking"
         component={BookingScreen}
-        options={{ title: "Book Appointment" }}
+        options={{ title: "Select Date" }}
+      />
+      <Stack.Screen
+        name="TimeSlotSelection"
+        component={TimeSlotSelectionScreen}
+        options={{ title: "Select Time" }}
       />
       <Stack.Screen
         name="MyAppointments"

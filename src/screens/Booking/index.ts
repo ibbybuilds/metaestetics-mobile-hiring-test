@@ -1,2 +1,3 @@
-export * from "./BookingScreen";
-export * from "./MyAppointmentsScreen";
+export { BookingScreen } from "./BookingScreen";
+export { MyAppointmentsScreen } from "./MyAppointmentsScreen";
+export { TimeSlotSelectionScreen } from "./TimeSlotSelectionScreen";

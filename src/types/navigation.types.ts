@@ -17,5 +17,6 @@ export type MainStackParamList = {
   Settings: undefined;
   Clinics: undefined;
   Booking: { clinicId: string };
+  TimeSlotSelection: { clinicId: string; selectedDate: string; note: string };
   MyAppointments: undefined;
 };
