@@ -9,6 +9,7 @@ import { clearError } from '@store/auth/authSlice';
 import { storageService } from '@services';
 import { RegisterData } from '@types';
 import { AuthStackParamList } from '@types';
+import { useCountryDetection } from '@hooks/useCountryDetection';
 import { styles } from './Register.styles';
 import { Step1EmailPassword } from './components/Step1EmailPassword';
 import { Step2PersonalInfo } from './components/Step2PersonalInfo';
@@ -33,8 +34,10 @@ export const Register: React.FC = () => {
   const [formData, setFormData] = useState<Partial<RegisterData>>({});
   const [isRestoring, setIsRestoring] = useState(true);
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { callingCode, detectCountry } = useCountryDetection();
+  const hasDetectedCountryRef = useRef<boolean>(false);
 
-  // Restore draft data on mount
+  // Restore draft data on mount and detect country
   useEffect(() => {
     const restoreDraft = async () => {
       try {
@@ -82,6 +85,32 @@ export const Register: React.FC = () => {
 
     restoreDraft();
   }, []);
+
+  // Detect country on mount if no country code is set
+  useEffect(() => {
+    if (
+      !isRestoring &&
+      !hasDetectedCountryRef.current &&
+      (!formData.countryCode || formData.countryCode === '+1')
+    ) {
+      hasDetectedCountryRef.current = true;
+      // Trigger detection in the background
+      detectCountry();
+    }
+  }, [isRestoring, formData.countryCode, detectCountry]);
+
+  // Update formData when country is detected
+  useEffect(() => {
+    if (callingCode) {
+      setFormData((prev) => {
+        // Only update if country code is not set or is still the default
+        if (!prev.countryCode || prev.countryCode === '+1') {
+          return { ...prev, countryCode: callingCode };
+        }
+        return prev;
+      });
+    }
+  }, [callingCode]);
 
   // Save draft data whenever formData changes (debounced)
   useEffect(() => {

@@ -11,19 +11,22 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.metaestetics.hiringtest"
+      "bundleIdentifier": "com.metaestetics.hiringtest",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app uses your location to automatically detect your country during registration. You can still manually select your country if you prefer.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses your location to automatically detect your country during registration. You can still manually select your country if you prefer."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.metaestetics.hiringtest"
+      "package": "com.metaestetics.hiringtest",
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"]
     },
     "plugins": [
       [
@@ -31,8 +34,15 @@
         {
           "photosPermission": "The app needs access to your photos to set profile picture."
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "This app uses your location to automatically detect your country during registration. You can still manually select your country if you prefer.",
+          "locationAlwaysPermission": "This app uses your location to automatically detect your country during registration. You can still manually select your country if you prefer.",
+          "locationWhenInUsePermission": "This app uses your location to automatically detect your country during registration. You can still manually select your country if you prefer."
+        }
       ]
     ]
   }
 }
-

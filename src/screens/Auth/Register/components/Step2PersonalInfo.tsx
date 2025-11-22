@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -35,6 +35,8 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
   onPrevious,
   error,
 }) => {
+  const formikRef = useRef<any>(null);
+
   const initialValues = {
     firstName: formData.firstName || '',
     lastName: formData.lastName || '',
@@ -84,6 +86,7 @@ export const Step2PersonalInfo: React.FC<Step2PersonalInfoProps> = ({
 
   return (
     <Formik
+      innerRef={formikRef}
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
