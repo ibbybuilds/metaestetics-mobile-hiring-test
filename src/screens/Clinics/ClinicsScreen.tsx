@@ -85,6 +85,7 @@ export const ClinicsScreen: React.FC = () => {
           ))
     );
   }, [clinics, debouncedSearchQuery]);
+  console.log("filteredClinics", filteredClinics);
 
   // Memoize renderItem callback
   const renderItem: ListRenderItem<Clinic> = useCallback(
@@ -122,6 +123,12 @@ export const ClinicsScreen: React.FC = () => {
           {error}
         </Typography>
       )}
+      <Button
+        title="My Appointments"
+        onPress={() => navigation.navigate("MyAppointments")}
+        style={styles.myAppointmentsButton}
+        variant="outline"
+      />
       <FlatList
         data={filteredClinics}
         renderItem={renderItem}
@@ -145,8 +152,12 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   searchInput: {
+    marginBottom: spacing.sm,
+  },
+  myAppointmentsButton: {
     marginBottom: spacing.md,
   },
+
   clinicCard: {
     marginBottom: spacing.sm,
   },

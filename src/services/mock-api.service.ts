@@ -287,8 +287,10 @@ export const mockApiService = {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       slot,
-      clinicName: "Clinic " + data.clinicId.split("-")[1], // Mock name
-      clinicAddress: "123 Mock St", // Mock address
+      clinicName: `Clinic ${parseInt(data.clinicId.split("-")[1]) + 1}`,
+      clinicAddress: `${
+        parseInt(data.clinicId.split("-")[1]) + 1
+      } Main Street, City`,
     };
 
     bookings.push(newBooking);
